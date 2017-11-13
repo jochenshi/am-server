@@ -1,17 +1,22 @@
-const handleLogin = (data) => {
-    console.log(data)
-}
+const model = require('../models');
 
 // add user module
-const verifyUserAdd = ({account, password, name, role, phone, mail}) => {
+// required params
+const verifyRequired = ({name, account, password}) => {
     var txt = '';
-    if (!account || !password) {
-        txt = 'name or account can not be empty!'
-    };
-
+    if (!account || !password || !name) {
+        txt = 'name,account or password can not be empty!'
+    }
     return txt;
+};
+
+//verify whether the user is already exist
+verifyUserExist = () => {
+    try {
+        var user = model.User.findAll({})
+    }
 };
 
 const handleAdd = () => {};
 
-module.exports = {verifyUserAdd}
+module.exports = {verifyRequired}
