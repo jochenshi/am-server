@@ -1,0 +1,65 @@
+module.exports = function (sequelize, Sequelize) {
+    var User =  sequelize.define('User', {
+        id: {
+            type: Sequelize.STRING,
+            primaryKey: true
+        },
+        name: {
+            type: Sequelize.STRING,
+            allowNull: false,
+            unique: true
+        },
+        account: {
+            type: Sequelize.STRING,
+            allowNull: false,
+            unique: true
+        },
+        password: {
+            type: Sequelize.STRING,
+            allowNull: false
+        },
+        role: {
+            type: Sequelize.STRING,
+            defaultValue: 0
+        },
+        phone: {
+            type: Sequelize.STRING,
+            unique: true
+        },
+        email: {
+            type: Sequelize.STRING,
+            unique: true,
+            validate: {
+                isEmail: true
+            }
+        },
+        isValid: {
+            type: Sequelize.BOOLEAN,
+            allowNull: false
+        },
+        createUser: {
+            type: Sequelize.STRING
+        },
+        createTime: {
+            type: Sequelize.DATE
+        },
+        updateTime: {
+            type: Sequelize.DATE,
+            defaultValue: Sequelize.NOW
+        },
+        description: {
+            type: Sequelize.TEXT
+        },
+        partsExtra: {
+            type: Sequelize.STRING
+        }
+    },
+    {
+        timestamps: false,
+        comment: '用户信息表'
+    });
+    // User.associate = function (models) {
+    //     User.hasMany(models.machines, {as:'user'})
+    // };
+    return User;
+}
