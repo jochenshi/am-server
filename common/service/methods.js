@@ -4,7 +4,8 @@ const formatRespond = (resFlag, code, err, data = []) => {
         result: resFlag,
         code: code,
         error: err,
-        data: []
+        data: [],
+        msg: code === 200 ? '请求成功' : '请求失败'
     }
 };
 
@@ -14,11 +15,11 @@ const interRespond = (result, code , error) => {
         code: code,
         error: error
     }
-}
+};
 
 // method used to valid whether the login session is valid
 const validLogin = () => {
     return true
-}
+};
 
 module.exports = { verifyUserAdd, formatRespond, validLogin, interRespond };

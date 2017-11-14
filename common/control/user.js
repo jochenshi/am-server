@@ -16,7 +16,7 @@ const verifyRequired = ({name, account, password}) => {
 const verifyUserExist = ({name, account}) => {
     (async () => {
         try {
-            var user = await model.User.findAll({
+            let user = await model.User.findAll({
                 where: {
                     $or: [
                         {
@@ -51,8 +51,9 @@ const verifyUserExist = ({name, account}) => {
     })();
 };
 
+//add user
 const handleAdd = (req, res) => {
-    var requireFlag = verifyRequired(req.body);
+    let requireFlag = verifyRequired(req.body);
     if (requireFlag) {
         res.send()
     } else if (existFlag) {
@@ -60,7 +61,22 @@ const handleAdd = (req, res) => {
     } else {
         
     }
-    var existFlag = verifyUserExist(req.body)
+    let existFlag = verifyUserExist(req.body)
 };
+
+//delete user
+const deleteUser = (req, res) => {};
+
+//modify user
+const modifyUser = (req, res) => {};
+
+//inquire specific user according to search info
+const inquireUser = () => {};
+
+//get users and show user according to different page
+const getUsers = () => {};
+
+//get user detail info
+const getUserDetail = () => {};
 
 module.exports = {handleAdd}
