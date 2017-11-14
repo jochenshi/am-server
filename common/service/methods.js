@@ -1,23 +1,24 @@
-var verifyUserAdd = ({name, account}) => {
-    var txt = '';
-    if (!name || !account) {
-        txt = 'name or account can not be empty!'
-    };
-    return txt;
+// method used to format the respond in the similar format
+const formatRespond = (resFlag, code, err, data = []) => {
+    return {
+        result: resFlag,
+        code: code,
+        error: err,
+        data: []
+    }
 };
 
-// method used to format the respond in the similar format
-const formatRespond = (result, code , err) => {
+const interRespond = (result, code , error) => {
     return {
         result: result,
         code: code,
-        err: err
+        error: error
     }
-};
+}
 
 // method used to valid whether the login session is valid
 const validLogin = () => {
     return true
 }
 
-module.exports = { verifyUserAdd, formatRespond, validLogin };
+module.exports = { verifyUserAdd, formatRespond, validLogin, interRespond };

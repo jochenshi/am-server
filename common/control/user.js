@@ -1,6 +1,8 @@
+// add user module starts
 const model = require('../models');
+const methods = require('../service/methods');
+const errorText = require('../service/error');
 
-// add user module
 // required params
 const verifyRequired = ({name, account, password}) => {
     var txt = '';
@@ -11,12 +13,54 @@ const verifyRequired = ({name, account, password}) => {
 };
 
 //verify whether the user is already exist
-verifyUserExist = () => {
-    try {
-        var user = model.User.findAll({})
-    }
+const verifyUserExist = ({name, account}) => {
+    (async () => {
+        try {
+            var user = await model.User.findAll({
+                where: {
+                    $or: [
+                        {
+                            name: name
+                        },
+                        {
+                            account: account
+                        }
+                    ]
+                }
+            });
+            if (user.length) {
+                return {
+                    result: false,
+                    code: 10001,
+                    error: 'username or account has already exist'
+                }
+            } else {
+                return {
+                    result: true,
+                    code: 200,
+                    error: ''
+                }
+            }
+        } catch (err) {
+            return {
+                result: false,
+                code: 101,
+                error: err
+            }
+        }
+    })();
 };
 
-const handleAdd = () => {};
+const handleAdd = (req, res) => {
+    var requireFlag = verifyRequired(req.body);
+    if (requireFlag) {
+        res.send()
+    } else if (existFlag) {
+        res.send()
+    } else {
+        
+    }
+    var existFlag = verifyUserExist(req.body)
+};
 
-module.exports = {verifyRequired}
+module.exports = {handleAdd}
