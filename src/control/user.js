@@ -16,7 +16,7 @@ const verifyRequired = ({name, account, password}) => {
 const verifyUserExist = ({name, account}) => {
     (async () => {
         try {
-            let user = await model.User.findAll({
+            let user = await model.user.findAll({
                 where: {
                     $or: [
                         {

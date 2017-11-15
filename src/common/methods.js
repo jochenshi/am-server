@@ -1,5 +1,5 @@
 // method used to format the respond in the similar format
-const formatRespond = (resFlag, code, err, data = []) => {
+const formatRespond = (resFlag, code, err = '', data = []) => {
     return {
         result: resFlag,
         code: code,
