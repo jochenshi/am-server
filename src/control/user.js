@@ -1,7 +1,7 @@
 // add user module starts
 const model = require('../models');
-const methods = require('../service/methods');
-const errorText = require('../service/error');
+const methods = require('../common/methods');
+const errorText = require('../common/error');
 
 // required params
 const verifyRequired = ({name, account, password}) => {

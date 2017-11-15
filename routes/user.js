@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
 
-const models = require('../common/models');
-const Action = require('../common/service/methods');
-const userMethod = require('../common/control/user')
+const models = require('../src/models');
+const Action = require('../src/common/methods');
+const userMethod = require('../src/control/user')
 
 /* GET users listing. */
 router.post('/login', function(req, res, next) {
