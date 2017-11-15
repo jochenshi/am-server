@@ -4,19 +4,23 @@ const methods = require('../common/methods');
 const errorText = require('../common/error');
 
 // required params
-const verifyRequired = ({name, account, password}) => {
-    var txt = '';
+const verifyRequired = ({name, account, password}, res) => {
+    let flag = true;
     if (!account || !password || !name) {
-        txt = 'name,account or password can not be empty!'
+        //txt = 'name,account or password can not be empty!';
+        flag = false;
+        const temp = methods.formatRespond(false, 10000, errorText.formatError(10000));
+        res.status(400).send(temp);
     }
-    return txt;
+    return flag;
 };
 
 //verify whether the user is already exist
-const verifyUserExist = ({name, account}) => {
+const verifyUserExist = ({name, account}, res) => {
     (async () => {
+        let temp, code, flag = true;
         try {
-            let user = await model.User.findAll({
+            let user = await model.user.findAll({
                 where: {
                     $or: [
                         {
@@ -29,39 +33,32 @@ const verifyUserExist = ({name, account}) => {
                 }
             });
             if (user.length) {
-                return {
-                    result: false,
-                    code: 10001,
-                    error: 'username or account has already exist'
-                }
-            } else {
-                return {
-                    result: true,
-                    code: 200,
-                    error: ''
-                }
+                flag = false;
+                code = 10001;
+                temp = methods.formatRespond(false, code, errorText.formatError(code));
+                res.status(400).send(temp);
             }
         } catch (err) {
-            return {
-                result: false,
-                code: 101,
-                error: err
-            }
+            flag = false;
+            code = 20000;
+            temp = methods.formatRespond(false, code, err);
+            res.status(400).send(temp);
         }
+        return flag;
     })();
 };
 
 //add user
 const handleAdd = (req, res) => {
-    let requireFlag = verifyRequired(req.body);
-    if (requireFlag) {
-        res.send()
-    } else if (existFlag) {
-        res.send()
-    } else {
-        
+    let requireFlag = verifyRequired(req.body, res);
+    if (!requireFlag) {
+        return
     }
-    let existFlag = verifyUserExist(req.body)
+    let existFlag = verifyUserExist(req.body, res);
+    if (!existFlag) {
+        return
+    }
+    // execute add user operation
 };
 
 //delete user
