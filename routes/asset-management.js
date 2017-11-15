@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-var models = require('../common/models')
-var Action = require('../common/service/methods')
+var models = require('../src/models')
+var Action = require('../src/common/methods')
 console.log(models.user)
 
 // const Sequelize = require('sequelize');
