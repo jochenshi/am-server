@@ -3,7 +3,7 @@ var router = express.Router();
 
 var models = require('../common/models')
 var Action = require('../common/service/methods')
-console.log(models.User)
+console.log(models.user)
 
 // const Sequelize = require('sequelize');
 // const User = require('../common/models/user_info')
@@ -47,8 +47,8 @@ router.get('/', function(req, res, next) {
   //models.sequelize.sync(); // this is for test initialize all tables at the same time, this will be move to other place after
   //models.Users.sync();
   (async () => {
-    var test = await models.sequelize.sync({force: true});
-    var select = await models.User.findAll({
+    var test = await models.sequelize.sync();
+    var select = await models.user.findAll({
       where: {
         $or: [
           {
@@ -65,13 +65,14 @@ router.get('/', function(req, res, next) {
       console.log('user already exist')
     } else {
       var now = Date.now();
-      var result = await models.User.create({
-        Id: 'user_' + now,
+      var result = await models.user.create({
+        id: 'user_' + now,
         name: 'test2',
         account: 'account2',
         createTime: now,
         updateTime: now,
-        password: 'account2'
+        password: 'account2',
+        isValid: true
       }).catch(err => {res.send(err)});
       console.log('add user success');
       res.send(JSON.stringify(result));

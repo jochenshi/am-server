@@ -1,5 +1,5 @@
 module.exports = function (sequelize, Sequelize) {
-    var health = sequelize.define('health_info', {
+    var health = sequelize.define('health', {
         relatedId: {
             type: Sequelize.STRING,
             allowNull: false

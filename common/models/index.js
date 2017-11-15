@@ -7,8 +7,8 @@ var sequelize = new Sequelize(config.database, config.username, config.password,
 var db = {};
 console.log('start index');
 
-const User = require('./user_info');
-const machine = require('./machine_info')
+// const User = require('./user_info');
+// const machine = require('./machine_info')
 
 fs.readdirSync(__dirname).filter(
     (file) => {

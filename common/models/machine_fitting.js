@@ -1,5 +1,5 @@
 module.exports = function (sequelize, Sequelize) {
-    var relates = sequelize.define('machine_fitting_relate',{
+    var relates = sequelize.define('machine_fitting',{
         machineId: {
             type: Sequelize.STRING,
             allowNull: false

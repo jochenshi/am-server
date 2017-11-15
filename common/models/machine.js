@@ -1,4 +1,3 @@
-const User = require('./user_info');
 module.exports = function (sequelize, Sequelize) {
     var machine = sequelize.define('machine', {
         id: {
@@ -50,7 +49,7 @@ module.exports = function (sequelize, Sequelize) {
         comment: '机器信息表'
     });
     machine.associate = function (model) {
-        machine.belongsTo(model.User, {as: 'users', foreignKey: 'createUser', targetKey: 'id'})
+        machine.belongsTo(model.user, {as: 'users', foreignKey: 'createUser', targetKey: 'id'})
     }
     return machine
 }

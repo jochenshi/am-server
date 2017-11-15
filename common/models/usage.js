@@ -1,5 +1,5 @@
 module.exports = function (sequelize, Sequelize) {
-    var usage = sequelize.define('usage_info', {
+    var usage = sequelize.define('usage', {
         relateId: {
             type: Sequelize.STRING,
             allowNull: false

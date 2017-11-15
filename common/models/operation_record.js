@@ -1,5 +1,5 @@
 module.exports = function (sequelize, Sequelize) {
-    var operate = sequelize.define('operate_info', {
+    var operate = sequelize.define('operation_record', {
         type: {
             type: Sequelize.STRING
         },

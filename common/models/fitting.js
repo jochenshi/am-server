@@ -1,6 +1,10 @@
-const User = require('./user_info');
 module.exports = function (sequelize, Sequelize) {
     var fitting = sequelize.define('fitting', {
+        id: {
+            type: Sequelize.STRING,
+            primaryKey: true,
+            allowNull: false
+        },
         serialNo: {
             type: Sequelize.STRING
         },
@@ -44,7 +48,7 @@ module.exports = function (sequelize, Sequelize) {
         comment: '配件基本信息表'
     });
     fitting.associate = function (model) {
-        fitting.belongsTo(model.User,{as: 'users',foreignKey: 'createUser', targetKey: 'id'})
+        fitting.belongsTo(model.user,{as: 'users',foreignKey: 'createUser', targetKey: 'id'})
     }
     return fitting
 }

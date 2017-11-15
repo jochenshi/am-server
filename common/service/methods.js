@@ -22,4 +22,4 @@ const validLogin = () => {
     return true
 };
 
-module.exports = { verifyUserAdd, formatRespond, validLogin, interRespond };
+module.exports = { formatRespond, validLogin, interRespond };
