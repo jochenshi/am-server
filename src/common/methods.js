@@ -4,7 +4,6 @@ const formatRespond = (resFlag, code, err = '', data = []) => {
         result: resFlag,
         code: code,
         error: err,
-        data: [],
         data: data,
         msg: code === 200 ? '请求成功' : '请求失败'
     };
