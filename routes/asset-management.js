@@ -47,37 +47,38 @@ router.get('/', function(req, res, next) {
   //models.sequelize.sync(); // this is for test initialize all tables at the same time, this will be move to other place after
   //models.Users.sync();
   (async () => {
-    var test = await models.sequelize.sync();
-    var select = await models.user.findAll({
-      where: {
-        $or: [
-          {
-            name: 'test3'
-          },
-          {
-            account: 'account2'
-          }
-        ]
-      }
-    });
-    if (select.length) {
-      res.send(JSON.stringify(select));
-      console.log('user already exist')
-    } else {
-      var now = Date.now();
-      var result = await models.user.create({
-        id: 'user_' + now,
-        name: 'test2',
-        account: 'account2',
-        createTime: now,
-        updateTime: now,
-        password: 'account2',
-        isValid: true
-      }).catch(err => {res.send(err)});
-      console.log('add user success');
-      res.send(JSON.stringify(result));
-      //console.log(JSON.stringify(result))
-    }
+    var test = await models.sequelize.sync({force: true});
+    res.send('initialize table ok')
+    // var select = await models.user.findAll({
+    //   where: {
+    //     $or: [
+    //       {
+    //         name: 'test3'
+    //       },
+    //       {
+    //         account: 'account2'
+    //       }
+    //     ]
+    //   }
+    // });
+    // if (select.length) {
+    //   res.send(JSON.stringify(select));
+    //   console.log('user already exist')
+    // } else {
+    //   var now = Date.now();
+    //   var result = await models.user.create({
+    //     id: 'user_' + now,
+    //     name: 'test2',
+    //     account: 'account2',
+    //     createTime: now,
+    //     updateTime: now,
+    //     password: 'account2',
+    //     isValid: true
+    //   }).catch(err => {res.send(err)});
+    //   console.log('add user success');
+    //   res.send(JSON.stringify(result));
+    //   //console.log(JSON.stringify(result))
+    // }
   })()
   // models.Users.findAll({
   //   where: {

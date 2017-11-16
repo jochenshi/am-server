@@ -18,6 +18,10 @@ module.exports = function (sequelize, Sequelize) {
         fixedNumber: {
             type: Sequelize.STRING
         },
+        type: {
+            type: Sequelize.STRING,
+            allowNull: false
+        },
         model: {
             type: Sequelize.STRING
         },
