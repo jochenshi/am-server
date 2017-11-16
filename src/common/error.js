@@ -6,10 +6,13 @@ const formatError = (code) => {
             txt = 'request success';
             break;
         case 10000:
-            txt = 'name,account or password can not be empty!';
+            txt = 'name,account,password,phone or email can not be empty!';
             break;
         case 10001:
             txt = '用户名或账户已经存在。';
+            break;
+        case 10002:
+            txt = '该用户曾经存在但现在处于失效状态';
             break;
     }
     return txt

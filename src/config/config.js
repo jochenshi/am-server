@@ -1,4 +1,4 @@
-module.exports = {
+const mysql_config = {
     username: "root",
     password: "Unis@123",
     database: "test_asset",
@@ -9,4 +9,7 @@ module.exports = {
     define: {
         freezeTableName: true
     }
-}
+};
+
+const pass_encrypt = 'unis1234';
+module.exports = { mysql_config, pass_encrypt }

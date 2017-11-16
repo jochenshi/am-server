@@ -12,9 +12,8 @@ router.post('/login', function(req, res, next) {
 });
 
 router.post('/add', (req, res, next) => {
-  console.log(req);
   console.log(req.body);
-  res.send('get add user request')
+  userMethod.handleAdd(req, res);
 })
 
 module.exports = router;
