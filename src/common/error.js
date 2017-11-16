@@ -14,6 +14,12 @@ const formatError = (code) => {
         case 10002:
             txt = '该用户曾经存在但现在处于失效状态';
             break;
+        case 10003:
+            txt = '数据库内部错误';
+            break;
+        case 10004:
+            txt = '目标用户信息不正确';
+            break;
     }
     return txt
 }
