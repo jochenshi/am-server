@@ -5,8 +5,9 @@ const formatRespond = (resFlag, code, err = '', data = []) => {
         code: code,
         error: err,
         data: [],
+        data: data,
         msg: code === 200 ? '请求成功' : '请求失败'
-    }
+    };
 };
 
 const interRespond = (result, code , error) => {

@@ -5,6 +5,9 @@ const formatError = (code) => {
         case 200:
             txt = 'request success';
             break;
+        case 10000:
+            txt = 'name,account or password can not be empty!';
+            break;
         case 10001:
             txt = '用户名或账户已经存在。';
             break;
@@ -12,4 +15,4 @@ const formatError = (code) => {
     return txt
 }
 
-module.exports = formatError;
+module.exports = {formatError};
