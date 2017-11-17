@@ -24,11 +24,13 @@ module.exports = function (sequelize, Sequelize) {
         },
         phone: {
             type: Sequelize.STRING,
-            unique: true
+            unique: true,
+            allowNull: false
         },
         email: {
             type: Sequelize.STRING,
             unique: true,
+            allowNull: false,
             validate: {
                 isEmail: true
             }
