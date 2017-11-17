@@ -5,6 +5,19 @@ const model = require('../models');
 const methods = require('../common/methods');
 const errorText = require('../common/error');
 
+const getSelectData = async (res) => {
+    let temp, hcode;
+    try {
+        // verify whether the user existed before but is not valid now
+        let select = await model.select_list.findAll();
+        res.send(methods.formatRespond(true, 200, '',select));
+    } catch (err) {
+        hcode = 20000;
+        temp = methods.formatRespond(false, hcode, err);
+        res.status(400).send(temp);
+    }
+}
+
 const verifySelectExist = async ({ code, name },res) => {
     let temp, hcode, flag = true;
     try {

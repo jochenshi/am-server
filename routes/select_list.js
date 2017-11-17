@@ -3,6 +3,10 @@ var router = express.Router();
 var select = require('../src/control/select_list');
 
 /* GET users listing. */
+router.get('/',function(req, res, next) {
+	select.getSelectData(res);
+})
+
 router.post('/add', function(req, res, next) {
     select.addSelect(req.body,res);
 });
