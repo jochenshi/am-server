@@ -26,7 +26,7 @@ const passEncrypt = (data) => {
 };
 
 // method used to valid whether the login session is valid
-const validLogin = () => {
+const validLogin = (req) => {
     return true
 };
 
