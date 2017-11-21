@@ -46,9 +46,9 @@ const verifySelectExist = async ({ code, name },res) => {
             res.send(methods.formatRespond(true, 200));
         }
     } catch (err) {
+        code = 10003;
         flag = false;
-        hcode = 20000;
-        temp = methods.formatRespond(false, hcode, err);
+        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
         res.status(400).send(temp);
     }
     return flag
@@ -82,9 +82,9 @@ const verifySelecItemExist = async ({ code, name, value, text },res) => {
             res.status(400).send(temp);
         }
     } catch (err) {
+        code = 10003;
         flag = false;
-        hcode = 20000;
-        temp = methods.formatRespond(false, hcode, err);
+        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
         res.status(400).send(temp);
     }
     return flag
@@ -113,10 +113,13 @@ const addSelect = async ({ code, name, value, text },res) => {
 
 module.exports.addSelect = addSelect;
 
-const deleteSelect = async ({code, value}, res) => {
-    let param = {'code': code};
-    if(value){
-        param['value'] = value;
+const deleteSelect = async ({code, id}, res) => {
+    let param = { };
+    if(id){
+        param['id'] = id;
+    }
+    if(code){
+        param['code'] = code;
     }
     try{
         await model.select_list.destroy({
@@ -133,3 +136,26 @@ const deleteSelect = async ({code, value}, res) => {
 }
 
 module.exports.deleteSelect = deleteSelect;
+
+const updateSelect = async ({ id, code, name, value, text },res) => {
+    let flag = await verifySelecItemExist({ code, name, value, text },res);
+    if(!flag){
+        return;
+    }
+    try{
+        await model.select_list.update({
+            text : text,
+            value : value
+        },{
+            'where':{ id: id }
+        });
+        res.send(methods.formatRespond(true, 200));
+    }catch (err) {
+        code = 10003;
+        flag = false;
+        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        res.status(400).send(temp);
+    }
+}
+
+module.exports.updateSelect = updateSelect;

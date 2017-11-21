@@ -6,5 +6,6 @@ module.exports = function (sequelize, Sequelize) {
         lastUpdate: {
             type: Sequelize.DATE
         }
-    })
+    });
+    return login;
 };
