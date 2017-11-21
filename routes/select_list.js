@@ -12,8 +12,12 @@ router.post('/add', function(req, res, next) {
 });
 
 router.get('/verifySelect',function(req, res, next) {
-	console.log(req.query);
+	console.log(re.qquery);
 	select.verifySelectExist(req.query,res);
 })
+
+router.post('/delete', function(req, res, next) {
+    select.deleteSelect(req.body,res);
+});
 
 module.exports = router;

@@ -24,7 +24,7 @@ const formatError = (code) => {
             txt = '已存在相同的选项值或选项文本';
             break;
         case 13001:
-            text = '已存在相同代号或名称的选项';
+            txt = '已存在相同代号或名称的选项';
             break;
     }
     return txt

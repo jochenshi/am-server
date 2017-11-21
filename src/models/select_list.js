@@ -2,8 +2,7 @@ module.exports = function (sequelize, Sequelize) {
     const select_list = sequelize.define('select_list', {
         code: {
             type: Sequelize.STRING,
-            allowNull: false,
-            unique: true
+            allowNull: false
         },
         name: {
             type: Sequelize.STRING

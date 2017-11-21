@@ -47,7 +47,7 @@ router.get('/', function(req, res, next) {
   //models.sequelize.sync(); // this is for test initialize all tables at the same time, this will be move to other place after
   //models.Users.sync();
   (async () => {
-    var test = await models.sequelize.sync({force: false});
+    var test = await models.sequelize.sync({force: true});
     res.send('initialize table ok')
     // var select = await models.user.findAll({
     //   where: {

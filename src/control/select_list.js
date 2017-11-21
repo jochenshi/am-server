@@ -18,6 +18,8 @@ const getSelectData = async (res) => {
     }
 }
 
+module.exports.getSelectData = getSelectData;
+
 const verifySelectExist = async ({ code, name },res) => {
     let temp, hcode, flag = true;
     try {
@@ -88,12 +90,13 @@ const verifySelecItemExist = async ({ code, name, value, text },res) => {
     return flag
 }
 
-const addSelect = ({ code, name, value, text },res) => {
-    if(!verifySelecItemExist({ code, name, value, text },res)){
+const addSelect = async ({ code, name, value, text },res) => {
+    let flag = await verifySelecItemExist({ code, name, value, text },res);
+    if(!flag){
         return;
     }
     try{
-        model.select_list.create({
+        await model.select_list.create({
             code : code,
             name : name,
             text : text,
@@ -109,3 +112,24 @@ const addSelect = ({ code, name, value, text },res) => {
 }
 
 module.exports.addSelect = addSelect;
+
+const deleteSelect = async ({code, value}, res) => {
+    let param = {'code': code};
+    if(value){
+        param['value'] = value;
+    }
+    try{
+        await model.select_list.destroy({
+            'where':param
+        });
+        res.send(methods.formatRespond(true, 200));
+    }catch(err){
+        code = 10003;
+        flag = false;
+        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        res.status(400).send(temp); 
+    }
+    
+}
+
+module.exports.deleteSelect = deleteSelect;
