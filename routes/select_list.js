@@ -1,16 +1,23 @@
 var express = require('express');
 var router = express.Router();
+var select = require('../src/control/select_list');
 
 /* GET users listing. */
-router.post('/addSelect', function(req, res, next) {
-    console.log('user');
-    res.send('respond with a resource');
+router.get('/',function(req, res, next) {
+	select.getSelectData(res);
+})
+
+router.post('/add', function(req, res, next) {
+    select.addSelect(req.body,res);
 });
 
-router.post('/add', (req, res, next) => {
-    console.log(req);
-    console.log(req.body);
-    res.send('get add user request')
+router.get('/verifySelect',function(req, res, next) {
+	console.log(re.qquery);
+	select.verifySelectExist(req.query,res);
 })
+
+router.post('/delete', function(req, res, next) {
+    select.deleteSelect(req.body,res);
+});
 
 module.exports = router;

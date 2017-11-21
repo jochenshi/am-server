@@ -6,6 +6,7 @@ const mysql_config = {
     dialect: "mysql",
     timezone: '+8:00',
     port: 3306,
+    charset:'utf8',
     define: {
         freezeTableName: true
     }

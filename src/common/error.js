@@ -25,6 +25,12 @@ const formatError = (code) => {
         case 10004:
             txt = '目标用户信息不正确';
             break;
+        case 13000:
+            txt = '已存在相同的选项值或选项文本';
+            break;
+        case 13001:
+            txt = '已存在相同代号或名称的选项';
+            break;
     }
     return txt
 }
