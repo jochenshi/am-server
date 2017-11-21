@@ -1,3 +1,8 @@
+//error code range
+/*1.用户模块: 10000-10999
+2.机器模块: 11000-11999
+3.配件模块: 12000-12999
+4.其余模块：13000-13999 */
 // error message handle module
 const formatError = (code) => {
     var txt;
