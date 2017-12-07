@@ -13,4 +13,7 @@ const mysql_config = {
 };
 
 const pass_encrypt = 'unis1234';
-module.exports = { mysql_config, pass_encrypt }
+const session_encrypt = 'unis_session_encrypt';
+const cookie_encrypt = 'unis_cookie_encrypt';
+const sig_encrypt = 'unis_sig_token';
+module.exports = { mysql_config, pass_encrypt, session_encrypt, cookie_encrypt, sig_encrypt}

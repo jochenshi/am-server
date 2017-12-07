@@ -12,6 +12,10 @@ module.exports = function (sequelize, Sequelize) {
         },
         text: {
             type: Sequelize.STRING
+        },
+        // 表明该标签的所属的类型
+        type: {
+            type: Sequelize.STRING
         }
     },
     {

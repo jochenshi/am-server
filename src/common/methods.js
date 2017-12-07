@@ -25,9 +25,48 @@ const passEncrypt = (data) => {
     return encrypted + ciper.final('hex');
 };
 
+const passDecrypt = (data) => {
+    const decipher = crypto.createDecipher('aes192', config.pass_encrypt);
+    let decrypted = decipher.update(data, 'hex', 'utf8');
+    decrypted += decrypted.final('utf8');
+    return decrypted;
+};
+
+const sessionEncrypt = (data) => {
+    const cipher = crypto.createCipher('aes192', config.session_encrypt);
+    let encrypted = cipher.update(data, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    return encrypted;
+};
+
+const sessionDecrypt = (data) => {
+    const decipher = crypto.createDecipher('aes192', config.session_encrypt);
+    let decrypted = decipher.update(data, 'hex', 'utf8');
+    decrypted += decrypted.final('utf8');
+    return decrypted;
+};
+
+const encryptFun = (data, password) => {
+    const cipher = crypto.createCipher('aes192', password);
+    let encrypted = cipher.update(data, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    return encrypted;
+};
+
+const decryptFun = (data, password) => {
+    const decipher = crypto.createDecipher('aes192', password);
+    let decrypted = decipher.update(data, 'hex', 'utf8');
+    decrypted += decrypted.final('utf8');
+    return decrypted;
+}
+
 // method used to valid whether the login session is valid
 const validLogin = (req) => {
     return true
 };
 
-module.exports = { formatRespond, validLogin, interRespond, passEncrypt };
+module.exports = { 
+    formatRespond, validLogin, interRespond, 
+    passEncrypt, passDecrypt, sessionEncrypt, sessionDecrypt, 
+    encryptFun, decryptFun 
+};

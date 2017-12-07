@@ -28,8 +28,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 //routes use area
 app.use('/', index);
 //app.use('/users', users);
-app.use('/am', am);
 app.use('/am/user', user);
+app.use('/am', am);
 app.use('/am/select',select);
 
 // catch 404 and forward to error handler
