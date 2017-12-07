@@ -6,7 +6,7 @@ module.exports = function (sequelize, Sequelize) {
         token: {
             type: Sequelize.STRING
         },
-        lastUpdate: {
+        updateTime: {
             type: Sequelize.DATE
         },
 
