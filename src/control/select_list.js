@@ -105,7 +105,8 @@ const addSelect = async ({ code, name, value, text },res) => {
             code : code,
             name : name,
             text : text,
-            value : value
+            value : value,
+            delable : true
         });
         res.send(methods.formatRespond(true, 200));
     }catch (err) {

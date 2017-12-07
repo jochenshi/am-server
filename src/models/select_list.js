@@ -12,6 +12,9 @@ module.exports = function (sequelize, Sequelize) {
         },
         text: {
             type: Sequelize.STRING
+        },
+        delable: {
+            type: Sequelize.BOOLEAN
         }
     },
     {
