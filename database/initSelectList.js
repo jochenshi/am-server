@@ -25,12 +25,12 @@ const addSelects = (datas)=>{
 }
 
 const datas = [
-    {code : 'S0001', name : '归属来源', value: 'buyin', text: '购入'},
-    {code : 'S0001', name : '归属来源', value: 'borrow', text: '借入'},
-    {code : 'S0001', name : '归属来源', value: 'backin', text: '还入'},
-    {code : 'S0002', name : '归属去向', value: 'destory', text: '销毁'},
-    {code : 'S0002', name : '归属去向', value: 'loan', text: '借出'},
-    {code : 'S0002', name : '归属去向', value: 'backout', text: '还出'},
+    {code : 'S0001', name : '归属类型', value: 'buyin', text: '购入',delable: false,type: 'in'},
+    {code : 'S0001', name : '归属类型', value: 'borrow', text: '借入',delable: false,type: 'in'},
+    {code : 'S0001', name : '归属类型', value: 'backin', text: '还入',delable: false,type: 'in'},
+    {code : 'S0001', name : '归属类型', value: 'destory', text: '销毁',delable: false,type: 'out'},
+    {code : 'S0001', name : '归属类型', value: 'loan', text: '借出',delable: false,type: 'out'},
+    {code : 'S0001', name : '归属类型', value: 'backout', text: '还出',delable: false,type: 'out'},
 ];
 
 const initSelect = () => {
