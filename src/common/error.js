@@ -31,6 +31,9 @@ const formatError = (code) => {
         case 10006:
             txt = '账号或密码不正确';
             break;
+        case 10007:
+            txt = '用户登录无效，请重新登录';
+            break;   
         case 13000:
             txt = '已存在相同的选项值或选项文本';
             break;
