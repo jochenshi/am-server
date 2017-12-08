@@ -3,11 +3,13 @@ var router = express.Router();
 
 const Action = require('../src/common/methods');
 const userMethod = require('../src/control/user');
+const loginMethod = require('../src/control/login');
 
 /* Handle user login */
 router.post('/login', function(req, res, next) {
-  console.log('user');
-  res.send('respond with a resource');
+  console.log('go in user');
+  loginMethod.handleLogin(req, res);
+  //res.send('respond with a resource');
 });
 
 /*Handle user add*/

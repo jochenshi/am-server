@@ -15,6 +15,10 @@ module.exports = function (sequelize, Sequelize) {
         },
         delable: {
             type: Sequelize.BOOLEAN
+        },
+        // 表明该标签的所属的类型
+        type: {
+            type: Sequelize.STRING
         }
     },
     {
