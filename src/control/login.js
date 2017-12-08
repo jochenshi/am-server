@@ -35,7 +35,7 @@ const checkUser = async (account, password, res) => {
             let user_token = generateToken(user_id, now_time);
             flag = await tokenLogin(user_id, user_token, now_time, res);
             if (flag) {
-                res.cookie(user_token, {}).send({text: 'login success'});
+                res.cookie(user_token, {maxAge: 5000}).send({text: 'login success'});
             }
             console.log(user)
         }
@@ -85,6 +85,11 @@ const generateToken = (userId, time) => {
 //验证request里面的token，并对其进行解密等相关操作
 const handleToken = (token) => {
     
+};
+
+//验证用户的请求，验证此时用户是否是登陆状态（，以及当前用户是否有权限进行相关操作）
+const validRequest = (req, res) => {
+    let cookie_get = req.cookie;
 };
 
 module.exports = {handleLogin, checkUser};
