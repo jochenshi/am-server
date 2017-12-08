@@ -165,3 +165,53 @@ const updateSelect = async ({ id, code, name, value, text },res) => {
 }
 
 module.exports.updateSelect = updateSelect;
+
+const getSelectByParam = async (param)=>{
+    let select = [];
+    try {
+        select = await model.select_list.findAll({
+            where: param
+        });
+        return select;
+    } catch (err) {
+        console.log(err);
+        return select;
+    }
+}
+
+/**
+ * 得到机器基本信息的选择项
+ * @returns {Promise.<void>}
+ */
+const getMachineSelect = async (res) => {
+    let data = {};
+    data.inType = [];
+    data.inOrigin = [];
+    data.inTarget = [];
+    data.type = [];
+    data.model = [];
+    data.brand = [];
+    data.inType = await getSelectByParam({
+        code : 'S0001',
+        type : 'in'
+    });
+    data.inOrigin = await getSelectByParam({
+        code : 'S0002',
+        type : 'in'
+    });
+    data.inTarget = await getSelectByParam({
+        code : 'S0003',
+        type : 'in'
+    });
+    data.type = await getSelectByParam({
+        code : 'S0004'
+    });
+    data.model = await getSelectByParam({
+        code : 'S0005'
+    });
+    data.brand = await getSelectByParam({
+        code : 'S0006'
+    });
+    res.send(methods.formatRespond(true, 200, '',data));
+}
+module.exports.getMachineSelect = getMachineSelect;
