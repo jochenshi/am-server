@@ -41,5 +41,5 @@ const initSelect = () => {
     addSelects(datas);
 }
 
-initSelect();
+// initSelect();
 module.exports.initSelect = initSelect;
