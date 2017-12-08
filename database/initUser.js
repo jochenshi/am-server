@@ -1,5 +1,5 @@
 const model = require('../src/models');
-const methods = require('../common/methods');
+const methods = require('../src/common/methods');
 
 const initUser = async (obj) => {
     try {
