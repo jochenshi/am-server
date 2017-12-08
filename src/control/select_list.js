@@ -9,11 +9,16 @@ const getSelectData = async (res) => {
     let temp, hcode;
     try {
         // verify whether the user existed before but is not valid now
-        let select = await model.select_list.findAll();
+        let select = await model.select_list.findAll({
+            'order':[
+                ['code','ASC']
+            ]
+        });
         res.send(methods.formatRespond(true, 200, '',select));
     } catch (err) {
-        hcode = 20000;
-        temp = methods.formatRespond(false, hcode, err);
+        code = 10003;
+        flag = false;
+        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
         res.status(400).send(temp);
     }
 }
@@ -100,7 +105,8 @@ const addSelect = async ({ code, name, value, text },res) => {
             code : code,
             name : name,
             text : text,
-            value : value
+            value : value,
+            delable : true
         });
         res.send(methods.formatRespond(true, 200));
     }catch (err) {
