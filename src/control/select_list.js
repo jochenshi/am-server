@@ -9,12 +9,12 @@ const getSelectData = async (res) => {
     let temp, hcode;
     try {
         // verify whether the user existed before but is not valid now
-        let select = await model.select_list.findAll({
+        let data = await model.select_list.findAll({
             'order':[
                 ['code','ASC']
             ]
         });
-        res.send(methods.formatRespond(true, 200, '',select));
+        res.send(methods.formatRespond(true, 200, '',data));
     } catch (err) {
         code = 10003;
         flag = false;
@@ -84,13 +84,13 @@ const verifySelecItemExist = async ({ code, name, value, text },res) => {
             flag = false;
             hcode = 13000;
             temp = methods.formatRespond(false, hcode, errorText.formatError(hcode));
-            res.status(400).send(temp);
+            res && res.status(400).send(temp);
         }
     } catch (err) {
         code = 10003;
         flag = false;
         temp = methods.formatRespond(false, code, err.message + ';' + err.name);
-        res.status(400).send(temp);
+        res && res.status(400).send(temp);
     }
     return flag
 }
@@ -108,12 +108,12 @@ const addSelect = async ({ code, name, value, text },res) => {
             value : value,
             delable : true
         });
-        res.send(methods.formatRespond(true, 200));
+        res && res.send(methods.formatRespond(true, 200));
     }catch (err) {
         code = 10003;
         flag = false;
         temp = methods.formatRespond(false, code, err.message + ';' + err.name);
-        res.status(400).send(temp);
+        res && res.status(400).send(temp);
     }
 }
 
@@ -138,7 +138,6 @@ const deleteSelect = async ({code, id}, res) => {
         temp = methods.formatRespond(false, code, err.message + ';' + err.name);
         res.status(400).send(temp); 
     }
-    
 }
 
 module.exports.deleteSelect = deleteSelect;

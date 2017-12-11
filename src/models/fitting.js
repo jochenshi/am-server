@@ -29,7 +29,7 @@ module.exports = function (sequelize, Sequelize) {
             type: Sequelize.STRING
         },
         useState: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.STRING,
             allowNull: false
         },
         createUser: {
