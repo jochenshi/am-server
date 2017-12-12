@@ -10,6 +10,7 @@ const handleLogin = async (req, res) => {
         const temp = methods.formatRespond(false, 10005, errorText.formatError(10005));
         res.status(400).send(temp);
     } else {
+        console.log(req.cookies);
         await checkUser(account, password, res);
     }
 };
@@ -36,9 +37,12 @@ const checkUser = async (account, password, res) => {
             let user_token = generateToken(user_id, now_time);
             flag = await tokenLogin(user_id, user_token.am_sig, now_time, res);
             if (flag) {
-                res.cookie(user_token, {maxAge: 5000}).send({text: 'login success'});
+                res.cookie('am_user', user_token.am_user,{maxAge: 120000});
+                res.cookie('am_sig', user_token.am_sig, {maxAge: 120000});
+                res.cookie('am_val', user_token.am_val, {maxAge: 120000})
+                res.send({text: 'login success'});
             }
-            console.log(user)
+            //console.log(user)
         }
     } catch (err) {
         code = 10003;
@@ -60,7 +64,7 @@ const addLogin = (userId, token) => {};
 const tokenLogin = async (userId, token_sig, time, res) => {
     let code, flag = true, temp;
     try {
-        let history = await model.login.findOrCreate({where: {userId: userId}, defaults: {token: token, updateTime: time}});
+        let history = await model.login.findOrCreate({where: {userId: userId}, defaults: {token: token_sig, updateTime: time}});
         if (!history[1]) {
             await model.login.update({token: token_sig, updateTime: time}, {where: {userId: userId}});
         }
@@ -77,7 +81,7 @@ const tokenLogin = async (userId, token_sig, time, res) => {
 const generateToken = (userId, time) => {
     let token_obj = {};
     token_obj.am_user = methods.encryptFun(userId, config.cookie_encrypt);
-    let sig_str = userId + '&' + time;
+    let sig_str = time + '&' + userId;
     token_obj.am_sig = methods.encryptFun(sig_str, config.cookie_encrypt);
     token_obj.am_val = Buffer.from(time.toString()).toString('base64');
     return token_obj;
@@ -89,7 +93,7 @@ const handleToken = (token) => {
     de_obj.am_user = methods.decryptFun(am_user, config.cookie_encrypt);
     let de_sig = methods.decryptFun(am_sig, config.cookie_encrypt).split('&');
     de_obj.am_val = Buffer.from(am_val, 'base64').toString();
-    if ((de_obj.am_user !== de_sig[0]) || (de_sig[1] !== de_obj.am_val)) {
+    if ((de_obj.am_user !== de_sig[1]) || (de_sig[0] !== de_obj.am_val)) {
         flag = false;
     };
     return {flag: flag, data: de_obj};
