@@ -33,12 +33,27 @@ const formatError = (code) => {
             break;
         case 10007:
             txt = '用户登录无效，请重新登录';
-            break;   
+            break;
+        /**
+         * 选项的报错文本
+         */
         case 13000:
             txt = '已存在相同的选项值或选项文本';
             break;
         case 13001:
             txt = '已存在相同代号或名称的选项';
+            break;
+        /**
+         * 机器报错文本
+         */
+        case 13100:
+            txt = '已存在相同的机器S/N号或研发部编号';
+            break;
+        /**
+         * 归属报错文本
+         */
+        case 13200:
+            txt = '记录归属信息时出错';
             break;
     }
     return txt

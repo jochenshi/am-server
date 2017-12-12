@@ -1,7 +1,7 @@
 module.exports = function (sequelize, Sequelize) {
     var address = sequelize.define('address', {
         machineId: {
-            type: Sequelize.STRING,
+            type: Sequelize.INTEGER,
             allowNull: false
         },
         type: {

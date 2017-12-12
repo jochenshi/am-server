@@ -5,16 +5,21 @@ const model = require('../models');
 const methods = require('../common/methods');
 const errorText = require('../common/error');
 
+/**
+ * 得到所有选项
+ * @param res
+ * @returns {Promise.<void>}
+ */
 const getSelectData = async (res) => {
     let temp, hcode;
     try {
         // verify whether the user existed before but is not valid now
-        let select = await model.select_list.findAll({
+        let data = await model.select_list.findAll({
             'order':[
                 ['code','ASC']
             ]
         });
-        res.send(methods.formatRespond(true, 200, '',select));
+        res.send(methods.formatRespond(true, 200, '',data));
     } catch (err) {
         code = 10003;
         flag = false;
@@ -25,6 +30,13 @@ const getSelectData = async (res) => {
 
 module.exports.getSelectData = getSelectData;
 
+/**
+ * 验证此选项类别是否存在
+ * @param code
+ * @param name
+ * @param res
+ * @returns {Promise.<boolean>}
+ */
 const verifySelectExist = async ({ code, name },res) => {
     let temp, hcode, flag = true;
     try {
@@ -61,6 +73,15 @@ const verifySelectExist = async ({ code, name },res) => {
 
 module.exports.verifySelectExist = verifySelectExist;
 
+/**
+ * 验证此选项条目是否存在
+ * @param code
+ * @param name
+ * @param value
+ * @param text
+ * @param res
+ * @returns {Promise.<boolean>}
+ */
 const verifySelecItemExist = async ({ code, name, value, text },res) => {
     let temp, hcode, flag = true;
     try {
@@ -84,17 +105,26 @@ const verifySelecItemExist = async ({ code, name, value, text },res) => {
             flag = false;
             hcode = 13000;
             temp = methods.formatRespond(false, hcode, errorText.formatError(hcode));
-            res.status(400).send(temp);
+            res && res.status(400).send(temp);
         }
     } catch (err) {
         code = 10003;
         flag = false;
         temp = methods.formatRespond(false, code, err.message + ';' + err.name);
-        res.status(400).send(temp);
+        res && res.status(400).send(temp);
     }
     return flag
 }
 
+/**
+ * 添加选项条目
+ * @param code
+ * @param name
+ * @param value
+ * @param text
+ * @param res
+ * @returns {Promise.<void>}
+ */
 const addSelect = async ({ code, name, value, text },res) => {
     let flag = await verifySelecItemExist({ code, name, value, text },res);
     if(!flag){
@@ -108,17 +138,24 @@ const addSelect = async ({ code, name, value, text },res) => {
             value : value,
             delable : true
         });
-        res.send(methods.formatRespond(true, 200));
+        res && res.send(methods.formatRespond(true, 200));
     }catch (err) {
         code = 10003;
         flag = false;
         temp = methods.formatRespond(false, code, err.message + ';' + err.name);
-        res.status(400).send(temp);
+        res && res.status(400).send(temp);
     }
 }
 
 module.exports.addSelect = addSelect;
 
+/**
+ * 删除选项
+ * @param code
+ * @param id
+ * @param res
+ * @returns {Promise.<void>}
+ */
 const deleteSelect = async ({code, id}, res) => {
     let param = { };
     if(id){
@@ -138,11 +175,20 @@ const deleteSelect = async ({code, id}, res) => {
         temp = methods.formatRespond(false, code, err.message + ';' + err.name);
         res.status(400).send(temp); 
     }
-    
 }
 
 module.exports.deleteSelect = deleteSelect;
 
+/**
+ * 更新选项
+ * @param id
+ * @param code
+ * @param name
+ * @param value
+ * @param text
+ * @param res
+ * @returns {Promise.<void>}
+ */
 const updateSelect = async ({ id, code, name, value, text },res) => {
     let flag = await verifySelecItemExist({ code, name, value, text },res);
     if(!flag){
@@ -166,6 +212,11 @@ const updateSelect = async ({ id, code, name, value, text },res) => {
 
 module.exports.updateSelect = updateSelect;
 
+/**
+ * 获取所需特别选项的公共方法
+ * @param param 特别选项的参数
+ * @returns {Promise.<Array>}
+ */
 const getSelectByParam = async (param)=>{
     let select = [];
     try {

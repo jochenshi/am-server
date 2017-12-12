@@ -4,7 +4,7 @@
 var models = require('../src/models');
 const addSelect = async ({ code, name, value, text ,delable = false, type = '' }) => {
     try{
-        await models.select_list.create({
+        let select = await models.select_list.create({
             code : code,
             name : name,
             text : text,
@@ -35,6 +35,11 @@ const datas = [
     {code : 'S0003', name : '归属对象', value: 'R&D', text: '研发部',delable: false,type: 'in'},
     {code : 'S0004', name : '机器类型', value: 'server', text: '服务器',delable: false},
     {code : 'S0004', name : '机器类型', value: 'switchboard', text: '交换机',delable: false},
+    {code : 'S0007', name : '物资状态', value: 'using', text: '使用中',delable: false,type:'normal'},
+    {code : 'S0007', name : '物资状态', value: 'idle', text: '库存中',delable: false,type:'normal'},
+    {code : 'S0007', name : '物资状态', value: 'destory', text: '不存在',delable: false,type:'normal'},
+    {code : 'S0007', name : '物资状态', value: 'fixedusing', text: '固定使用中',delable: false,type:'nomachine'},
+    {code : 'S0007', name : '物资状态', value: 'partusing', text: '部分使用中',delable: false,type:'part'},
 ];
 
 const initSelect = () => {

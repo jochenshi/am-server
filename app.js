@@ -10,6 +10,7 @@ var index = require('./routes/index');
 var am = require('./routes/asset-management');
 const user = require('./routes/user')
 var select = require('./routes/select_list');
+var machine = require('./routes/machine');
 
 var app = express();
 
@@ -31,6 +32,7 @@ app.use('/', index);
 app.use('/am/user', user);
 app.use('/am', am);
 app.use('/am/select',select);
+app.use('/am/machine',machine);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

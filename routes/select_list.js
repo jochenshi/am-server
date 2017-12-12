@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var select = require('../src/control/select_list');
 
-/* GET users listing. */
+/* GET listing. */
 router.get('/',function(req, res, next) {
 	select.getSelectData(res);
 })
