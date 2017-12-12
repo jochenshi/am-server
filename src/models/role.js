@@ -1,22 +1,27 @@
 module.exports = function (sequelize, Sequelize) {
-    const oprate_list = sequelize.define('operate_list', {
+    var role = sequelize.define('role', {
         code: {
             type: Sequelize.STRING,
             allowNull: false,
             unique: true
         },
-        value: {
+        name: {
             type: Sequelize.STRING,
             allowNull: false
         },
-        name: {
+        value: {
+            type: Sequelize.STRING,
+            allowNull: false,
+            unique: true
+        },
+        authority: {
             type: Sequelize.STRING
         },
         description: {
-            type: Sequelize.TEXT
+            type: Sequelize.STRING
         }
     },{
-        comment: '操作表'
+        comment: '角色对照表'
     });
-    return oprate_list
+    return role;
 }

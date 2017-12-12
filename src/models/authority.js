@@ -1,13 +1,9 @@
 module.exports = function (sequelize, Sequelize) {
     const authority = sequelize.define('authority',{
-        code: {
+        value: {
             type: Sequelize.STRING,
             allowNull: false,
             unique: true
-        },
-        value: {
-            type: Sequelize.STRING,
-            allowNull: false
         },
         name: {
             type: Sequelize.STRING
@@ -17,7 +13,7 @@ module.exports = function (sequelize, Sequelize) {
         }
     },
     {
-        comment: '权限表'
+        comment: '权限对照表'
     });
     return authority;
 }
