@@ -5,6 +5,11 @@ const model = require('../models');
 const methods = require('../common/methods');
 const errorText = require('../common/error');
 
+/**
+ * 得到所有选项
+ * @param res
+ * @returns {Promise.<void>}
+ */
 const getSelectData = async (res) => {
     let temp, hcode;
     try {
@@ -25,6 +30,13 @@ const getSelectData = async (res) => {
 
 module.exports.getSelectData = getSelectData;
 
+/**
+ * 验证此选项类别是否存在
+ * @param code
+ * @param name
+ * @param res
+ * @returns {Promise.<boolean>}
+ */
 const verifySelectExist = async ({ code, name },res) => {
     let temp, hcode, flag = true;
     try {
@@ -61,6 +73,15 @@ const verifySelectExist = async ({ code, name },res) => {
 
 module.exports.verifySelectExist = verifySelectExist;
 
+/**
+ * 验证此选项条目是否存在
+ * @param code
+ * @param name
+ * @param value
+ * @param text
+ * @param res
+ * @returns {Promise.<boolean>}
+ */
 const verifySelecItemExist = async ({ code, name, value, text },res) => {
     let temp, hcode, flag = true;
     try {
@@ -95,6 +116,15 @@ const verifySelecItemExist = async ({ code, name, value, text },res) => {
     return flag
 }
 
+/**
+ * 添加选项条目
+ * @param code
+ * @param name
+ * @param value
+ * @param text
+ * @param res
+ * @returns {Promise.<void>}
+ */
 const addSelect = async ({ code, name, value, text },res) => {
     let flag = await verifySelecItemExist({ code, name, value, text },res);
     if(!flag){
@@ -119,6 +149,13 @@ const addSelect = async ({ code, name, value, text },res) => {
 
 module.exports.addSelect = addSelect;
 
+/**
+ * 删除选项
+ * @param code
+ * @param id
+ * @param res
+ * @returns {Promise.<void>}
+ */
 const deleteSelect = async ({code, id}, res) => {
     let param = { };
     if(id){
@@ -142,6 +179,16 @@ const deleteSelect = async ({code, id}, res) => {
 
 module.exports.deleteSelect = deleteSelect;
 
+/**
+ * 更新选项
+ * @param id
+ * @param code
+ * @param name
+ * @param value
+ * @param text
+ * @param res
+ * @returns {Promise.<void>}
+ */
 const updateSelect = async ({ id, code, name, value, text },res) => {
     let flag = await verifySelecItemExist({ code, name, value, text },res);
     if(!flag){
@@ -165,6 +212,11 @@ const updateSelect = async ({ id, code, name, value, text },res) => {
 
 module.exports.updateSelect = updateSelect;
 
+/**
+ * 获取所需特别选项的公共方法
+ * @param param 特别选项的参数
+ * @returns {Promise.<Array>}
+ */
 const getSelectByParam = async (param)=>{
     let select = [];
     try {
