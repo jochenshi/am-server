@@ -1,9 +1,9 @@
 module.exports = function (sequelize, Sequelize) {
     var machine = sequelize.define('machine', {
         id: {
-            type: Sequelize.STRING,
+            type: Sequelize.INTEGER,
             primaryKey: true,
-            allowNull: false
+            autoIncrement: true
         },
         serialNo: {
             type: Sequelize.STRING
@@ -35,7 +35,7 @@ module.exports = function (sequelize, Sequelize) {
             type: Sequelize.STRING
         },
         useState: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.STRING,
             allowNull: false
         },
         createUser: {
