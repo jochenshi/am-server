@@ -4,6 +4,7 @@
 const model = require('../models');
 const methods = require('../common/methods');
 const errorText = require('../common/error');
+const selectCodeName = require('../common/selectCodeName');
 
 /**
  * 得到所有选项
@@ -85,20 +86,15 @@ module.exports.verifySelectExist = verifySelectExist;
 const verifySelecItemExist = async ({ code, name, value, text },res) => {
     let temp, hcode, flag = true;
     try {
-        // verify whether the user existed before but is not valid now
+        let param = { code : code , $or : [{ value: value}]};
+        if(text){
+            param['$or'].push({ text : text});
+        }
+        if(name){
+            param['name'] = name;
+        }
         let select = await model.select_list.findAll({
-            where: {
-                name: name,
-                code: code,
-                $or: [
-                    {
-                        value: value
-                    },
-                    {
-                        text: text
-                    }
-                ]
-            }
+            where: param
         });
 
         if (select.length) {
@@ -125,7 +121,7 @@ const verifySelecItemExist = async ({ code, name, value, text },res) => {
  * @param res
  * @returns {Promise.<void>}
  */
-const addSelect = async ({ code, name, value, text },res) => {
+const addSelect = async ({ code, name, value, text ,type = ''},res) => {
     let flag = await verifySelecItemExist({ code, name, value, text },res);
     if(!flag){
         return;
@@ -136,7 +132,8 @@ const addSelect = async ({ code, name, value, text },res) => {
             name : name,
             text : text,
             value : value,
-            delable : true
+            delable : true,
+            type : type
         });
         res && res.send(methods.formatRespond(true, 200));
     }catch (err) {
@@ -231,6 +228,23 @@ const getSelectByParam = async (param)=>{
 }
 
 /**
+ * 添加在新增物资信息时，新增的选项数据
+ */
+const addSelectParam = async ({code, name, value, text, type})=>{
+    text = text || value;
+    name = name || selectCodeName[code];
+    if(!name){
+        let data = await model.select_list.findOne({
+            where : {
+                code : code
+            }
+        })
+        name = data ? data['dataValues']['name'] : '';
+    }
+    await addSelect({code : code, name : name, value : value, text : text, type: type});
+}
+module.exports.addSelectParam = addSelectParam;
+/**
  * 得到机器基本信息的选择项
  * @returns {Promise.<void>}
  */
@@ -263,6 +277,7 @@ const getMachineSelect = async (res) => {
     data.brand = await getSelectByParam({
         code : 'S0006'
     });
-    res.send(methods.formatRespond(true, 200, '',data));
+    res && res.send(methods.formatRespond(true, 200, '',data));
+    return data;
 }
 module.exports.getMachineSelect = getMachineSelect;
