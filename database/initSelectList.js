@@ -46,5 +46,33 @@ const initSelect = () => {
     addSelects(datas);
 }
 
+/**
+ * test findOne
+ * @returns {Promise.<void>}
+ */
+const getOne = async ()=>{
+    let data = await models.select_list.findOne({
+        where :{
+            code : 'S0008'
+        }
+    });
+    console.log(data);
+}
+/**
+ * test count method
+ * @returns {Promise.<void>}
+ */
+const getCount = async ()=>{
+    let rdCount = await models.machine.findAndCount({
+        where : {
+            rdNumber: {
+                like: '%01%'
+            }
+        }
+    })
+    console.log(rdCount);
+}
 // initSelect();
+// getOne();
+// getCount();
 module.exports.initSelect = initSelect;
