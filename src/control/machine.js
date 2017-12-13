@@ -7,6 +7,59 @@ const errorText = require('../common/error');
 const ascription = require('./ascription');
 const selectControl = require('./select_list');
 
+const MACHINE_HEALTHSTATE_SQL = `SELECT 
+health.healthState,machine.name 
+FROM 
+machine , health 
+INNER JOIN (SELECT 
+    MAX(h.createdAt) AS c FROM health h, machine m 
+    WHERE 
+    m.id = h.relatedId AND h.relatedType = 'machine'
+    ) A on health.createdAt = A.c
+;`;
+
+`SELECT 
+machine.name, 
+IFNULL((SELECT MAX(h.createdAt) FROM health h,machine m WHERE m.id=h.relatedId),'noRecord') AS healthState
+FROM 
+health , machine
+;`
+
+`SELECT health.healthState FROM health,machine WHERE machine.id=health.relatedId ORDER BY health.createdAt LIMIT 1;
+`
+`SELECT 
+IFNULL((
+    SELECT healthState 
+    FROM health h,machine m 
+    WHERE h.createdAt = (
+        SELECT MAX(hh.createdAt) 
+        FROM health hh,machine mm 
+        WHERE hh.relatedType='machine' AND hh.relatedId=mm.id) 
+    AND m.id=h.relatedId AND h.relatedType='machine'),
+    'noRecord') 
+AS healthState , machine.name
+FROM machine;`
+
+const ALL_MACHINE_SQL = `SELECT 
+IFNULL((SELECT a.address FROM address a, machine m WHERE m.id=a.machineId AND a.type='ip'),NULL) AS ip ,
+machine.serialNo , 
+machine.name , 
+machine.rdNumber , 
+machine.fixedNumber , 
+machine.type , 
+machine.model , 
+machine.brand , 
+machine.cpu , 
+machine.createdAt , 
+machine.description , 
+user.account as account , 
+select_list.text as type_text 
+FROM machine,user,select_list 
+WHERE 
+machine.useState!='destory' AND 
+machine.createUser = user.id AND 
+machine.type = select_list.value AND select_list.code = 'S0004'
+;`
 /**
  * 查询所有机器
  * @param res

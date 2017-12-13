@@ -72,6 +72,11 @@ const getCount = async ()=>{
     })
     console.log(rdCount);
 }
+const testHealth = async ()=>{
+    await models.health.create({
+
+    });
+}
 // initSelect();
 // getOne();
 // getCount();
