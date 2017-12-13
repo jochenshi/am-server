@@ -4,6 +4,7 @@ const errorText = require('../common/error');
 const config = require('../config/config');
 
 const handleLogin = async (req, res) => {
+    console.log('login')
     let {account, password} = req.body;
     //validRequest(req, res);
     if (!account || !password) {
@@ -31,15 +32,15 @@ const checkUser = async (account, password, res) => {
             temp = methods.formatRespond(flag, code, errorText.formatError(code));
             res.status(400).send(temp);
         } else {
-            //登录时，查询到该用户是存在的,生成相关token，并将相关信息插入或更新到login信息表中;
+            //登录时，查询到该用户是存在的,生成相关token，并将相关信息插入或更新到login信息表中,只将token中的am_sig存入到数据库中;
             let now_time = new Date().getTime();
             let user_id = user[0].id;
             let user_token = generateToken(user_id, now_time);
             flag = await tokenLogin(user_id, user_token.am_sig, now_time, res);
             if (flag) {
-                res.cookie('am_user', user_token.am_user,{maxAge: 120000});
-                res.cookie('am_sig', user_token.am_sig, {maxAge: 120000});
-                res.cookie('am_val', user_token.am_val, {maxAge: 120000})
+                res.cookie('am_user', user_token.am_user,{maxAge: 60 * 60 * 1000});
+                res.cookie('am_sig', user_token.am_sig, {maxAge: 60 * 60 * 1000});
+                res.cookie('am_val', user_token.am_val, {maxAge: 60 * 60 * 1000})
                 res.send({text: 'login success'});
             }
             //console.log(user)
@@ -87,7 +88,7 @@ const generateToken = (userId, time) => {
     return token_obj;
 };
 
-//验证request里面的token，并对其进行解密等相关操作
+//验证request里面的token，并对其进行解密等相关操作，flag表示这个token是否有效，true表示token未被更改
 const handleToken = (token) => {
     let {am_user, am_sig, am_val} = token, de_obj = {}, flag = true;
     de_obj.am_user = methods.decryptFun(am_user, config.cookie_encrypt);
@@ -103,6 +104,7 @@ const handleToken = (token) => {
 const validLoginToken = async (req, res, cookie) => {
     let flag = true, code, temp, data_token, userId;
     try {
+        //解密token
         let get_token = handleToken(cookie);
         if (get_token.flag) {
             userId = get_token.am_user;
@@ -182,7 +184,7 @@ const validRequest = async (req, res) => {
             //验证token有效后，需要更新token的有效期,此处生成了新的token，但是只是更新了token当中的am_val字段
             let new_cookie = generateToken(valid_res.userId, new Date().getTime());
             new_cookie.am_sig = valid_res.token;
-            res.cookie(new_cookie, {maxAge: 5000}).send({text: 'login success'})
+            res.cookie(new_cookie, {maxAge: 60 * 60 * 1000})
         }
     };
     return flag;
@@ -193,4 +195,4 @@ const getUserId = (req, res) => {
     let {am_user} = req.cookies;
     return am_user ? am_user : 'id_' + Buffer.from('adminuser').toString('hex');
 }
-module.exports = {handleLogin, checkUser, getUserId};
+module.exports = {handleLogin, checkUser, getUserId, validRequest};
