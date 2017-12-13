@@ -14,14 +14,14 @@ const roleData = [
         name: '超级管理员',
         value: 'superuser',
         authority: '',
-        description: ''
+        description: '超级管理员拥有所有权限'
     },
     {
         code: 'R0002',
         name: '管理员',
         value: 'adminuser',
         authority: '',
-        description: '',
+        description: '管理员拥有除了对管理员进行的相关操作的所有权限',
     },
     {
         code: 'R0003',

@@ -9,6 +9,8 @@ var index = require('./routes/index');
 //var users = require('./routes/users');
 var am = require('./routes/asset-management');
 const user = require('./routes/user')
+const login = require('./src/control/login')
+
 var select = require('./routes/select_list');
 var machine = require('./routes/machine');
 
@@ -27,6 +29,22 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //routes use area
+//拦截所有请求，并对请求进行验证
+app.use(async (req, res, next) => {
+  const no_valid = ['/am/user/login'];
+  if (no_valid.indexOf(req.url) > -1) {
+    console.log('login url')
+    next();
+  } else {
+    console.log('before valid')
+    let valid_flag = await login.validRequest(req, res);
+    if (valid_flag) {
+      console.log('after valid')
+      next();
+    }
+    //res.status(400).send({message: 'stop it'})
+  }  
+})
 app.use('/', index);
 //app.use('/users', users);
 app.use('/am/user', user);
