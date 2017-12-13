@@ -100,10 +100,10 @@ const handleToken = (token) => {
 };
 
 //根据解析出来的token，去查询登录token记录表，来验证是否存在以及是否有效
-const validLoginToken = async (req, res) => {
+const validLoginToken = async (req, res, cookie) => {
     let flag = true, code, temp, data_token, userId;
     try {
-        let get_token = handleToken(req, res);
+        let get_token = handleToken(cookie);
         if (get_token.flag) {
             userId = get_token.am_user;
             let login_record = await model.login.findAll({
@@ -177,7 +177,7 @@ const validRequest = async (req, res) => {
         res.status(401).send(temp)
     } else {
         //请求存在cookie,且token需要的三个值都存在
-        let valid_res = await validLoginToken(req, res);
+        let valid_res = await validLoginToken(req, res, cookie_get);
         if (valid_res.flag) {
             //验证token有效后，需要更新token的有效期,此处生成了新的token，但是只是更新了token当中的am_val字段
             let new_cookie = generateToken(valid_res.userId, new Date().getTime());
@@ -188,4 +188,9 @@ const validRequest = async (req, res) => {
     return flag;
 };
 
-module.exports = {handleLogin, checkUser};
+//根据请求的相关信息，获取当前用户ID的操作
+const getUserId = (req, res) => {
+    let {am_user} = req.cookies;
+    return am_user;
+}
+module.exports = {handleLogin, checkUser, getUserId};
