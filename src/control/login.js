@@ -193,6 +193,6 @@ const validRequest = async (req, res) => {
 //根据请求的相关信息，获取当前用户ID的操作
 const getUserId = (req, res) => {
     let {am_user} = req.cookies;
-    return am_user ? am_user : 'id_' + Buffer.from('adminuser').toString('hex');
+    return am_user;
 }
 module.exports = {handleLogin, checkUser, getUserId, validRequest};

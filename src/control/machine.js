@@ -18,7 +18,7 @@ INNER JOIN (SELECT
     ) A on health.createdAt = A.c
 ;`;
 
-`SELECT 
+/*`SELECT
 machine.name, 
 IFNULL((SELECT MAX(h.createdAt) FROM health h,machine m WHERE m.id=h.relatedId),'noRecord') AS healthState
 FROM 
@@ -38,9 +38,19 @@ IFNULL((
     AND m.id=h.relatedId AND h.relatedType='machine'),
     'noRecord') 
 AS healthState , machine.name
-FROM machine;`
+FROM machine;`*/
 
 const ALL_MACHINE_SQL = `SELECT 
+IFNULL((
+    SELECT healthState 
+    FROM health h,machine m 
+    WHERE h.createdAt = (
+        SELECT MAX(hh.createdAt) 
+        FROM health hh,machine mm 
+        WHERE hh.relatedType='machine' AND hh.relatedId=mm.id) 
+    AND m.id=h.relatedId AND h.relatedType='machine'),
+    'noRecord') 
+AS healthState , 
 IFNULL((SELECT a.address FROM address a, machine m WHERE m.id=a.machineId AND a.type='ip'),NULL) AS ip ,
 machine.serialNo , 
 machine.name , 
@@ -69,11 +79,12 @@ const getMachineData = async (res) => {
     let temp;
     try {
         // verify whether the user existed before but is not valid now
-        let data = await model.machine.findAll({
+        /*let data = await model.machine.findAll({
             'order':[
                 ['name','ASC']
             ]
-        });
+        });*/
+        let data = await model.sequelize.query(ALL_MACHINE_SQL);
         res.send(methods.formatRespond(true, 200, '',data));
     } catch (err) {
         code = 10003;
