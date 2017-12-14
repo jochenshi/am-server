@@ -6,6 +6,7 @@ const methods = require('../common/methods');
 const errorText = require('../common/error');
 const ascription = require('./ascription');
 const selectControl = require('./select_list');
+const login = require('./login');
 
 const MACHINE_HEALTHSTATE_SQL = `SELECT 
 health.healthState,machine.name 
@@ -60,15 +61,19 @@ machine.type ,
 machine.model , 
 machine.brand , 
 machine.cpu , 
+machine.useState , 
 machine.createdAt , 
+machine.createUser , 
 machine.description , 
-user.account as account , 
-select_list.text as type_text 
+user.account AS account , 
+select_list.text AS typeText ,
+select_list.text AS useStateText ,
 FROM machine,user,select_list 
 WHERE 
 machine.useState!='destory' AND 
 machine.createUser = user.id AND 
-machine.type = select_list.value AND select_list.code = 'S0004'
+machine.type = select_list.value AND select_list.code = 'S0004' AND 
+machine.useState = select_list.value AND select_list.code = 'S0007'
 ;`
 /**
  * 查询所有机器
@@ -85,7 +90,7 @@ const getMachineData = async (res) => {
             ]
         });*/
         let data = await model.sequelize.query(ALL_MACHINE_SQL);
-        res.send(methods.formatRespond(true, 200, '',data));
+        res.send(methods.formatRespond(true, 200, '',data[0]));
     } catch (err) {
         code = 10003;
         flag = false;
@@ -144,8 +149,10 @@ const getAddMachineParam = async (res)=>{
     let rdCount = await model.machine.findAndCount({
         where : {
             rdNumber: {
-                like: '%RD%'
-            }
+                like: '%RD%',
+                nlike: '%RDB%'
+            },
+
         }
     });
     data.rdCount = rdCount.count;
@@ -175,6 +182,7 @@ const addMachine = async (param,res) => {
         return;
     }
     try{
+        let createrUser = login.getUserId(res);
         let machineData = await model.machine.create({
             serialNo : param.serialNo,
             name : param.name,
@@ -184,13 +192,15 @@ const addMachine = async (param,res) => {
             model : param.model,
             brand : param.brand,
             location : param.location,
+            cpu : param.cpu,
             useState : 'idle',
-            createUser: 'id_61646d696e75736572',
+            createUser: createrUser,
             description: param.machineDesc
         });
         machineData = machineData.dataValues;
         param['relatedId'] = machineData.id;
         param['relatedType'] = 'machine';
+        param['operateUser'] = createrUser;
         if(ascription.addAscription(param)){
             res && res.send(methods.formatRespond(true, 200));
             await addMachineSelect(param);
@@ -223,6 +233,7 @@ const addMachineSelect = (param)=>{
     selectControl.addSelectParam({code : 'S0003',value: param.targetObject,type: 'in'});
     selectControl.addSelectParam({code : 'S0005',value: param.model});
     selectControl.addSelectParam({code : 'S0006',value: param.brand});
+    selectControl.addSelectParam({code : 'S0009',value: param.cpu});
 }
 
 /**

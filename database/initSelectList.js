@@ -106,8 +106,35 @@ machine.type = select_list.value AND select_list.code = 'S0004'
     let result = await models.sequelize.query(ALL_MACHINE_SQL);
     console.log(result);
 }
+
+const getAddMachineParam = async ()=>{
+    let data = {
+        rdCount : 0,
+        rdbCount : 0
+    }
+    let rdCount = await models.machine.findAndCount({
+        where : {
+            rdNumber: {
+                like: '%RD%',
+                nlike: '%RDB%'
+            }
+        }
+    });
+    console.log(rdCount);
+    data.rdCount = rdCount.count;
+    let rdbCount = await models.machine.findAndCount({
+        where : {
+            rdNumber: {
+                like: '%RDB%'
+            }
+        }
+    });
+    data.rdbCount = rdbCount.count;
+    return data;
+}
 // initSelect();
 // getOne();
 // getCount();
 // testMachine();
+// getAddMachineParam();
 module.exports.initSelect = initSelect;

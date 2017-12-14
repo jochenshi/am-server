@@ -55,6 +55,12 @@ const authorityData = [
         name: '选项设置',
         description: ''
     },
+    //机器相关权限
+    {
+        value: 'addMachine',
+        name: '添加机器',
+        description: ''
+    },
     //配件的相关权限
     {
         value: 'addNormalEquip',
