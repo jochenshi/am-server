@@ -55,8 +55,9 @@ const encryptFun = (data, password) => {
 
 const decryptFun = (data, password) => {
     const decipher = crypto.createDecipher('aes192', password);
-    let decrypted = decipher.update(data,toString(), 'hex', 'utf8');
-    decrypted += decrypted.final('utf8');
+    //decipher.setAutoPadding(false);
+    let decrypted = decipher.update(data, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
     return decrypted;
 }
 

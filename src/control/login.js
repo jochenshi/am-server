@@ -91,12 +91,16 @@ const generateToken = (userId, time) => {
 //验证request里面的token，并对其进行解密等相关操作，flag表示这个token是否有效，true表示token未被更改
 const handleToken = (token) => {
     let {am_user, am_sig, am_val} = token, de_obj = {}, flag = true;
-    de_obj.am_user = methods.decryptFun(am_user, config.cookie_encrypt);
-    let de_sig = methods.decryptFun(am_sig, config.cookie_encrypt).split('&');
-    de_obj.am_val = Buffer.from(am_val, 'base64').toString();
-    if ((de_obj.am_user !== de_sig[1]) || (de_sig[0] !== de_obj.am_val)) {
+    try {
+        de_obj.am_user = methods.decryptFun(am_user, config.cookie_encrypt);
+        let de_sig = methods.decryptFun(am_sig, config.cookie_encrypt).split('&');
+        de_obj.am_val = Buffer.from(am_val, 'base64').toString();
+        if ((de_obj.am_user !== de_sig[1]) || (de_sig[0] !== de_obj.am_val)) {
+            flag = false;
+        };
+    } catch (err) {
         flag = false;
-    };
+    }
     return {flag: flag, data: de_obj};
 };
 
@@ -107,15 +111,15 @@ const validLoginToken = async (req, res, cookie) => {
         //解密token
         let get_token = handleToken(cookie);
         if (get_token.flag) {
-            userId = get_token.am_user;
+            userId = get_token.data.am_user;
             let login_record = await model.login.findAll({
                 where: {
-                    userId: get_token.am_user
+                    userId: userId
                 }
             });
             if (login_record.length) {
-                let data_token = login_record[0].token;
-                let result = await compareToken(data_token, req.cookie.am_sig);
+                data_token = login_record[0];
+                let result = await compareToken(data_token, req.cookies.am_sig);
                 let {flag, code} = result;
             } else {
                 flag = false;
@@ -135,7 +139,7 @@ const validLoginToken = async (req, res, cookie) => {
         temp = methods.formatRespond(false, code, err.message + ';' + err.name);
         res.status(400).send(temp);
     };
-    return {flag: flag, token: data_token, userId: userId};
+    return {flag: flag, token: data_token.token || '', userId: userId};
 };
 
 //比较接收到的token信息以及查询到的token的信息
@@ -145,7 +149,7 @@ const compareToken = async (sqlData, reqToken) => {
         //两个token是一样的
         if (sqlData.token == reqToken) {
             let now_time = new Date().getTime();
-            if (now_time - sqlData.updateTime > 60 * 60 * 1000) {
+            if (now_time - new Date(sqlData.updateTime).getTime() > 60 * 60 * 1000) {
                 //token存在但是上次更新时间距今已经超过1小时
                 flag = false;
                 code = 10007;
@@ -169,7 +173,7 @@ const compareToken = async (sqlData, reqToken) => {
 
 //验证用户的请求，验证此时用户是否是登陆状态（，以及当前用户是否有权限进行相关操作）
 const validRequest = async (req, res) => {
-    let cookie_get = req.cookie || {}, flag = true, code, temp;
+    let cookie_get = req.cookies || {}, flag = true, code, temp;
     let {am_user, am_sig, am_val} = cookie_get;
     console.log('cookie',cookie_get);
     if (!am_user || !am_sig || !am_val) {
