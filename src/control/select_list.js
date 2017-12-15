@@ -256,6 +256,7 @@ const getMachineSelect = async (res) => {
     data.type = [];
     data.model = [];
     data.brand = [];
+    data.cpu = [];
     data.inType = await getSelectByParam({
         code : 'S0001',
         type : 'in'
@@ -276,6 +277,9 @@ const getMachineSelect = async (res) => {
     });
     data.brand = await getSelectByParam({
         code : 'S0006'
+    });
+    data.cpu = await getSelectByParam({
+        code : 'S0009'
     });
     res && res.send(methods.formatRespond(true, 200, '',data));
     return data;

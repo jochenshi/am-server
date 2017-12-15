@@ -72,7 +72,69 @@ const getCount = async ()=>{
     })
     console.log(rdCount);
 }
+const testMachine = async ()=>{
+    const ALL_MACHINE_SQL = `SELECT 
+IFNULL((
+    SELECT healthState 
+    FROM health h,machine m 
+    WHERE h.createdAt = (
+        SELECT MAX(hh.createdAt) 
+        FROM health hh,machine mm 
+        WHERE hh.relatedType='machine' AND hh.relatedId=mm.id) 
+    AND m.id=h.relatedId AND h.relatedType='machine'),
+    'noRecord') 
+AS healthState , 
+IFNULL((SELECT a.address FROM address a, machine m WHERE m.id=a.machineId AND a.type='ip'),NULL) AS ip ,
+machine.serialNo , 
+machine.name , 
+machine.rdNumber , 
+machine.fixedNumber , 
+machine.type , 
+machine.model , 
+machine.brand , 
+machine.cpu , 
+machine.createdAt , 
+machine.description , 
+user.account as account , 
+select_list.text as type_text 
+FROM machine,user,select_list 
+WHERE 
+machine.useState!='destory' AND 
+machine.createUser = user.id AND 
+machine.type = select_list.value AND select_list.code = 'S0004'
+;`
+    let result = await models.sequelize.query(ALL_MACHINE_SQL);
+    console.log(result);
+}
+
+const getAddMachineParam = async ()=>{
+    let data = {
+        rdCount : 0,
+        rdbCount : 0
+    }
+    let rdCount = await models.machine.findAndCount({
+        where : {
+            rdNumber: {
+                like: '%RD%',
+                nlike: '%RDB%'
+            }
+        }
+    });
+    console.log(rdCount);
+    data.rdCount = rdCount.count;
+    let rdbCount = await models.machine.findAndCount({
+        where : {
+            rdNumber: {
+                like: '%RDB%'
+            }
+        }
+    });
+    data.rdbCount = rdbCount.count;
+    return data;
+}
 // initSelect();
 // getOne();
 // getCount();
+// testMachine();
+// getAddMachineParam();
 module.exports.initSelect = initSelect;
