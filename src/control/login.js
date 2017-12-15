@@ -3,6 +3,7 @@ const methods = require('../common/methods');
 const errorText = require('../common/error');
 const config = require('../config/config');
 
+// 处理登录请求 /login
 const handleLogin = async (req, res) => {
     console.log('login')
     let {account, password} = req.body;
@@ -15,6 +16,19 @@ const handleLogin = async (req, res) => {
         await checkUser(account, password, res);
     }
 };
+
+//获取当前用户具备的权限
+const getUserAuthority = (req, res) => {
+    try {
+        let userId = getUserId(req, res);
+        
+    } catch (err) {
+        code = 10003;
+        flag = false;
+        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        res.status(400).send(temp);
+    }
+}
 
 // 验证账号，密码是否有效
 const checkUser = async (account, password, res) => {
@@ -188,7 +202,9 @@ const validRequest = async (req, res) => {
             //验证token有效后，需要更新token的有效期,此处生成了新的token，但是只是更新了token当中的am_val字段
             let new_cookie = generateToken(valid_res.userId, new Date().getTime());
             new_cookie.am_sig = valid_res.token;
-            res.cookie(new_cookie, {maxAge: 60 * 60 * 1000})
+            res.cookie('am_user', new_cookie.am_user,{maxAge: 60 * 60 * 1000});
+            res.cookie('am_sig', new_cookie.am_sig, {maxAge: 60 * 60 * 1000});
+            res.cookie('am_val', new_cookie.am_val, {maxAge: 60 * 60 * 1000});
         }
     };
     return flag;
