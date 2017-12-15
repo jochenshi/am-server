@@ -29,8 +29,6 @@ const getSelectData = async (res) => {
     }
 }
 
-module.exports.getSelectData = getSelectData;
-
 /**
  * 验证此选项类别是否存在
  * @param code
@@ -71,8 +69,6 @@ const verifySelectExist = async ({ code, name },res) => {
     }
     return flag
 }
-
-module.exports.verifySelectExist = verifySelectExist;
 
 /**
  * 验证此选项条目是否存在
@@ -144,8 +140,6 @@ const addSelect = async ({ code, name, value, text ,type = ''},res) => {
     }
 }
 
-module.exports.addSelect = addSelect;
-
 /**
  * 删除选项
  * @param code
@@ -173,8 +167,6 @@ const deleteSelect = async ({code, id}, res) => {
         res.status(400).send(temp); 
     }
 }
-
-module.exports.deleteSelect = deleteSelect;
 
 /**
  * 更新选项
@@ -206,8 +198,6 @@ const updateSelect = async ({ id, code, name, value, text },res) => {
         res.status(400).send(temp);
     }
 }
-
-module.exports.updateSelect = updateSelect;
 
 /**
  * 获取所需特别选项的公共方法
@@ -243,7 +233,6 @@ const addSelectParam = async ({code, name, value, text, type})=>{
     }
     await addSelect({code : code, name : name, value : value, text : text, type: type});
 }
-module.exports.addSelectParam = addSelectParam;
 /**
  * 得到机器基本信息的选择项
  * @returns {Promise.<void>}
@@ -280,4 +269,7 @@ const getMachineSelect = async (res) => {
     res && res.send(methods.formatRespond(true, 200, '',data));
     return data;
 }
-module.exports.getMachineSelect = getMachineSelect;
+
+module.exports = {
+    getSelectData, verifySelectExist, addSelect, deleteSelect, updateSelect, addSelectParam, getMachineSelect
+}
