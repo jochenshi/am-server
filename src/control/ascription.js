@@ -24,4 +24,4 @@ const addAscription = async (param) => {
     }
 }
 
-module.exports.addAscription = addAscription;
+module.exports = {addAscription}

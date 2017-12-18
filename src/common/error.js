@@ -34,6 +34,10 @@ const formatError = (code) => {
         case 10007:
             txt = '用户登录无效，请重新登录';
             break;
+        //配件模块的错误信息
+        case 12000:
+            txt = '';
+            break;
         /**
          * 选项的报错文本
          */

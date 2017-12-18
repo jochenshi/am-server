@@ -96,14 +96,13 @@ const getMachineData = async (res) => {
     }
 }
 
-module.exports.getMachineData = getMachineData;
 /**
  * 验证机器是否重复
  * @param param
  * @param res
  * @returns {Promise.<boolean>}
  */
-verifyMachineExist = async(param,res)=>{
+const verifyMachineExist = async(param,res)=>{
     let temp, hcode, flag = true;
     try {
         // verify whether the user existed before but is not valid now
@@ -165,8 +164,6 @@ const getAddMachineParam = async (res)=>{
     return data;
 }
 
-module.exports.getAddMachineParam = getAddMachineParam;
-
 /**
  * 添加机器
  * @param param
@@ -220,8 +217,6 @@ const addMachine = async (param,res) => {
     return flag;
 }
 
-module.exports.addMachine = addMachine;
-
 /**
  * 添加机器相关的新增的选项信息
  */
@@ -254,4 +249,6 @@ const deleteMachine = async (id) => {
     return flag;
 }
 
-module.exports.deleteMachine = deleteMachine;
+module.exports = {
+    getMachineData, getAddMachineParam, addMachine, deleteMachine
+}

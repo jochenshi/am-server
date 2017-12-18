@@ -40,6 +40,12 @@ const datas = [
     {code : 'S0007', name : '物资状态', value: 'destory', text: '不存在',delable: false,type:'normal'},
     {code : 'S0007', name : '物资状态', value: 'fixedusing', text: '固定使用中',delable: false,type:'nomachine'},
     {code : 'S0007', name : '物资状态', value: 'partusing', text: '部分使用中',delable: false,type:'part'},
+    {code : 'S0008', name: '普通配件类型', value: 'disk', text : '硬盘', delable: false, type: 'part'},
+    {code : 'S0008', name: '普通配件类型', value: 'netcard', text : '网卡', delable: false, type: 'part'},
+    {code : 'S0008', name: '普通配件类型', value: 'memory', text : '内存', delable: false, type: 'part'},
+    {code : 'S0011', name : '配件归属类型', value: 'buyin', text: '购入', delable: false, type: 'in'},
+    {code : 'S0011', name : '配件归属类型', value: 'borrow', text: '借入', delable: false, type: 'in'},
+    {code : 'S0011', name : '配件归属类型', value: 'backin', text: '还入', delable: false, type: 'in'}
 ];
 
 const initSelect = () => {
