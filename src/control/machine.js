@@ -40,14 +40,14 @@ IFNULL((
 AS healthState , machine.name
 FROM machine;`*/
 
-const ALL_MACHINE_SQL = `SELECT 
+const ALL_MACHINE_SQL = `
+SELECT 
 IFNULL((
     SELECT healthState 
     FROM health h
-    WHERE h.createdAt = (
-        SELECT MAX(h.createdAt)
-        WHERE h.relatedType='machine' AND h.relatedId=machine.id)
-    AND machine.id=h.relatedId AND h.relatedType='machine'),
+    WHERE machine.id=h.relatedId AND h.relatedType='machine' 
+    ORDER BY createdAt ASC limit 1
+    ),
     'noRecord') 
 AS healthState , 
 IFNULL((SELECT a.address FROM address a WHERE machine.id=a.machineId AND a.type='ip'),NULL) AS ip ,
@@ -71,7 +71,34 @@ FROM machine,user
 WHERE 
 machine.useState!='destory' AND 
 machine.createUser = user.id
-;`
+;
+`;
+
+const GET_MACHINE_BY_ID_SQL = `
+SELECT 
+machine.id , 
+machine.serialNo ,
+machine.name , 
+machine.rdNumber , 
+machine.fixedNumber ,
+machine.type ,
+machine.model ,
+machine.brand ,
+machine.location ,
+machine.cpu ,
+machine.useState ,
+(SELECT ss.text FROM select_list ss WHERE machine.useState=ss.value AND ss.code='S0007') AS useStateText ,
+machine.createUser ,
+machine.description AS machineDesc,
+machine.createdAt ,
+user.account
+FROM 
+machine,user 
+WHERE 
+machine.createUser=user.id AND 
+machine.id=?
+;
+`;
 /**
  * 查询所有机器
  * @param res
@@ -94,6 +121,40 @@ const getMachineData = async (res) => {
         temp = methods.formatRespond(false, code, err.message + ';' + err.name);
         res.status(400).send(temp);
     }
+}
+
+const getMachineDataById = async (id,res) =>{
+    let temp;
+    try {
+        let data = await model.sequelize.query(GET_MACHINE_BY_ID_SQL,{
+            replacements : [id]
+        });
+        data = data[0].length ? data[0][0] : {};
+        let ascription = await model.ascription.findOne({
+            where : {
+                relatedId : id,
+                relatedType : 'machine'
+            },
+            order : [
+                ['createdAt', 'ASC']
+            ],
+            limit : 1
+        });
+        ascription = ascription['dataValues'];
+        data['ascriptionId'] = ascription['id'];
+        data['outInType'] = ascription['outInType'];
+        data['occurTime'] = ascription['occurTime'];
+        data['originObject'] = ascription['originObject'];
+        data['targetObject'] = ascription['targetObject'];
+        data['ascriptionDesc'] = ascription['description'];
+        res.send(methods.formatRespond(true, 200, '',data));
+    } catch (err) {
+        code = 10003;
+        flag = false;
+        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        res.status(400).send(temp);
+    }
+
 }
 
 /**
@@ -250,5 +311,5 @@ const deleteMachine = async (id) => {
 }
 
 module.exports = {
-    getMachineData, getAddMachineParam, addMachine, deleteMachine
+    getMachineData, getAddMachineParam, addMachine, deleteMachine, getMachineDataById
 }

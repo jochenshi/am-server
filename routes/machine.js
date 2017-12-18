@@ -10,6 +10,10 @@ router.get('/',function(req, res, next) {
     machine.getMachineData(res);
 })
 
+router.get('/:id',function(req, res, next) {
+    machine.getMachineDataById(req.params.id, res);
+})
+
 /* GET add param. */
 router.get('/rdNumber',function(req, res, next) {
     machine.getAddMachineParam(res);
