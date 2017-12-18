@@ -274,6 +274,38 @@ const getMachineSelect = async (res) => {
     return data;
 }
 
+//获取普通配件涉及到的相关选项的可选值
+const getNormalEquipSelect = async (res) => {
+    let data = {
+        type: [],
+        model: [],
+        brand: []
+    }, code, flag,temp;
+    try {
+        data.type = await getSelectByParam({
+            code: 'S0008'
+        });
+        data.model = await getSelectByParam({
+            code: 'S0010'
+        });
+        data.brand = await getSelectByParam({
+            code: 'S0011'
+        });
+        data.origin = await getSelectByParam({
+            code: 'S0012'
+        })
+        flag = true;
+        res.send(methods.formatRespond(flag, 200,'',data));
+    } catch (err) {
+        code = 10003;
+        flag = false;
+        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        res.status(400).send(temp);
+    }
+    return data;
+}
+
 module.exports = {
-    getSelectData, verifySelectExist, addSelect, deleteSelect, updateSelect, addSelectParam, getMachineSelect
+    getSelectData, verifySelectExist, addSelect, deleteSelect, updateSelect, addSelectParam, getMachineSelect,
+    getNormalEquipSelect
 }

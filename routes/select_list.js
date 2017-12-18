@@ -47,4 +47,9 @@ router.put('/', function(req, res, next) {
 router.get('/machine',function(req, res, next){
    select.getMachineSelect(res);
 });
+
+// 获取普通配件的相关选项
+router.get('/normalEquip', function (req, res, next) {
+    select.getNormalEquipSelect(res);
+})
 module.exports = router;

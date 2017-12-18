@@ -109,7 +109,8 @@ const handleToken = (token) => {
         de_obj.am_user = methods.decryptFun(am_user, config.cookie_encrypt);
         let de_sig = methods.decryptFun(am_sig, config.cookie_encrypt).split('&');
         de_obj.am_val = Buffer.from(am_val, 'base64').toString();
-        if ((de_obj.am_user !== de_sig[1]) || (de_sig[0] !== de_obj.am_val)) {
+        //|| (de_sig[0] !== de_obj.am_val) 暂时不对时间验证，由数据库验证
+        if ((de_obj.am_user !== de_sig[1])) {
             flag = false;
         };
     } catch (err) {
@@ -120,7 +121,7 @@ const handleToken = (token) => {
 
 //根据解析出来的token，去查询登录token记录表，来验证是否存在以及是否有效
 const validLoginToken = async (req, res, cookie) => {
-    let flag = true, code, temp, data_token, userId;
+    let flag = true, code, temp, data_token, userId, res_token;
     try {
         //解密token
         let get_token = handleToken(cookie);
@@ -145,7 +146,7 @@ const validLoginToken = async (req, res, cookie) => {
         }
         if (!flag) {
             temp = methods.formatRespond(flag, code, errorText.formatError(code));
-            res.status(100).send(temp);
+            res.status(400).send(temp);
         }
     } catch (err) {
         code = 10003;
@@ -153,7 +154,10 @@ const validLoginToken = async (req, res, cookie) => {
         temp = methods.formatRespond(false, code, err.message + ';' + err.name);
         res.status(400).send(temp);
     };
-    return {flag: flag, token: data_token.token || '', userId: userId};
+    if (data_token && data_token.token) {
+        res_token = data_token.token;
+    }
+    return {flag: flag, token: res_token, userId: userId};
 };
 
 //比较接收到的token信息以及查询到的token的信息
@@ -205,6 +209,9 @@ const validRequest = async (req, res) => {
             res.cookie('am_user', new_cookie.am_user,{maxAge: 60 * 60 * 1000});
             res.cookie('am_sig', new_cookie.am_sig, {maxAge: 60 * 60 * 1000});
             res.cookie('am_val', new_cookie.am_val, {maxAge: 60 * 60 * 1000});
+        } else {
+            //验证cookie无效之后需要将标识置为false
+            flag = false;
         }
     };
     return flag;

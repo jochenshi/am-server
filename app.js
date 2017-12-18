@@ -13,6 +13,7 @@ const login = require('./src/control/login')
 
 var select = require('./routes/select_list');
 var machine = require('./routes/machine');
+const equip = require('./routes/equip');
 
 var app = express();
 
@@ -40,7 +41,7 @@ app.use(async (req, res, next) => {
     let valid_flag = await login.validRequest(req, res);
     if (valid_flag) {
       console.log('after valid')
-        res['cookies'] = req.cookies;
+      res['cookies'] = req.cookies;
       next();
     }
     //res.status(400).send({message: 'stop it'})
@@ -52,6 +53,7 @@ app.use('/am/user', user);
 app.use('/am', am);
 app.use('/am/select',select);
 app.use('/am/machine',machine);
+app.use('/am/equip', equip);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
