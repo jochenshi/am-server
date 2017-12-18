@@ -31,12 +31,11 @@ health , machine
 `SELECT 
 IFNULL((
     SELECT healthState 
-    FROM health h,machine m 
+    FROM health h
     WHERE h.createdAt = (
-        SELECT MAX(hh.createdAt) 
-        FROM health hh,machine mm 
-        WHERE hh.relatedType='machine' AND hh.relatedId=mm.id) 
-    AND m.id=h.relatedId AND h.relatedType='machine'),
+        SELECT MAX(h.createdAt)
+        WHERE h.relatedType='machine' AND h.relatedId=machine.id)
+    AND machine.id=h.relatedId AND h.relatedType='machine'),
     'noRecord') 
 AS healthState , machine.name
 FROM machine;`*/
@@ -44,15 +43,15 @@ FROM machine;`*/
 const ALL_MACHINE_SQL = `SELECT 
 IFNULL((
     SELECT healthState 
-    FROM health h,machine m 
+    FROM health h
     WHERE h.createdAt = (
-        SELECT MAX(hh.createdAt) 
-        FROM health hh,machine mm 
-        WHERE hh.relatedType='machine' AND hh.relatedId=mm.id) 
-    AND m.id=h.relatedId AND h.relatedType='machine'),
+        SELECT MAX(h.createdAt)
+        WHERE h.relatedType='machine' AND h.relatedId=machine.id)
+    AND machine.id=h.relatedId AND h.relatedType='machine'),
     'noRecord') 
 AS healthState , 
-IFNULL((SELECT a.address FROM address a, machine m WHERE m.id=a.machineId AND a.type='ip'),NULL) AS ip ,
+IFNULL((SELECT a.address FROM address a WHERE machine.id=a.machineId AND a.type='ip'),NULL) AS ip ,
+machine.id , 
 machine.serialNo , 
 machine.name , 
 machine.rdNumber , 
@@ -66,14 +65,12 @@ machine.createdAt ,
 machine.createUser , 
 machine.description , 
 user.account AS account , 
-select_list.text AS typeText ,
-select_list.text AS useStateText 
-FROM machine,user,select_list 
+(SELECT s.text FROM select_list s WHERE machine.type=s.value AND s.code='S0004') AS typeText ,
+(SELECT ss.text FROM select_list ss WHERE machine.useState=ss.value AND ss.code='S0007') AS useStateText
+FROM machine,user 
 WHERE 
 machine.useState!='destory' AND 
-machine.createUser = user.id AND 
-machine.type = select_list.value AND select_list.code = 'S0004' AND 
-machine.useState = select_list.value AND select_list.code = 'S0007'
+machine.createUser = user.id
 ;`
 /**
  * 查询所有机器
