@@ -105,7 +105,7 @@ const getMachineData = async (res) => {
  * @param res
  * @returns {Promise.<boolean>}
  */
-verifyMachineExist = async(param,res)=>{
+const verifyMachineExist = async(param,res)=>{
     let temp, hcode, flag = true;
     try {
         // verify whether the user existed before but is not valid now
