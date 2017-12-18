@@ -67,7 +67,7 @@ machine.createUser ,
 machine.description , 
 user.account AS account , 
 select_list.text AS typeText ,
-select_list.text AS useStateText ,
+select_list.text AS useStateText 
 FROM machine,user,select_list 
 WHERE 
 machine.useState!='destory' AND 
