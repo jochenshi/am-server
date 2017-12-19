@@ -61,6 +61,11 @@ const authorityData = [
         name: '添加机器',
         description: ''
     },
+    {
+        value: 'modifyMachine',
+        name: '修改机器',
+        description: ''
+    },
     //配件的相关权限
     {
         value: 'addNormalEquip',
