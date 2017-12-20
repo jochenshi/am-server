@@ -221,5 +221,5 @@ const validRequest = async (req, res) => {
 const getUserId = (req, res) => {
     let {am_user} = handleToken(req.cookies).data;
     return am_user;
-}
+};
 module.exports = {handleLogin, checkUser, getUserId, validRequest};
