@@ -36,7 +36,7 @@ const formatError = (code) => {
             break;
         //配件模块的错误信息
         case 12000:
-            txt = '';
+            txt = '配件S/N号或名称已经存在';
             break;
         /**
          * 选项的报错文本
