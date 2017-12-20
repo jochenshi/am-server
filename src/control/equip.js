@@ -13,7 +13,7 @@ const handleNormalAdd = (req, res) => {
 }
 
 const verifyNormal = async (req, res) => {
-    let {serialNo, name, type, model, brand, size, unit, description} = req.body || {},
+    let {sourceType, serialNo, name, type, model, brand, size, unit, description} = req.body || {},
     flag = true, code, temp;
     try {
         if (!serialNo || !name || !type || !model || !brand) {
@@ -29,6 +29,9 @@ const verifyNormal = async (req, res) => {
             });
             if (findFit.length) {
                 flag = false;
+                code = 12000;
+                temp = methods.formatRespond(flag, code, errorText.formatError(code));
+                res.status(400).send(temp);
             } else {
                 //未检测到序列号或者名称重复的记录
             }
@@ -38,8 +41,12 @@ const verifyNormal = async (req, res) => {
     }
 }
 
-const executeNormalAdd = (req, res) => {
-    
+const executeNormalAdd = async (req, res) => {
+    try {
+
+    } catch (err) {
+
+    }
 }
 
 module.exports = {
