@@ -24,4 +24,26 @@ const addAscription = async (param) => {
     }
 }
 
-module.exports = {addAscription}
+/**
+ * 修改归属信息
+ * @param param
+ * @returns {Promise.<boolean>}
+ */
+const modifyAscription = async(param) => {
+    try{
+        await model.ascription.update({
+            outInType : param.outInType,
+            originObject : param.originObject,
+            targetObject : param.targetObject,
+            description: param.ascriptionDesc
+        },{
+            'where':{ id: param.ascriptionId }
+        });
+        return true;
+    }catch (err) {
+        console.log(err);
+        return false;
+    }
+}
+
+module.exports = {addAscription,modifyAscription}

@@ -167,17 +167,27 @@ const verifyMachineExist = async(param,res)=>{
     let temp, hcode, flag = true;
     try {
         // verify whether the user existed before but is not valid now
+        let data = {
+            $or: [
+                {
+                    rdNumber: param.rdNumber
+                },
+                {
+                    fixedNumber: param.fixedNumber
+                },
+                {
+                    name: param.name
+                },
+                {
+                    serialNo: param.serialNo
+                }
+            ]
+        }
+        if(param.id){
+            data['$not'] = [{ id : param.id}]
+        }
         let machine = await model.machine.findAll({
-            where: {
-                $or: [
-                    {
-                        rdNumber: param.rdNumber
-                    },
-                    {
-                        fixedNumber: param.fixedNumber
-                    }
-                ]
-            }
+            where: data
         });
 
         if (machine.length) {
@@ -289,6 +299,44 @@ const addMachineSelect = (param)=>{
     selectControl.addSelectParam({code : 'S0009',value: param.cpu});
 }
 
+const modifyMachine = async (id,param,res) => {
+    param.id = id;
+    let flag = await verifyMachineExist(param,res),temp = '',hcode = '';
+    if(!flag){
+        return;
+    }
+    try{
+        await model.machine.update({
+            serialNo : param.serialNo,
+            name : param.name,
+            type : param.type,
+            fixedNumber : param.fixedNumber,
+            model : param.model,
+            brand : param.brand,
+            location : param.location,
+            cpu : param.cpu,
+            description: param.machineDesc
+        },{
+            'where':{ id: id }
+        });
+        flag = await ascription.modifyAscription(param);
+        if(flag){
+            res.send(methods.formatRespond(true, 200));
+            await addMachineSelect(param);
+        }else{
+            flag = false;
+            hcode = 13201;
+            temp = methods.formatRespond(false, hcode, errorText.formatError(hcode));
+            res && res.status(400).send(temp);
+        }
+    }catch (err) {
+        code = 10003;
+        flag = false;
+        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        res.status(400).send(temp);
+    }
+}
+
 /**
  *
  * @param id
@@ -311,5 +359,5 @@ const deleteMachine = async (id) => {
 }
 
 module.exports = {
-    getMachineData, getAddMachineParam, addMachine, deleteMachine, getMachineDataById
+    getMachineData, getAddMachineParam, addMachine, deleteMachine, getMachineDataById, modifyMachine
 }

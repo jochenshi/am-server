@@ -51,7 +51,7 @@ const formatError = (code) => {
          * 机器报错文本
          */
         case 13100:
-            txt = '已存在相同的机器S/N号或研发部编号';
+            txt = '已存在相同的机器S/N号、研发部编号、名称或固定资产编号';
             break;
         case 13101:
             txt = '归属信息记录错误且删除机器信息失败';
@@ -61,6 +61,9 @@ const formatError = (code) => {
          */
         case 13200:
             txt = '记录归属信息时出错';
+            break;
+        case 13201:
+            txt = '修改归属信息时出错';
             break;
     }
     return txt
