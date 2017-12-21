@@ -105,7 +105,7 @@ machine.id=?
  * @returns {Promise.<void>}
  */
 const getMachineData = async (res) => {
-    let temp;
+    let temp,code,flag;
     try {
         // verify whether the user existed before but is not valid now
         /*let data = await model.machine.findAll({
@@ -124,7 +124,7 @@ const getMachineData = async (res) => {
 }
 
 const getMachineDataById = async (id,res) =>{
-    let temp;
+    let temp,code,flag;
     try {
         let data = await model.sequelize.query(GET_MACHINE_BY_ID_SQL,{
             replacements : [id]
@@ -197,9 +197,9 @@ const verifyMachineExist = async(param,res)=>{
             res && res.status(400).send(temp);
         }
     } catch (err) {
-        code = 10003;
+        hcode = 10003;
         flag = false;
-        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        temp = methods.formatRespond(false, hcode, err.message + ';' + err.name);
         res && res.status(400).send(temp);
     }
     return flag;
@@ -330,7 +330,7 @@ const modifyMachine = async (id,param,res) => {
             res && res.status(400).send(temp);
         }
     }catch (err) {
-        code = 10003;
+        hcode = 10003;
         flag = false;
         temp = methods.formatRespond(false, code, err.message + ';' + err.name);
         res.status(400).send(temp);
@@ -346,7 +346,7 @@ const modifyMachine = async (id,param,res) => {
 const deleteMachine = async (id) => {
     let flag = true;
     try{
-        await model.select_list.destroy({
+        await model.machine.destroy({
             'where':{
                 id: id
             }
@@ -359,5 +359,5 @@ const deleteMachine = async (id) => {
 }
 
 module.exports = {
-    getMachineData, getAddMachineParam, addMachine, deleteMachine, getMachineDataById, modifyMachine
+    getMachineData, getAddMachineParam, addMachine, getMachineDataById, modifyMachine
 }

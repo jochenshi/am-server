@@ -12,7 +12,7 @@ const selectCodeName = require('../common/selectCodeName');
  * @returns {Promise.<void>}
  */
 const getSelectData = async (res) => {
-    let temp, hcode;
+    let temp, hcode,flag;
     try {
         // verify whether the user existed before but is not valid now
         let data = await model.select_list.findAll({
@@ -22,9 +22,9 @@ const getSelectData = async (res) => {
         });
         res.send(methods.formatRespond(true, 200, '',data));
     } catch (err) {
-        code = 10003;
+        hcode = 10003;
         flag = false;
-        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        temp = methods.formatRespond(false, hcode, err.message + ';' + err.name);
         res.status(400).send(temp);
     }
 }
@@ -119,6 +119,7 @@ const verifySelecItemExist = async ({ code, name, value, text },res) => {
  */
 const addSelect = async ({ code, name, value, text ,type = ''},res) => {
     let flag = await verifySelecItemExist({ code, name, value, text },res);
+    let temp,hcode;
     if(!flag){
         return;
     }
@@ -133,9 +134,9 @@ const addSelect = async ({ code, name, value, text ,type = ''},res) => {
         });
         res && res.send(methods.formatRespond(true, 200));
     }catch (err) {
-        code = 10003;
+        hcode = 10003;
         flag = false;
-        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        temp = methods.formatRespond(false, hcode, err.message + ';' + err.name);
         res && res.status(400).send(temp);
     }
 }

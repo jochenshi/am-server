@@ -56,6 +56,9 @@ const formatError = (code) => {
         case 13101:
             txt = '归属信息记录错误且删除机器信息失败';
             break;
+        case 13102:
+            txt = '改机器的地址信息已存在';
+            break;
         /**
          * 归属报错文本
          */
