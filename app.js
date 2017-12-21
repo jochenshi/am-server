@@ -13,6 +13,7 @@ const login = require('./src/control/login')
 
 var select = require('./routes/select_list');
 var machine = require('./routes/machine');
+var address = require('./routes/address');
 const equip = require('./routes/equip');
 
 var app = express();
@@ -54,6 +55,7 @@ app.use('/am/user', user);
 app.use('/am', am);
 app.use('/am/select',select);
 app.use('/am/machine',machine);
+app.use('/am/address',address);
 app.use('/am/equip', equip);
 
 // catch 404 and forward to error handler

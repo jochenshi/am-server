@@ -76,18 +76,18 @@ const getCount = async ()=>{
     console.log(rdCount);
 }
 const testMachine = async ()=>{
-    const ALL_MACHINE_SQL = `SELECT 
+    const ALL_MACHINE_SQL = `
+SELECT 
 IFNULL((
     SELECT healthState 
-    FROM health h,machine m 
-    WHERE h.createdAt = (
-        SELECT MAX(hh.createdAt) 
-        FROM health hh,machine mm 
-        WHERE hh.relatedType='machine' AND hh.relatedId=mm.id) 
-    AND m.id=h.relatedId AND h.relatedType='machine'),
+    FROM health h
+    WHERE machine.id=h.relatedId AND h.relatedType='machine' 
+    ORDER BY createdAt DESC limit 1
+    ),
     'noRecord') 
 AS healthState , 
-IFNULL((SELECT a.address FROM address a, machine m WHERE m.id=a.machineId AND a.type='ip'),NULL) AS ip ,
+IFNULL((SELECT a.address FROM address a WHERE machine.id=a.machineId AND a.type='ip'),NULL) AS ip ,
+machine.id , 
 machine.serialNo , 
 machine.name , 
 machine.rdNumber , 
@@ -96,18 +96,21 @@ machine.type ,
 machine.model , 
 machine.brand , 
 machine.cpu , 
+machine.useState , 
 machine.createdAt , 
+machine.createUser , 
 machine.description , 
-user.account as account , 
-select_list.text as type_text 
-FROM machine,user,select_list 
+user.account AS account , 
+(SELECT s.text FROM select_list s WHERE machine.type=s.value AND s.code='S0004') AS typeText ,
+(SELECT ss.text FROM select_list ss WHERE machine.useState=ss.value AND ss.code='S0007') AS useStateText
+FROM machine,user 
 WHERE 
 machine.useState!='destory' AND 
-machine.createUser = user.id AND 
-machine.type = select_list.value AND select_list.code = 'S0004'
-;`
+machine.createUser = user.id
+;
+`;
     let result = await models.sequelize.query(ALL_MACHINE_SQL);
-    console.log(result);
+    console.log(result[0][0]);
 }
 
 const getAddMachineParam = async ()=>{
@@ -135,9 +138,23 @@ const getAddMachineParam = async ()=>{
     data.rdbCount = rdbCount.count;
     return data;
 }
+const testAscription = async ()=>{
+    let result = await models.ascription.findOne({
+        where : {
+            relatedId : 1,
+            relatedType : 'machine'
+        },
+        order : [
+            ['createdAt', 'DESC']
+        ],
+        limit : 1
+    });
+    console.log(result.dataValues);
+}
 // initSelect();
 // getOne();
 // getCount();
 // testMachine();
 // getAddMachineParam();
+testAscription();
 module.exports.initSelect = initSelect;
