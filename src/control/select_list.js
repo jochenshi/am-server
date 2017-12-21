@@ -280,7 +280,8 @@ const getNormalEquipSelect = async (res) => {
     let data = {
         type: [],
         model: [],
-        brand: []
+        brand: [],
+        origin: []
     }, code, flag,temp;
     try {
         data.type = await getSelectByParam({
@@ -293,7 +294,7 @@ const getNormalEquipSelect = async (res) => {
             code: 'S0011'
         });
         data.origin = await getSelectByParam({
-            code: 'S0012'
+            code: 'S0001'
         })
         flag = true;
         res.send(methods.formatRespond(flag, 200,'',data));
