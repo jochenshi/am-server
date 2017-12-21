@@ -38,6 +38,9 @@ const formatError = (code) => {
         case 12000:
             txt = '配件S/N号或名称已经存在';
             break;
+        case 12001:
+            txt = '参数不能为空';
+            break;
         /**
          * 选项的报错文本
          */
