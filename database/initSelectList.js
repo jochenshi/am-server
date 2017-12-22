@@ -156,5 +156,5 @@ const testAscription = async ()=>{
 // getCount();
 // testMachine();
 // getAddMachineParam();
-testAscription();
+// testAscription();
 module.exports.initSelect = initSelect;

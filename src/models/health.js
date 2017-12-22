@@ -7,12 +7,23 @@ module.exports = function (sequelize, Sequelize) {
         relatedType: {
             type: Sequelize.STRING
         },
+        reason: {
+            type: Sequelize.STRING
+        },
+        content: {
+            type: Sequelize.TEXT,
+            allowNull: false
+        },
         healthState: {
             type: Sequelize.STRING,
             allowNull: false
         },
-        reason: {
-            type: Sequelize.TEXT
+        errorState: {
+            type: Sequelize.STRING,
+            allowNull: false
+        },
+        repairState: {
+            type: Sequelize.STRING,
         },
         createUser: {
             type: Sequelize.STRING
