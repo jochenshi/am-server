@@ -31,11 +31,11 @@ const handleNormalModify = (req, res) => {
         res.status(400).send(temp);
     } else {
         //必选参数校验通过,执行查找然后修改
-        let equip = await model.equip.findAll({
-            where: {
-                id: id
-            }
-        });
+        // let equip = await model.equip.findAll({
+        //     where: {
+        //         id: id
+        //     }
+        // });
 
     }
 }

@@ -1,6 +1,5 @@
 const crypto = require('crypto');
 const config = require('../config/config');
-const {handleToken} = require('../control/login');
 // method used to format the respond in the similar format
 const formatRespond = (resFlag, code, err = '', data = []) => {
     return {
@@ -67,6 +66,22 @@ const validLogin = (req) => {
     return true
 };
 
+//验证request里面的token，并对其进行解密等相关操作，flag表示这个token是否有效，true表示token未被更改
+const handleToken = (token) => {
+    let {am_user, am_sig, am_val} = token, de_obj = {}, flag = true;
+    try {
+        de_obj.am_user = methods.decryptFun(am_user, config.cookie_encrypt);
+        let de_sig = methods.decryptFun(am_sig, config.cookie_encrypt).split('&');
+        de_obj.am_val = Buffer.from(am_val, 'base64').toString();
+        //|| (de_sig[0] !== de_obj.am_val) 暂时不对时间验证，由数据库验证
+        if ((de_obj.am_user !== de_sig[1])) {
+            flag = false;
+        };
+    } catch (err) {
+        flag = false;
+    }
+    return {flag: flag, data: de_obj};
+};
 
 //根据请求的相关信息，获取当前用户ID的操作
 const getUserId = (req, res) => {
@@ -75,7 +90,7 @@ const getUserId = (req, res) => {
 };
 
 module.exports = { 
-    formatRespond, validLogin, interRespond, 
-    passEncrypt, passDecrypt, sessionEncrypt, sessionDecrypt, 
-    encryptFun, decryptFun, getUserId
+    formatRespond, validLogin, interRespond,
+    passEncrypt, passDecrypt, sessionEncrypt, 
+    sessionDecrypt,encryptFun, decryptFun
 };
