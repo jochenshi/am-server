@@ -39,12 +39,13 @@ app.use(async (req, res, next) => {
     next();
   } else {
     console.log('before valid')
-    let valid_flag = await login.validRequest(req, res);
-    if (valid_flag) {
-      console.log('after valid')
-      res['cookies'] = req.cookies;
-      next();
-    }
+    // let valid_flag = await login.validRequest(req, res);
+    // if (valid_flag) {
+    //   console.log('after valid')
+    //   res['cookies'] = req.cookies;
+    //   next();
+    // }
+    next();
     //res.status(400).send({message: 'stop it'})
   }  
 })
