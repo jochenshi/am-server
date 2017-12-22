@@ -39,10 +39,24 @@ const datas = [
     {code : 'S0007', name : '物资状态', value: 'idle', text: '库存中',delable: false,type:'normal'},
     {code : 'S0007', name : '物资状态', value: 'destory', text: '不存在',delable: false,type:'normal'},
     {code : 'S0007', name : '物资状态', value: 'fixedusing', text: '固定使用中',delable: false,type:'nomachine'},
-    {code : 'S0007', name : '物资状态', value: 'partusing', text: '部分使用中',delable: false,type:'part'},
-    {code : 'S0008', name: '普通配件类型', value: 'disk', text : '硬盘', delable: false, type: 'part'},
-    {code : 'S0008', name: '普通配件类型', value: 'netcard', text : '网卡', delable: false, type: 'part'},
-    {code : 'S0008', name: '普通配件类型', value: 'memory', text : '内存', delable: false, type: 'part'},
+    {code : 'S0007', name : '物资状态', value: 'partusing', text: '部分使用中',delable: false},
+    {code : 'S0008', name: '普通配件类型', value: 'disk', text : '硬盘', delable: false},
+    {code : 'S0008', name: '普通配件类型', value: 'netcard', text : '网卡', delable: false},
+    {code : 'S0008', name: '普通配件类型', value: 'memory', text : '内存', delable: false},
+    {code : 'S00012', name: '健康出错原因', value: 'manmade', text : '人为损坏', delable: false},
+    {code : 'S00012', name: '健康出错原因', value: 'noreason', text : '无故损坏', delable: false},
+    {code : 'S00012', name: '健康出错原因', value: 'accident', text : '人为损坏', delable: false},
+    {code : 'S00012', name: '健康出错原因', value: 'aging', text : '机器老化', delable: false},
+    {code : 'S00012', name: '健康出错原因', value: 'defect', text : '机器缺陷', delable: false},
+    {code : 'S00013', name: '健康状态', value: 'health', text : '健康', delable: false,type:'right'},
+    {code : 'S00013', name: '健康状态', value: 'minor', text : '轻伤', delable: false,type:'error'},
+    {code : 'S00013', name: '健康状态', value: 'damage', text : '损坏', delable: false,type:'error'},
+    {code : 'S00013', name: '健康状态', value: 'fault', text : '故障', delable: false,type:'error'},
+    {code : 'S00014', name: '健康修复状态', value: 'norepair', text : '未修复', delable: false},
+    {code : 'S00014', name: '健康修复状态', value: 'repaired', text : '已修复', delable: false},
+    {code : 'S00014', name: '健康修复状态', value: 'notrepair', text : '不修复', delable: false},
+    {code : 'S00014', name: '健康修复状态', value: 'partrepair', text : '不修复', delable: false},
+    {code : 'S00014', name: '健康修复状态', value: 'autorepair', text : '自动修复', delable: false},
 ];
 
 const initSelect = () => {
@@ -156,5 +170,5 @@ const testAscription = async ()=>{
 // getCount();
 // testMachine();
 // getAddMachineParam();
-testAscription();
+// testAscription();
 module.exports.initSelect = initSelect;
