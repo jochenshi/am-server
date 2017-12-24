@@ -24,4 +24,4 @@ module.exports = function (sequelize, Sequelize) {
         comment: '角色对照表'
     });
     return role;
-}
+};
