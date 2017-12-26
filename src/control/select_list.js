@@ -7,6 +7,38 @@ const errorText = require('../common/error');
 const selectCodeName = require('../common/selectCodeName');
 
 /**
+ * 得到所有的选项头
+ * @param res
+ */
+const getSelectDataTitle = (res) => {
+    res.send(methods.formatRespond(true, 200, '',selectCodeName));
+}
+
+/**
+ * 得到某code代表的所有选项
+ * @param code
+ * @param res
+ * @returns {Promise.<void>}
+ */
+const getSelectDataByCode = async (code, res) => {
+    let temp, hcode,flag;
+    try {
+        // verify whether the user existed before but is not valid now
+        let data = await model.select_list.findAll({
+            where : {
+                code : code
+            }
+        });
+        res.send(methods.formatRespond(true, 200, '',data));
+    } catch (err) {
+        hcode = 10003;
+        flag = false;
+        temp = methods.formatRespond(false, hcode, err.message + ';' + err.name);
+        res.status(400).send(temp);
+    }
+}
+
+/**
  * 得到所有选项
  * @param res
  * @returns {Promise.<void>}
@@ -179,7 +211,7 @@ const deleteSelect = async ({code, id}, res) => {
  * @param res
  * @returns {Promise.<void>}
  */
-const updateSelect = async ({ id, code, name, value, text },res) => {
+const updateSelect = async ({ id, code, name, value, text ,type = ''},res) => {
     let flag = await verifySelecItemExist({ code, name, value, text },res);
     if(!flag){
         return;
@@ -187,7 +219,8 @@ const updateSelect = async ({ id, code, name, value, text },res) => {
     try{
         await model.select_list.update({
             text : text,
-            value : value
+            value : value,
+            type : type
         },{
             'where':{ id: id }
         });
@@ -308,6 +341,7 @@ const getNormalEquipSelect = async (res) => {
 }
 
 module.exports = {
+    getSelectDataTitle, getSelectDataByCode,
     getSelectData, verifySelectExist, addSelect, deleteSelect, updateSelect, addSelectParam, getMachineSelect,
     getNormalEquipSelect
 }
