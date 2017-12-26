@@ -31,6 +31,9 @@ module.exports = function (sequelize, Sequelize) {
         description: {
             type: Sequelize.STRING
         },
+        delete: {
+            type: Sequelize.BOOLEAN
+        },
         partsExtra: {
             type: Sequelize.STRING
         }
