@@ -2,6 +2,14 @@ var express = require('express');
 var router = express.Router();
 var select = require('../src/control/select_list');
 
+router.get('/title',function(req, res, next){
+    select.getSelectDataTitle(res);
+});
+
+router.get('/:code',function(req,res,next){
+    select.getSelectDataByCode(req.params.code,res);
+});
+
 /* GET listing. */
 router.get('/',function(req, res, next) {
 	select.getSelectData(res);
