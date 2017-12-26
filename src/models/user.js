@@ -18,10 +18,10 @@ module.exports = function (sequelize, Sequelize) {
             type: Sequelize.STRING,
             allowNull: false
         },
-        role: {
+        /*role: {
             type: Sequelize.STRING,
             defaultValue: 0
-        },
+        },*/
         phone: {
             type: Sequelize.STRING,
             unique: true,

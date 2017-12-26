@@ -3,7 +3,8 @@ module.exports = function (sequelize, Sequelize) {
         code: {
             type: Sequelize.STRING,
             allowNull: false,
-            unique: true
+            unique: true,
+            primaryKey: true
         },
         name: {
             type: Sequelize.STRING,
@@ -14,14 +15,11 @@ module.exports = function (sequelize, Sequelize) {
             allowNull: false,
             unique: true
         },
-        authority: {
-            type: Sequelize.STRING
-        },
         description: {
             type: Sequelize.STRING
         }
     },{
-        comment: '角色对照表'
+        comment: '用户角色对照表'
     });
     return role;
 };

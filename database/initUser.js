@@ -3,9 +3,20 @@ const methods = require('../src/common/methods');
 
 const initUser = async (obj) => {
     try {
-        await model.user.create(obj);
+        let role = await model.role.findAll({
+            where: {
+                code: obj.role
+            }
+        });
+        console.log(role);
+        let user = await model.user.create(obj);
+        await role[0].addUser(user);
+        /*let temp = await model.user.create(obj);
+        console.log(model.role);
+        await model.role.addUser(obj);*/
         return true;
     } catch (err) {
+        console.log(err);
         return false;
     }
 };
@@ -35,12 +46,16 @@ const userData = [
         createTime: Date.now(),
         description: '系统默认超级管理员账户'
     }
-]
+];
 
-const executeUser = () => {
-    userData.forEach((val) => {
-        initUser(val);
-    })
+const executeUser = async () => {
+    console.log('=================');
+    for (var i = 0; i < userData.length; i++) {
+        await initUser(userData[i])
+    }
+    /*userData.forEach(async (val) => {
+        await initUser(val);
+    })*/
 }
 
 module.exports = executeUser;
