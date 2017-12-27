@@ -1,4 +1,4 @@
-const model = require('../models')
+const models = require('../models')
 const methods = require('../common/methods');
 const errorText = require('../common/error');
 const config = require('../config/config');
@@ -7,8 +7,24 @@ const Op = Sequelize.Op;
 const ascription = require('./ascription');
 
 //获取普通类型的配件的方法
-const getNormalEquip = (req, res) => {
-
+const handleNormalGet = async (req, res) => {
+    let flag = true, code, temp, fit = [];
+    try {
+        let {equipType = 'all'} = req.query;
+        let arg = equipType === 'all' ? {} : {where: {type: equipType}};
+        try {
+            fit = await models.fitting.findAll();
+            res.send(methods.formatRespond(flag, 200, '', []))
+        } catch (err) {
+            console.log(err)
+        }
+        
+    } catch (err) {
+        code = 10003;
+        flag = false;
+        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        res.status(400).send(temp);
+    }
 }
 
 //添加普通类型配件的请求的方法
@@ -31,7 +47,7 @@ const handleNormalModify = (req, res) => {
         res.status(400).send(temp);
     } else {
         //必选参数校验通过,执行查找然后修改
-        // let equip = await model.equip.findAll({
+        // let equip = await models.equip.findAll({
         //     where: {
         //         id: id
         //     }
@@ -51,7 +67,7 @@ const verifyNormal = async (req, res) => {
             temp = methods.formatRespond(flag, code, errorText.formatError(code));
             res.status(400).send(temp);
         } else {
-            let findFit = await model.fitting.findAll({
+            let findFit = await models.fitting.findAll({
                 where: {
                     [Op.or]: [
                         {serialNo},
@@ -107,7 +123,7 @@ const verifyNormal = async (req, res) => {
 const executeNormalAdd = async (obj, res) => {
     let flag = true, code, temp, data = {};
     try {
-        let data = await model.fitting.create({
+        let data = await models.fitting.create({
             serialNo: obj.serialNo,
             name: obj.name,
             type: obj.type,
@@ -136,7 +152,7 @@ const executeNormalAdd = async (obj, res) => {
 const executeNormalDelete = async (id) => {
     let flag = true;
     try {
-        await model.fitting.destroy({
+        await models.fitting.destroy({
             where: {
                 id: id
             }
@@ -152,5 +168,5 @@ const executeNormalModify = (req, res) => {
 }
 
 module.exports = {
-    handleNormalAdd, handleNormalModify
+    handleNormalGet, handleNormalAdd, handleNormalModify
 };

@@ -63,5 +63,8 @@ module.exports = function (sequelize, Sequelize) {
     // User.associate = function (models) {
     //     User.hasMany(models.machines, {as:'user'})
     // };
+    User.associate = function (model) {
+        User.belongsToMany(model.role, {through: 'userRole'});
+    }
     return User;
 }

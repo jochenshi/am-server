@@ -6,6 +6,11 @@ router.get('/title',function(req, res, next){
     select.getSelectDataTitle(res);
 });
 
+// 获取普通配件的相关选项
+router.get('/normalEquip', function (req, res, next) {
+    select.getNormalEquipSelect(res);
+})
+
 router.get('/:code',function(req,res,next){
     select.getSelectDataByCode(req.params.code,res);
 });
@@ -56,8 +61,5 @@ router.get('/machine',function(req, res, next){
    select.getMachineSelect(res);
 });
 
-// 获取普通配件的相关选项
-router.get('/normalEquip', function (req, res, next) {
-    select.getNormalEquipSelect(res);
-})
+
 module.exports = router;

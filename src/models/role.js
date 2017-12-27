@@ -21,5 +21,9 @@ module.exports = function (sequelize, Sequelize) {
     },{
         comment: '用户角色对照表'
     });
+    role.associate = function (model) {
+        role.belongsToMany(model.user, {through: 'userRole'});
+        role.belongsToMany(model.authority, {through: 'roleAuthority'});
+    }
     return role;
 };

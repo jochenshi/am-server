@@ -70,8 +70,8 @@ const validLogin = (req) => {
 const handleToken = (token) => {
     let {am_user, am_sig, am_val} = token, de_obj = {}, flag = true;
     try {
-        de_obj.am_user = methods.decryptFun(am_user, config.cookie_encrypt);
-        let de_sig = methods.decryptFun(am_sig, config.cookie_encrypt).split('&');
+        de_obj.am_user = decryptFun(am_user, config.cookie_encrypt);
+        let de_sig = decryptFun(am_sig, config.cookie_encrypt).split('&');
         de_obj.am_val = Buffer.from(am_val, 'base64').toString();
         //|| (de_sig[0] !== de_obj.am_val) 暂时不对时间验证，由数据库验证
         if ((de_obj.am_user !== de_sig[1])) {
@@ -92,5 +92,5 @@ const getUserId = (req, res) => {
 module.exports = { 
     formatRespond, validLogin, interRespond,
     passEncrypt, passDecrypt, sessionEncrypt, 
-    sessionDecrypt,encryptFun, decryptFun
+    sessionDecrypt,encryptFun, decryptFun, getUserId
 };
