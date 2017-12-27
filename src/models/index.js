@@ -9,19 +9,23 @@ var sequelize = new Sequelize(config.database, config.username, config.password,
 var db = {};
 console.log('start index');
 
+const user = require('./user');
+const role = require('./role');
+const authority = require('./authority');
+const roleAuthority = require('./roleAuthority');
 // const User = require('./user_info');
 // const machine = require('./machine_info')
 
 fs.readdirSync(__dirname).filter(
     (file) => {
-        return (file.indexOf('.js') > 0) && (file !== 'index.js')
+        return (file.indexOf('.js') > 0) && (file !== 'index.js')&& (file !== 'roleAuthority.js')
     }
 ).forEach(
     (file) => {
         var model = sequelize.import(path.join(__dirname, file));
         db[model.name] = model;
     }
-)
+);
 
 Object.keys(db).forEach(modelName => {
     if ("associate" in db[modelName]) {
@@ -29,6 +33,7 @@ Object.keys(db).forEach(modelName => {
         db[modelName].associate(db)
     }
 });
+
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
