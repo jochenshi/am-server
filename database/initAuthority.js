@@ -141,18 +141,28 @@ const authorityData = [
         value: 'applySupplyEquip',
         name: '申请',
         description: '申请耗材配件'
-    },
-    {
-        value: '',
-        name: '',
-        description: ''
     }
 ];
 
-const executeAuthority = () => {
-    authorityData.forEach((val) => {
-        initAuthority(val);
-    })
+const finalAuthority = {
+    'R0002': authorityData
+}
+
+const executeAuthority = async () => {
+    for (let k in finalAuthority) {
+        let role = await model.role.findAll({
+            where: {
+                code: k
+            }
+        });
+        if (role.length) {
+            for (let i = 0; i < finalAuthority[k].length; i++) {
+                let auth = await model.authority.create(finalAuthority[k][i])
+                //await initAuthority(finalAuthority[k][i]);
+                role[0].addAuthority(auth)
+            }
+        }
+    }
 };
 
 module.exports = executeAuthority;
