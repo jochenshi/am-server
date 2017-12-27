@@ -10,18 +10,17 @@ router.get('/',function(req, res, next) {
     machine.getMachineData(res);
 })
 
+/* GET add param. */
+router.get('/rdNumber',function(req, res, next) {
+    machine.getAddMachineParam(res);
+})
+
 router.get('/:id',function(req, res, next) {
     machine.getMachineDataById(req.params.id, res);
 })
 
 router.put('/:id',function(req, res, next) {
     machine.modifyMachine(req.params.id,req.body, res);
-})
-
-
-/* GET add param. */
-router.get('/rdNumber',function(req, res, next) {
-    machine.getAddMachineParam(res);
 })
 
 /**

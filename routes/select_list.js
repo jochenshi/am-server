@@ -6,8 +6,8 @@ router.get('/title',function(req, res, next){
     select.getSelectDataTitle(res);
 });
 
-router.get('/:code',function(req,res,next){
-    select.getSelectDataByCode(req.params.code,res);
+router.get('/code',function(req,res,next){
+    select.getSelectDataByCode(req.query.code,res);
 });
 
 /* GET listing. */

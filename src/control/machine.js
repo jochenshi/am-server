@@ -222,6 +222,7 @@ const getAddMachineParam = async (res)=>{
 
         }
     });
+    console.log(rdCount);
     data.rdCount = rdCount.count;
     let rdbCount = await model.machine.findAndCount({
         where : {
@@ -230,11 +231,11 @@ const getAddMachineParam = async (res)=>{
             }
         }
     });
+    console.log(rdbCount);
     data.rdbCount = rdbCount.count;
     res && res.send(methods.formatRespond(true, 200, '',data));
     return data;
 }
-
 /**
  * 添加机器
  * @param param
@@ -267,7 +268,7 @@ const addMachine = async (param,res) => {
         param['relatedType'] = 'machine';
         param['operateUser'] = createrUser;
         if(ascription.addAscription(param)){
-            res && res.send(methods.formatRespond(true, 200));
+            res && res.send(methods.formatRespond(true, 200,'',machineData));
             await addMachineSelect(param);
         }else{
             //删除此条machine
@@ -297,6 +298,7 @@ const addMachineSelect = (param)=>{
     selectControl.addSelectParam({code : 'S0005',value: param.model});
     selectControl.addSelectParam({code : 'S0006',value: param.brand});
     selectControl.addSelectParam({code : 'S0009',value: param.cpu});
+    selectControl.addSelectParam({code : 'S0015',value: param.location});
 }
 
 const modifyMachine = async (id,param,res) => {

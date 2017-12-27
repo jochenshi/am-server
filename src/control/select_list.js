@@ -285,6 +285,7 @@ const getMachineSelect = async (res) => {
     data.model = [];
     data.brand = [];
     data.cpu = [];
+    data.location = [];
     data.inType = await getSelectByParam({
         code : 'S0001',
         type : 'in'
@@ -309,9 +310,13 @@ const getMachineSelect = async (res) => {
     data.cpu = await getSelectByParam({
         code : 'S0009'
     });
+    data.location = await getSelectByParam({
+        code : 'S0015'
+    });
     res && res.send(methods.formatRespond(true, 200, '',data));
     return data;
 }
+
 
 //获取普通配件涉及到的相关选项的可选值
 const getNormalEquipSelect = async (res) => {
