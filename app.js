@@ -46,7 +46,8 @@ app.use(async (req, res, next) => {
       res['cookies'] = req.cookies;
       next();
     }
-    next();
+    //此处为调试的时候跳过身份验证使用，使用的时候将else内的内容注释，添加next()即可
+    //next();
     //res.status(400).send({message: 'stop it'})
   }  
 })
