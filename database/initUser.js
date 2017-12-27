@@ -12,7 +12,6 @@ const initUser = async (obj) => {
         let user = await model.user.create(obj);
         await role[0].addUser(user);
         /*let temp = await model.user.create(obj);
-        console.log(model.role);
         await model.role.addUser(obj);*/
         return true;
     } catch (err) {
@@ -49,13 +48,9 @@ const userData = [
 ];
 
 const executeUser = async () => {
-    console.log('=================');
     for (var i = 0; i < userData.length; i++) {
         await initUser(userData[i])
     }
-    /*userData.forEach(async (val) => {
-        await initUser(val);
-    })*/
 }
 
 module.exports = executeUser;

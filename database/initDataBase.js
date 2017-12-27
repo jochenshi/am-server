@@ -2,9 +2,8 @@ let models = require('../src/models');
 let selectList = require('./initSelectList');
 const initUser = require('./initUser');
 const initRole = require('./initRole');
+const initAuthority = require('./initAuthority');
 
-const user = require('../src/models/user');
-const role = require('../src/models/role');
 
 const initDataBase = async ()=>{
     //设置相关关联表的联系，并自动创建关联表
@@ -17,6 +16,7 @@ const initDataBase = async ()=>{
     await selectList.initSelect();
     await initRole();
     await initUser();
+    initAuthority();
 };
 
 initDataBase();
