@@ -1,9 +1,9 @@
 module.exports = function (sequelize, Sequelize) {
     var fitting = sequelize.define('fitting', {
         id: {
-            type: Sequelize.STRING,
+            type: Sequelize.INTEGER,
             primaryKey: true,
-            allowNull: false
+            autoIncrement: true
         },
         serialNo: {
             type: Sequelize.STRING

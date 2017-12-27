@@ -13,8 +13,8 @@ const handleNormalGet = async (req, res) => {
         let {equipType = 'all'} = req.query;
         let arg = equipType === 'all' ? {} : {where: {type: equipType}};
         try {
-            fit = await models.fitting.findAll();
-            res.send(methods.formatRespond(flag, 200, '', []))
+            fit = await models.fitting.findAll(arg);
+            res.send(methods.formatRespond(flag, 200, '', fit))
         } catch (err) {
             console.log(err)
         }
@@ -123,7 +123,7 @@ const verifyNormal = async (req, res) => {
 const executeNormalAdd = async (obj, res) => {
     let flag = true, code, temp, data = {};
     try {
-        let data = await models.fitting.create({
+        data = await models.fitting.create({
             serialNo: obj.serialNo,
             name: obj.name,
             type: obj.type,
@@ -131,10 +131,10 @@ const executeNormalAdd = async (obj, res) => {
             brand: obj.brand,
             size: obj.size,
             unit: obj.unit,
-            useState: obj.useState,
+            useState: 'idle',
             createUser: obj.userId,
             createTime: Date.now(),
-            description: obj.description
+            description: obj.description || ''
         });
         // temp = methods.formatRespond(true, 200);
         // res.send(temp);

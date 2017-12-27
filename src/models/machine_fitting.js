@@ -5,7 +5,7 @@ module.exports = function (sequelize, Sequelize) {
             allowNull: false
         },
         fittingId: {
-            type: Sequelize.STRING,
+            type: Sequelize.INTEGER,
             allowNull: false
         }
     },
