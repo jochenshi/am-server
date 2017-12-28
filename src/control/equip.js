@@ -13,8 +13,32 @@ const handleNormalGet = async (req, res) => {
         let {equipType = 'all'} = req.query;
         let arg = equipType === 'all' ? {} : {where: {type: equipType}};
         try {
-            fit = await models.fitting.findAll(arg);
-            res.send(methods.formatRespond(flag, 200, '', fit))
+            fit = await models.fitting.findAll({
+                arg,
+                include: [
+                    {
+                        model: models.user,
+                        as: 'users',
+                        attributes: ['name', 'id']
+                    },
+                    {
+                        model: models.select_list,
+                        as: 'selects',
+                        attributes: ['code', 'name', 'text','id']
+                    }
+                ]
+            });
+            //解除引用关系
+            let temps = JSON.parse(JSON.stringify(fit));
+            if (temps.length) {
+                for (let i = 0; i < temps.length; i++) {
+                    let temp_fit = temps[i];
+                    temp_fit['type_text'] = temp_fit.selects.text;
+                    temp_fit['creator'] = temp_fit.users.name;
+                }
+            }
+            console.log('....', temps);
+            res.send(methods.formatRespond(flag, 200, '', temps))
         } catch (err) {
             console.log(err)
         }
@@ -90,13 +114,13 @@ const verifyNormal = async (req, res) => {
                     let param = {
                         relatedId: add_equip.id,
                         relatedType: 'fitting',
-                        outInType: '',
+                        outInType: addData.origin,
                         occurTime: add_equip.createTime,
-                        originObject: '',
-                        targetObject: '',
+                        originObject: addData.originObject || '',
+                        targetObject: addData.targetObject || '',
                         operateUser: userId,
-                        createTime: '',
-                        description: ''
+                        createTime: Date.now(),
+                        description: addData.originDes || ''
                     };
                     if (ascription.addAscription(param)) {
                         res.send(methods.formatRespond(true, 200));

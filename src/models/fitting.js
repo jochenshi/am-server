@@ -32,6 +32,10 @@ module.exports = function (sequelize, Sequelize) {
             type: Sequelize.STRING,
             allowNull: false
         },
+        createTime: {
+            type: Sequelize.DATE,
+            allowNull: false
+        },
         createUser: {
             type: Sequelize.STRING,
             allowNull: false
@@ -48,7 +52,8 @@ module.exports = function (sequelize, Sequelize) {
         comment: '配件基本信息表'
     });
     fitting.associate = function (model) {
-        fitting.belongsTo(model.user,{as: 'users',foreignKey: 'createUser', targetKey: 'id'})
+        fitting.belongsTo(model.user,{as: 'users',foreignKey: 'createUser', targetKey: 'id'});
+        fitting.belongsTo(model.select_list, {as: 'selects', foreignKey: 'useState', targetKey: 'value'})
     }
     return fitting
 }
