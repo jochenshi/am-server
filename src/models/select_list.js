@@ -8,7 +8,8 @@ module.exports = function (sequelize, Sequelize) {
             type: Sequelize.STRING
         },
         value: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            unique: true
         },
         text: {
             type: Sequelize.STRING

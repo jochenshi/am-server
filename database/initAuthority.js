@@ -102,11 +102,11 @@ const authorityData = [
         name: '归还',
         description: '归还普通配件'
     },
-    {
-        value: 'applyNormalEquip',
-        name: '申请',
-        description: '申请普通配件'
-    },
+    // {
+    //     value: 'applyNormalEquip',
+    //     name: '申请',
+    //     description: '申请普通配件'
+    // },
     {
         value: 'linkNormalEquip',
         name: '关联',
@@ -137,11 +137,11 @@ const authorityData = [
         name: '归还',
         description: '归还耗材配件'
     },
-    {
-        value: 'applySupplyEquip',
-        name: '申请',
-        description: '申请耗材配件'
-    }
+    // {
+    //     value: 'applySupplyEquip',
+    //     name: '申请',
+    //     description: '申请耗材配件'
+    // }
 ];
 
 const finalAuthority = {
@@ -159,7 +159,7 @@ const executeAuthority = async () => {
             for (let i = 0; i < finalAuthority[k].length; i++) {
                 let auth = await model.authority.create(finalAuthority[k][i])
                 //await initAuthority(finalAuthority[k][i]);
-                role[0].addAuthority(auth)
+                await role[0].addAuthority(auth)
             }
         }
     }
