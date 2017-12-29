@@ -8,23 +8,21 @@ const Op = Sequelize.Op;
 const ascription = require('./ascription');
 const selectControl = require('./select_list');
 
-//获取普通类型的配件的方法
+//获取普通类型的配件的方法，此方法可以指定查询的机器的ID，可以指定获取配件的类型
 const handleNormalGet = async (req, res) => {
     let flag = true, code, temp, fit = [];
     try {
         let {equipType = 'all', machineId} = req.query;
         let arg = equipType === 'all' ? {} : {where: {type: equipType}};
-        try {
-            //先判断是否传入machineId，如果传入了则查找与该ID相关的配件的数据,machineId可以传单个也可以传多个
-            if (machineId) {
-
-                let machine_arg = {
-                    machineId: machineId
-                }
-                await getNormalInMachine(req, res);
+        //先判断是否传入machineId，如果传入了则查找与该ID相关的配件的数据,machineId可以传单个也可以传多个
+        if (machineId) {
+            //传入了Id的情况下进行相关数据的获取
+            let gFlag = await getNormalInMachine(req, res);
+            if (!gFlag) {
+                return
             }
-            await getNormalInMachine(req, res);
-            return;
+        } else {
+            //此处是不根据传入的机器的id进行相关配件信息的获取
             fit = await models.fitting.findAll({
                 arg,
                 include: [
@@ -45,27 +43,25 @@ const handleNormalGet = async (req, res) => {
                     }
                 ]
             });
-            //解除引用关系
-            let temps = JSON.parse(JSON.stringify(fit));
-            if (temps.length) {
-                for (let i = 0; i < temps.length; i++) {
-                    let temp_fit = temps[i];
-                    temp_fit['key'] = temp_fit.id;
-                    temp_fit['creator'] = temp_fit.users.name;
-                    temp_fit['equipType'] = temp_fit.selectType.text;
-                    temp_fit['equipUseState'] = temp_fit.selectState.text;
-                    delete temp_fit.selects;
-                    delete temp_fit.users;
-                    delete temp_fit.selectState;
-                    delete temp_fit.selectType;
-                }
-            }
-            console.log('....', temps);
-            res.send(methods.formatRespond(flag, 200, '', temps))
-        } catch (err) {
-            console.log(err)
         }
-        
+        //解除引用关系
+        let temps = JSON.parse(JSON.stringify(fit));
+        if (temps.length) {
+            for (let i = 0; i < temps.length; i++) {
+                let temp_fit = temps[i];
+                temp_fit['key'] = temp_fit.id;
+                temp_fit['creator'] = temp_fit.users.name;
+                temp_fit['equipType'] = temp_fit.selectType.text;
+                temp_fit['equipUseState'] = temp_fit.selectState.text;
+                delete temp_fit.selects;
+                delete temp_fit.users;
+                delete temp_fit.selectState;
+                delete temp_fit.selectType;
+            }
+        }
+        console.log('....', temps);
+        res.send(methods.formatRespond(flag, 200, '', temps))
+
     } catch (err) {
         code = 10003;
         flag = false;
@@ -74,66 +70,80 @@ const handleNormalGet = async (req, res) => {
     }
 }
 
-//获取指定的机器下的配件的方法
-const getNormalInMachine = async (param, res) => {
+//获取指定的机器下的配件的方法，此方法需要传入机器的Id，
+const getNormalInMachine = async (req, res) => {
     let flag = true, code, temp, return_res = [];
-    let id = 6;
     try {
-        if (!id) {
-            return
-        }
-        //需要判断获取到的机器的id，没有则不进行针对id的筛选,
-        let result = await models.machine_fitting.findAll({
-            where: {
-                machineId: [1]
-            },
-            include: [
-                {
-                    model: models.fitting,
-                    as: 'parentFitting',
-                    //此处可以进行针对配件类型的筛选
-                    include: [
-                        {
-                            model: models.user,
-                            as: 'users',
-                            attributes: ['name', 'id']
-                        },
-                        {
-                            model: models.select_list,
-                            as: 'selectType',
-                            attributes: ['code', 'name', 'text','id']
-                        },
-                        {
-                            model: models.select_list,
-                            as: 'selectState',
-                            attributes: ['code', 'name', 'text','id']
-                        }
-                    ]
+        let {equipType = 'all', machineId} = req.query;
+        //machineId = [1,2];
+        if (!machineId) {
+            flag = false;
+            code = 12002
+            res.send(methods.formatRespond(flag, code, errorText.formatError(code), return_res))
+        } else {
+            //需要判断获取到的机器的id,根据传入的机器的Id进行相关信息的查询
+            let idTag = Array.isArray(machineId);
+            let arg = equipType === 'all' ? {} : {where: {type: equipType}};
+            if (!idTag) {
+                let tArray = new Array();
+                tArray.push(machineId);
+                machineId = tArray;
+            };
+            let result = await models.machine_fitting.findAll({
+                where: {
+                    machineId: machineId
+                },
+                include: [
+                    {
+                        model: models.fitting,
+                        as: 'parentFitting',
+                        //此处可以进行针对配件类型的筛选
+                        arg,
+                        include: [
+                            {
+                                model: models.user,
+                                as: 'users',
+                                attributes: ['name', 'id']
+                            },
+                            {
+                                model: models.select_list,
+                                as: 'selectType',
+                                attributes: ['code', 'name', 'text','id']
+                            },
+                            {
+                                model: models.select_list,
+                                as: 'selectState',
+                                attributes: ['code', 'name', 'text','id']
+                            }
+                        ]
+                    }
+                ]
+            });
+            let result_obj = JSON.parse(JSON.stringify(result));
+            if (result_obj.length) {
+                for (let i = 0; i < result_obj.length; i++) {
+                    let tt_obj = result_obj[i].parentFitting;
+                    tt_obj['key'] = tt_obj.id;
+                    tt_obj['creator'] = tt_obj.users.name;
+                    tt_obj['equipType'] = tt_obj.selectType.text;
+                    tt_obj['equipUseState'] = tt_obj.selectState.text;
+                    delete tt_obj.selectState;
+                    delete tt_obj.selectType;
+                    delete tt_obj.users;
+                    return_res.push(tt_obj);
                 }
-            ]
-        });
-        let result_obj = JSON.parse(JSON.stringify(result));
-        if (result_obj.length) {
-            for (let i = 0; i < result_obj.length; i++) {
-                let tt_obj = result_obj[i].parentFitting;
-                tt_obj['key'] = tt_obj.id;
-                tt_obj['creator'] = tt_obj.users.name;
-                tt_obj['equipType'] = tt_obj.selectType.text;
-                tt_obj['equipUseState'] = tt_obj.selectState.text;
-                delete tt_obj.selectState;
-                delete tt_obj.selectType;
-                delete tt_obj.users;
-                return_res.push(tt_obj);
             }
+            console.log(result);
+            res.send(methods.formatRespond(flag, 200, '', return_res));
         }
-        console.log(result);
-        res.send(methods.formatRespond(flag, 200, '', return_res))
+        
     } catch (err) {
         code = 10003;
         flag = false;
         temp = methods.formatRespond(false, code, err.message + ';' + err.name);
         res.status(400).send(temp);
     }
+    return flag
 }
 
 //添加普通类型配件的请求的方法
@@ -290,5 +300,6 @@ const executeNormalModify = (req, res) => {
 }
 
 module.exports = {
-    handleNormalGet, handleNormalAdd, handleNormalModify
+    handleNormalGet, handleNormalAdd, handleNormalModify,
+    getNormalInMachine
 };
