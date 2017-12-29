@@ -41,6 +41,9 @@ const formatError = (code) => {
         case 12001:
             txt = '参数不能为空';
             break;
+        case 12002:
+            txt = '未传入机器的ID';
+            break;
         /**
          * 选项的报错文本
          */
