@@ -53,7 +53,8 @@ module.exports = function (sequelize, Sequelize) {
     });
     fitting.associate = function (model) {
         fitting.belongsTo(model.user,{as: 'users',foreignKey: 'createUser', targetKey: 'id'});
-        fitting.belongsTo(model.select_list, {as: 'selects', foreignKey: 'useState', targetKey: 'value'})
+        fitting.belongsTo(model.select_list, {as: 'selectType', foreignKey: 'type', targetKey: 'value'});
+        fitting.belongsTo(model.select_list, {as: 'selectState', foreignKey: 'useState', targetKey: 'value'});
     }
     return fitting
 }
