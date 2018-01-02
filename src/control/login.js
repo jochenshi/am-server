@@ -219,7 +219,7 @@ const validRequest = async (req, res) => {
 
 //根据请求的相关信息，获取当前用户ID的操作
 const getUserId = (req, res) => {
-    let {am_user} = handleToken(req.cookies).data;
+    let {am_user} = req.cookies ? handleToken(req.cookies).data : {am_user :'id_61646d696e75736572'};
     return am_user;
 };
 module.exports = {handleLogin, checkUser, getUserId, validRequest};

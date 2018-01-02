@@ -111,7 +111,7 @@ const verifySelectExist = async ({ code, name },res) => {
  * @param res
  * @returns {Promise.<boolean>}
  */
-const verifySelecItemExist = async ({ code, name, value, text },res) => {
+const verifySelecItemExist = async ({id, code, name, value, text },res) => {
     let temp, hcode, flag = true;
     try {
         let param = { code : code , $or : [{ value: value}]};
@@ -120,6 +120,11 @@ const verifySelecItemExist = async ({ code, name, value, text },res) => {
         }
         if(name){
             param['name'] = name;
+        }
+        if(id){
+            param['$not'] = {
+                id : id
+            }
         }
         let select = await model.select_list.findAll({
             where: param
@@ -212,7 +217,7 @@ const deleteSelect = async ({code, id}, res) => {
  * @returns {Promise.<void>}
  */
 const updateSelect = async ({ id, code, name, value, text ,type = ''},res) => {
-    let flag = await verifySelecItemExist({ code, name, value, text },res);
+    let flag = await verifySelecItemExist({ id, code, name, value, text },res);
     if(!flag){
         return;
     }
@@ -280,6 +285,7 @@ const getMachineSelect = async (res) => {
     data.model = [];
     data.brand = [];
     data.cpu = [];
+    data.location = [];
     data.inType = await getSelectByParam({
         code : 'S0001',
         type : 'in'
@@ -304,9 +310,13 @@ const getMachineSelect = async (res) => {
     data.cpu = await getSelectByParam({
         code : 'S0009'
     });
+    data.location = await getSelectByParam({
+        code : 'S0015'
+    });
     res && res.send(methods.formatRespond(true, 200, '',data));
     return data;
 }
+
 
 //获取普通配件涉及到的相关选项的可选值
 const getNormalEquipSelect = async (res) => {
