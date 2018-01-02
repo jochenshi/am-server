@@ -15,5 +15,8 @@ module.exports = function (sequelize, Sequelize) {
     {
         comment: '权限对照表'
     });
+    authority.associate = function (model) {
+        authority.belongsToMany(model.role, {through: 'roleAuthority'});
+    }
     return authority;
 }

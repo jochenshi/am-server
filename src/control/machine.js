@@ -324,7 +324,7 @@ const modifyMachine = async (id,param,res) => {
         flag = await ascription.modifyAscription(param);
         if(flag){
             res.send(methods.formatRespond(true, 200));
-            await addMachineSelect(param);
+            await addMacineSelect(param);
         }else{
             flag = false;
             hcode = 13201;

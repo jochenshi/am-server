@@ -12,7 +12,7 @@ console.log('start index');
 const user = require('./user');
 const role = require('./role');
 const authority = require('./authority');
-const roleAuthority = require('./roleAuthority');
+//const roleAuthority = require('./roleAuthority');
 // const User = require('./user_info');
 // const machine = require('./machine_info')
 

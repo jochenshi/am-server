@@ -55,7 +55,7 @@ const checkUser = async (account, password, res) => {
                 res.cookie('am_user', user_token.am_user,{maxAge: 60 * 60 * 1000});
                 res.cookie('am_sig', user_token.am_sig, {maxAge: 60 * 60 * 1000});
                 res.cookie('am_val', user_token.am_val, {maxAge: 60 * 60 * 1000})
-                res.send({text: 'login success'});
+                res.send(methods.formatRespond(flag, 200, ''));
             }
             //console.log(user)
         }

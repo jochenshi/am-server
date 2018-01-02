@@ -15,6 +15,7 @@ var select = require('./routes/select_list');
 var machine = require('./routes/machine');
 var address = require('./routes/address');
 const equip = require('./routes/equip');
+const authority = require('./routes/authority')
 
 var app = express();
 
@@ -39,13 +40,14 @@ app.use(async (req, res, next) => {
     next();
   } else {
     console.log('before valid')
-    // let valid_flag = await login.validRequest(req, res);
-    // if (valid_flag) {
-    //   console.log('after valid')
-    //   res['cookies'] = req.cookies;
-    //   next();
-    // }
-    next();
+    let valid_flag = await login.validRequest(req, res);
+    if (valid_flag) {
+      console.log('after valid')
+      res['cookies'] = req.cookies;
+      next();
+    }
+    //此处为调试的时候跳过身份验证使用，使用的时候将else内的内容注释，添加next()即可
+    //next();
     //res.status(400).send({message: 'stop it'})
   }  
 })
@@ -57,6 +59,7 @@ app.use('/am/select',select);
 app.use('/am/machine',machine);
 app.use('/am/address',address);
 app.use('/am/equip', equip);
+app.use('/am/authority', authority)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
