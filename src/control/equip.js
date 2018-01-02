@@ -8,6 +8,13 @@ const Op = Sequelize.Op;
 const ascription = require('./ascription');
 const selectControl = require('./select_list');
 
+/* 
+提供的方法的说明：
+1.获取配件的方法：可指定机器的ID，普通配件的类型；
+2.添加普通配件的方法；
+3.修改普通配件的方法(未完成)
+*/
+
 //获取普通类型的配件的方法，此方法可以指定查询的机器的ID，可以指定获取配件的类型
 const handleNormalGet = async (req, res) => {
     let flag = true, code, temp, fit = [];
