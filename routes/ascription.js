@@ -9,4 +9,8 @@ router.get('/',function(req, res, next) {
     ascription.getInAscription(res);
 })
 
+router.get('/brief',function(req, res, next) {
+    ascription.getBriefInfo(res);
+})
+
 module.exports = router;

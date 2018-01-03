@@ -124,6 +124,48 @@ const getInAscription = async(res) => {
     }
 }
 
-getInAscription();
+const getBriefInfo = async(res) => {
+    let flag = true,temp = '',hcode = '',data = [];
+    try{
+        let machine = await model.machine.findAll({
+            where : {
+                type : 'server',
+                $not : [
+                    { useState : 'destory'}
+                ]
+            }
+        });
+        let countMachine = {typeText: '服务器',total: machine.length, remainder: 0}
+        machine.forEach((item)=>{
+            if(item.useState==='idle'){
+                countMachine.remainder++;
+            }
+        })
+        data.push(countMachine);
+        let fitting = await model.fitting.findAll({
+            where : {
+                type : 'disk',
+                $not : [
+                    { useState : 'destory'}
+                ]
+            }
+        });
+        let countFitting = {typeText: '硬盘',total: fitting.length, remainder: 0}
+        fitting.forEach((item)=>{
+            if(item.useState==='idle'){
+                countFitting.remainder++;
+            }
+        })
+        data.push(countFitting);
+        res && res.send(methods.formatRespond(true, 200,'',data));
+    }catch(err){
+        hcode = 10003;
+        flag = false;
+        temp = methods.formatRespond(false, hcode, err.message + ';' + err.name);
+        res && res.status(400).send(temp);
+    }
+}
 
-module.exports = {addAscription,modifyAscription,getInAscription}
+module.exports = { addAscription, modifyAscription,
+        getInAscription, getBriefInfo
+}
