@@ -64,7 +64,7 @@ machine.useState ,
 machine.createdAt , 
 machine.createUser , 
 machine.description , 
-user.account AS account , 
+user.name AS userName , 
 (SELECT s.text FROM select_list s WHERE machine.type=s.value AND s.code='S0004') AS typeText ,
 (SELECT ss.text FROM select_list ss WHERE machine.useState=ss.value AND ss.code='S0007') AS useStateText
 FROM machine,user 
@@ -91,7 +91,7 @@ machine.useState ,
 machine.createUser ,
 machine.description AS machineDesc,
 machine.createdAt ,
-user.account
+user.name AS userName 
 FROM 
 machine,user 
 WHERE 
@@ -123,6 +123,12 @@ const getMachineData = async (res) => {
     }
 }
 
+/**
+ * 根据id查询某条机器的信息
+ * @param id
+ * @param res
+ * @returns {Promise.<void>}
+ */
 const getMachineDataById = async (id,res) =>{
     let temp,code,flag;
     try {
@@ -172,12 +178,9 @@ const verifyMachineExist = async(param,res)=>{
                 {
                     rdNumber: param.rdNumber
                 },
-                {
+                /*{
                     fixedNumber: param.fixedNumber
-                },
-                {
-                    name: param.name
-                },
+                },*/
                 {
                     serialNo: param.serialNo
                 }
@@ -334,7 +337,7 @@ const modifyMachine = async (id,param,res) => {
     }catch (err) {
         hcode = 10003;
         flag = false;
-        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        temp = methods.formatRespond(false, hcode, err.message + ';' + err.name);
         res.status(400).send(temp);
     }
 }

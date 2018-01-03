@@ -260,6 +260,7 @@ const getSelectByParam = async (param)=>{
  * 添加在新增物资信息时，新增的选项数据
  */
 const addSelectParam = async ({code, name, value, text, type})=>{
+    if(value===undefined||value===null) return;
     text = text || value;
     name = name || selectCodeName[code];
     if(!name){
