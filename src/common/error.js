@@ -44,6 +44,9 @@ const formatError = (code) => {
         case 12002:
             txt = '未传入机器的ID';
             break;
+        case 12003:
+            txt = '已经存在相同名称或S/N号的配件';
+            break;    
         /**
          * 选项的报错文本
          */

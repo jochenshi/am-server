@@ -13,7 +13,7 @@ module.exports = function (sequelize, Sequelize) {
         comment: '机器配件关联表'
     });
     relates.associate = function (model) {
-        //relates.belongsTo(model.machine, {as: 'parentMachine', foreignKey: 'machineId', targetKey: 'id'});
+        relates.belongsTo(model.machine, {as: 'parentMachine', foreignKey: 'machineId', targetKey: 'id'});
         relates.belongsTo(model.fitting, {as: 'parentFitting', foreignKey: 'fittingId', targetKey: 'id'})
     };
     return relates;
