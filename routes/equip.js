@@ -11,7 +11,7 @@ router.post('/normalEquip', (req, res) => {
     normalAdd.handleNormalAdd(req, res)
 });
 
-router.put('/normalEquip', (req, res) => {
+router.put('/normalEquip/:id', (req, res) => {
     normalAdd.handleNormalModify(req, res);
 });
 

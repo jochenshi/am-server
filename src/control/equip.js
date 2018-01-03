@@ -47,6 +47,11 @@ const handleNormalGet = async (req, res) => {
                         model: models.select_list,
                         as: 'selectState',
                         attributes: ['code', 'name', 'text','id']
+                    },
+                    {
+                        model: models.ascription,
+                        as: 'ascription',
+                        attributes: ['id','outInType','originObject','targetObject','relatedType','occurTime','description']
                     }
                 ]
             });
@@ -60,6 +65,13 @@ const handleNormalGet = async (req, res) => {
                 temp_fit['creator'] = temp_fit.users.name;
                 temp_fit['equipType'] = temp_fit.selectType.text;
                 temp_fit['equipUseState'] = temp_fit.selectState.text;
+                temp_fit['outInType'] = temp_fit.ascription.outInType;
+                temp_fit['originObject'] = temp_fit.ascription.originObject;
+                temp_fit['targetObject'] = temp_fit.ascription.targetObject;
+                temp_fit['relatedType'] = temp_fit.ascription.relatedType;
+                temp_fit['occurTime'] = temp_fit.ascription.occurTime;
+                temp_fit['ascDesc'] = temp_fit.ascription.description;
+                temp_fit['ascriptionId'] = temp_fit.ascription.id;
                 delete temp_fit.selects;
                 delete temp_fit.users;
                 delete temp_fit.selectState;
@@ -121,6 +133,11 @@ const getNormalInMachine = async (req, res) => {
                                 model: models.select_list,
                                 as: 'selectState',
                                 attributes: ['code', 'name', 'text','id']
+                            },
+                            {
+                                model: models.ascription,
+                                as: 'ascription',
+                                attributes: ['id','outInType','originObject','targetObject','relatedType','occurTime','description']
                             }
                         ]
                     }
@@ -134,6 +151,13 @@ const getNormalInMachine = async (req, res) => {
                     tt_obj['creator'] = tt_obj.users.name;
                     tt_obj['equipType'] = tt_obj.selectType.text;
                     tt_obj['equipUseState'] = tt_obj.selectState.text;
+                    tt_obj['outInType'] = tt_obj.ascription.outInType;
+                    tt_obj['originObject'] = tt_obj.ascription.originObject;
+                    tt_obj['targetObject'] = tt_obj.ascription.targetObject;
+                    tt_obj['relatedType'] = tt_obj.ascription.relatedType;
+                    tt_obj['occurTime'] = tt_obj.ascription.occurTime;
+                    tt_obj['ascDesc'] = tt_obj.ascription.description;
+                    tt_obj['ascriptionId'] = tt_obj.ascription.id;
                     delete tt_obj.selectState;
                     delete tt_obj.selectType;
                     delete tt_obj.users;
@@ -164,7 +188,8 @@ const handleNormalAdd = (req, res) => {
 const handleNormalModify = (req, res) => {
     console.log(req.body);
     let flag = true, code, temp;
-    let {id, serialNo, name, type, model, brand, size, unit, useState, description} = req.body;
+    let {id} = req.params;
+    let {serialNo, name, type, model, brand, size, unit, useState, description} = req.body;
     if (!id ||!serialNo || !name || !type || !model || !brand) {
         //修改传过来的参数必填校验不通过
         flag = false;
@@ -178,9 +203,23 @@ const handleNormalModify = (req, res) => {
         //         id: id
         //     }
         // });
+        executeNormalModify(req, res);
 
     }
 }
+
+/* 
+耗材类配件的相关的方法
+*/
+//获取耗材类配件的方法
+const handleSupplyGet = async (req, res) => {}
+
+//添加耗材类配件的方法
+const handleSupplyAdd = async (req, res) => {
+    
+}
+
+//修改耗材类配件的方法
 
 //关于普通类型的配件的添加的验证
 const verifyNormal = async (req, res) => {
@@ -222,7 +261,7 @@ const verifyNormal = async (req, res) => {
                         targetObject: addData.targetObject || '',
                         operateUser: userId,
                         createTime: Date.now(),
-                        description: addData.originDes || ''
+                        ascriptionDesc: addData.originDes || ''
                     };
                     if (ascription.addAscription(param)) {
                         await findCreateNormalSelect(addData);
@@ -257,7 +296,7 @@ const executeNormalAdd = async (obj, res) => {
             type: obj.type,
             model: obj.model,
             brand: obj.brand,
-            size: obj.size,
+            size: obj.size || null,
             unit: obj.unit,
             useState: 'idle',
             createUser: obj.userId,
@@ -302,8 +341,68 @@ const executeNormalDelete = async (id) => {
 }
 
 //执行修改普通配件的操作
-const executeNormalModify = (req, res) => {
-
+const executeNormalModify = async (req, res) => {
+    let flag = true,code,temp;
+    try {
+        let {id} = req.params;
+        let {serialNo, name, type, model, brand, size, unit, useState, description, originDes, ascriptionId} = req.body;
+        let findFit = await models.fitting.findAll({
+            where: {
+                [Op.or]: [
+                    {serialNo},
+                    {name}
+                ],
+                [Op.not]: [
+                    {id}
+                ]
+            }
+        });
+        if (findFit.length) {
+            flag = false;
+            code = 12003;
+            res.status(400).send(methods.formatRespond(flag, code, errorText.formatError(code)));
+        } else {
+            let userId = methods.getUserId(req, res);
+            let addData = Object.assign({}, req.body, {userId});
+            await models.fitting.update({
+                serialNo: serialNo,
+                name: name,
+                type: type,
+                model: model,
+                brand: brand,
+                size: size || null,
+                unit: unit,
+                description: description || ''
+            },{
+                where: {
+                    id: id
+                }
+            });
+            let param = {
+                outInType: addData.origin,
+                occurTime: addData.time,
+                originObject: addData.originObject || '',
+                targetObject: addData.targetObject || '',
+                ascriptionDesc: addData.originDes || '',
+                ascriptionId: addData.ascriptionId
+            };
+            flag = await ascription.modifyAscription(param);
+            if (flag) {
+                await findCreateNormalSelect(addData);
+                res.send(methods.formatRespond(true, 200));
+            } else {
+                flag = false;
+                code = 13201;
+                temp = methods.formatRespond(false, code, errorText.formatError(code));
+                res.status(400).send(temp);
+            }
+        }
+    } catch (err) {
+        code = 10003;
+        flag = false;
+        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        res.status(400).send(temp);
+    }
 }
 
 module.exports = {

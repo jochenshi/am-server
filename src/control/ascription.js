@@ -34,6 +34,7 @@ const modifyAscription = async(param) => {
         await model.ascription.update({
             outInType : param.outInType,
             originObject : param.originObject,
+            occurTime : param.occurTime,
             targetObject : param.targetObject,
             description: param.ascriptionDesc
         },{

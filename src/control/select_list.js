@@ -337,7 +337,8 @@ const getNormalEquipSelect = async (res) => {
             code: 'S0011'
         });
         data.origin = await getSelectByParam({
-            code: 'S0001'
+            code: 'S0001',
+            type: 'in'
         })
         flag = true;
         res.send(methods.formatRespond(flag, 200,'',data));
