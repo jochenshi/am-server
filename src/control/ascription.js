@@ -5,6 +5,38 @@ const model = require('../models');
 const methods = require('../common/methods');
 const errorText = require('../common/error');
 
+const GET_IN_ASCRIPTION = `
+SELECT 
+MAX(createdAt) AS createdAt, 
+relatedId, 
+relatedType 
+FROM 
+ascription 
+GROUP BY 
+relatedId, 
+relatedType
+;
+`;
+
+const GET_MATERIAL_INFO = `
+SELECT 
+a.outInType,
+(SELECT ss.text FROM select_list ss WHERE a.outInType=ss.value AND ss.code='S0001') AS outInTypeText, 
+a.originObject, 
+a.occurTime, 
+a.description AS ascriptionDesc, 
+m.*, 
+(SELECT ss.text FROM select_list ss WHERE m.type=ss.value AND ss.code=?) AS typeText, 
+(SELECT ss.text FROM select_list ss WHERE m.useState=ss.value AND ss.code='S0007') AS useStateText 
+FROM 
+{table} AS m, 
+ascription AS a 
+WHERE 
+a.relatedType=? AND a.relatedId=? AND a.createdAt=? 
+AND a.relatedId=m.id
+;
+`;
+
 /**
  * 添加出入记录信息
  * @param param
@@ -57,9 +89,41 @@ const modifyAscription = async(param) => {
  * @returns {Promise.<void>}
  */
 const getInAscription = async(res) => {
-
+    let flag = true,temp = '',hcode = '';
+    try{
+        let data = await model.sequelize.query(GET_IN_ASCRIPTION);
+        data = data[0];
+        let datas = [];
+        for(let i = 0;i<data.length;i++){
+            let item = data[i],typeCode = '';
+            switch(item.relatedType){
+                case 'machine':
+                    typeCode = 'S0004';
+                    break;
+                case 'fitting':
+                    typeCode = 'S0008';
+                    break;
+                case 'part':
+                    typeCode = 'S0016';
+                    break;
+            }
+            let material = await model.sequelize.query(GET_MATERIAL_INFO.replace('{table}',item.relatedType),{
+                replacements : [typeCode,item.relatedType, item.relatedId, item.createdAt]
+            });
+            material = material[0];
+            if(material.length){
+                datas.push(material[0]);
+            }
+        }
+        res && res.send(methods.formatRespond(true, 200,'',datas));
+    }catch(err){
+        hcode = 10003;
+        flag = false;
+        temp = methods.formatRespond(false, hcode, err.message + ';' + err.name);
+        res && res.status(400).send(temp);
+    }
 }
 
+getInAscription();
 
-
-module.exports = {addAscription,modifyAscription}
+module.exports = {addAscription,modifyAscription,getInAscription}

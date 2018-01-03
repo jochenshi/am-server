@@ -123,6 +123,12 @@ const getMachineData = async (res) => {
     }
 }
 
+/**
+ * 根据id查询某条机器的信息
+ * @param id
+ * @param res
+ * @returns {Promise.<void>}
+ */
 const getMachineDataById = async (id,res) =>{
     let temp,code,flag;
     try {
@@ -331,7 +337,7 @@ const modifyMachine = async (id,param,res) => {
     }catch (err) {
         hcode = 10003;
         flag = false;
-        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        temp = methods.formatRespond(false, hcode, err.message + ';' + err.name);
         res.status(400).send(temp);
     }
 }
