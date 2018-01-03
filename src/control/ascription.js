@@ -5,9 +5,6 @@ const model = require('../models');
 const methods = require('../common/methods');
 const errorText = require('../common/error');
 
-
-
-
 /**
  * 添加出入记录信息
  * @param param

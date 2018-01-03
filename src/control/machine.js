@@ -64,7 +64,7 @@ machine.useState ,
 machine.createdAt , 
 machine.createUser , 
 machine.description , 
-user.account AS account , 
+user.name AS userName , 
 (SELECT s.text FROM select_list s WHERE machine.type=s.value AND s.code='S0004') AS typeText ,
 (SELECT ss.text FROM select_list ss WHERE machine.useState=ss.value AND ss.code='S0007') AS useStateText
 FROM machine,user 
@@ -91,7 +91,7 @@ machine.useState ,
 machine.createUser ,
 machine.description AS machineDesc,
 machine.createdAt ,
-user.account
+user.name AS userName 
 FROM 
 machine,user 
 WHERE 
@@ -172,12 +172,9 @@ const verifyMachineExist = async(param,res)=>{
                 {
                     rdNumber: param.rdNumber
                 },
-                {
+                /*{
                     fixedNumber: param.fixedNumber
-                },
-                {
-                    name: param.name
-                },
+                },*/
                 {
                     serialNo: param.serialNo
                 }
