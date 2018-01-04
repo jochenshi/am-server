@@ -304,6 +304,13 @@ const addMachineSelect = (param)=>{
     selectControl.addSelectParam({code : 'S0015',value: param.location});
 }
 
+/**
+ * 修改机器基本信息
+ * @param id
+ * @param param
+ * @param res
+ * @returns {Promise.<void>}
+ */
 const modifyMachine = async (id,param,res) => {
     param.id = id;
     let flag = await verifyMachineExist(param,res),temp = '',hcode = '';

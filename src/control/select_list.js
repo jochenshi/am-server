@@ -385,8 +385,30 @@ const getSupplyEquipSelect = async (res) => {
     return data;
 }
 
+/**
+ * 得到分配时需要的选项
+ */
+const getAssignSelect = async (res) => {
+    let data = {
+        projects: []
+    },flag = true, code, temp;
+    try {
+        data.projects = await getSelectByParam({
+            code: 'S0019'
+        });
+        flag = true;
+        res && res.send(methods.formatRespond(flag, 200,'',data));
+    } catch (err) {
+        code = 10003;
+        flag = false;
+        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        res && res.status(400).send(temp);
+    }
+    return data;
+}
+
 module.exports = {
     getSelectDataTitle, getSelectDataByCode,
     getSelectData, verifySelectExist, addSelect, deleteSelect, updateSelect, addSelectParam, getMachineSelect,
-    getNormalEquipSelect, getSupplyEquipSelect
+    getNormalEquipSelect, getSupplyEquipSelect, getAssignSelect
 }

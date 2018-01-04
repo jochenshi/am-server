@@ -1,5 +1,5 @@
 module.exports = function (sequelize, Sequelize) {
-    var usage = sequelize.define('usage', {
+    var usage = sequelize.define('use_record', {
         relateId: {
             type: Sequelize.STRING,
             allowNull: false
@@ -30,7 +30,7 @@ module.exports = function (sequelize, Sequelize) {
             type: Sequelize.DATE
         },
         returnNumber: {
-            type: Sequelize.DATE
+            type: Sequelize.INTEGER
         },
         returnDetail: {
             type: Sequelize.TEXT
