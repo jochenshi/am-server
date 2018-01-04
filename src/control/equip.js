@@ -19,8 +19,8 @@ const selectControl = require('./select_list');
 const handleNormalGet = async (req, res) => {
     let flag = true, code, temp, fit = [];
     try {
-        let {equipType = 'all', machineId} = req.query;
-        let arg = equipType === 'all' ? {} : {where: {type: equipType}};
+        let {type = 'all', machineId} = req.query;
+        let arg = type === 'all' ? {} : {where: {type: type}};
         //先判断是否传入machineId，如果传入了则查找与该ID相关的配件的数据,machineId可以传单个也可以传多个
         if (machineId) {
             //传入了Id的情况下进行相关数据的获取
@@ -28,6 +28,7 @@ const handleNormalGet = async (req, res) => {
             if (!gFlag) {
                 return
             }
+            return
         } else {
             //此处是不根据传入的机器的id进行相关配件信息的获取
             fit = await models.fitting.findAll({
@@ -93,7 +94,7 @@ const handleNormalGet = async (req, res) => {
 const getNormalInMachine = async (req, res) => {
     let flag = true, code, temp, return_res = [];
     try {
-        let {equipType = 'all', machineId} = req.query;
+        let {type = 'all', machineId} = req.query;
         //machineId = [1,2];
         if (!machineId) {
             flag = false;
@@ -102,7 +103,7 @@ const getNormalInMachine = async (req, res) => {
         } else {
             //需要判断获取到的机器的id,根据传入的机器的Id进行相关信息的查询
             let idTag = Array.isArray(machineId);
-            let arg = equipType === 'all' ? {} : {where: {type: equipType}};
+            let arg = type === 'all' ? {} : {where: {type: type}};
             if (!idTag) {
                 let tArray = new Array();
                 tArray.push(machineId);

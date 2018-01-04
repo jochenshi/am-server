@@ -14,14 +14,15 @@ const addSelect = async ({ code, name, value, text ,delable = false, type = '' }
         });
         return true;
     }catch (err) {
+        console.log(err)
         return false;
     }
 }
 
-const addSelects = (datas)=>{
+const addSelects = async (datas)=>{
     for(let i in datas){
         let item = datas[i];
-        addSelect(item);
+        await addSelect(item);
     }
 }
 
@@ -61,8 +62,8 @@ const datas = [
     {code : 'S0016', name: '耗材类配件的类型', value: 'diskTray', text : '硬盘托架', delable: false}
 ];
 
-const initSelect = () => {
-    addSelects(datas);
+const initSelect = async () => {
+    await addSelects(datas);
 }
 
 /**
@@ -172,5 +173,5 @@ const testAscription = async ()=>{
 // getCount();
 // testMachine();
 // getAddMachineParam();
-testAscription();
+//testAscription();
 module.exports.initSelect = initSelect;
