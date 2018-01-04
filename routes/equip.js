@@ -15,4 +15,12 @@ router.put('/normalEquip/:id', (req, res) => {
     normalAdd.handleNormalModify(req, res);
 });
 
+router.post('/supplyEquip', (req, res) => {
+    normalAdd.handleSupplyAdd(req, res);
+})
+
+router.get('/supplyEquip', (req, res) => {
+    normalAdd.handleSupplyGet(req, res);
+})
+
 module.exports = router;

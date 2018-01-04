@@ -98,9 +98,9 @@ const authorityData = [
         description: '分配普通配件'
     },
     {
-        value: 'returnNormalEquip',
-        name: '归还',
-        description: '归还普通配件'
+        value: 'withdrawNormalEquip',
+        name: '收回',
+        description: '收回普通配件'
     },
     // {
     //     value: 'applyNormalEquip',
@@ -133,9 +133,9 @@ const authorityData = [
         description: '分配耗材配件'
     },
     {
-        value: 'returnSupplyEquip',
-        name: '归还',
-        description: '归还耗材配件'
+        value: 'withdrawSupplyEquip',
+        name: '收回',
+        description: '收回耗材配件'
     },
     // {
     //     value: 'applySupplyEquip',

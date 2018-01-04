@@ -352,8 +352,41 @@ const getNormalEquipSelect = async (res) => {
     return data;
 }
 
+//获取耗材类配件涉及到的相关选项的可选值
+const getSupplyEquipSelect = async (res) => {
+    let data = {
+        type: [],
+        model: [],
+        brand: [],
+        origin: []
+    },flag = true, code, temp;
+    try {
+        data.type = await getSelectByParam({
+            code: 'S0016'
+        });
+        data.model = await getSelectByParam({
+            code: 'S0017'
+        });
+        data.brand = await getSelectByParam({
+            code: 'S0018'
+        });
+        data.origin = await getSelectByParam({
+            code: 'S0001',
+            type: 'in'
+        })
+        flag = true;
+        res.send(methods.formatRespond(flag, 200,'',data));
+    } catch (err) {
+        code = 10003;
+        flag = false;
+        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        res.status(400).send(temp);
+    }
+    return data;
+}
+
 module.exports = {
     getSelectDataTitle, getSelectDataByCode,
     getSelectData, verifySelectExist, addSelect, deleteSelect, updateSelect, addSelectParam, getMachineSelect,
-    getNormalEquipSelect
+    getNormalEquipSelect, getSupplyEquipSelect
 }

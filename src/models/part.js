@@ -1,9 +1,10 @@
 module.exports = function (sequelize, Sequelize) {
     var part = sequelize.define('part', {
         id: {
-            type: Sequelize.STRING,
+            type: Sequelize.INTEGER,
             primaryKey: true,
-            allowNull: false
+            allowNull: false,
+            autoIncrement: true
         },
         name: {
             type: Sequelize.STRING
@@ -21,9 +22,6 @@ module.exports = function (sequelize, Sequelize) {
         number: {
             type: Sequelize.INTEGER,
             allowNull: false
-        },
-        unit: {
-            type: Sequelize.STRING
         },
         remainNumber: {
             type: Sequelize.INTEGER
@@ -45,5 +43,11 @@ module.exports = function (sequelize, Sequelize) {
     {
         comment: '零件信息表'
     });
+    part.associate = function (model) {
+        part.belongsTo(model.user,{as: 'users',foreignKey: 'createUser', targetKey: 'id'});
+        part.belongsTo(model.select_list, {as: 'selectType', foreignKey: 'type', targetKey: 'value'});
+        part.belongsTo(model.select_list, {as: 'selectState', foreignKey: 'useState', targetKey: 'value'});
+        part.belongsTo(model.ascription, {as: 'ascription', foreignKey: 'id', targetKey: 'relatedId',constraints: false, scope: {relatedType: 'part'}})
+    }
     return part
 }

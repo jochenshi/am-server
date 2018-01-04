@@ -59,5 +59,11 @@ router.get('/machine',function(req, res, next){
 // 获取普通配件的相关选项
 router.get('/normalEquip', function (req, res, next) {
     select.getNormalEquipSelect(res);
+});
+
+//获取耗材类的配件的相关选项
+router.get('/supplyEquip', function (req, res, next) {
+    select.getSupplyEquipSelect(res);
 })
+
 module.exports = router;
