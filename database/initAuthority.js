@@ -67,6 +67,16 @@ const authorityData = [
         description: '修改机器(普通修改)'
     },
     {
+        value: 'assignMachine',
+        name: '分配机器',
+        description: '分配机器'
+    },
+    {
+        value: 'withdrawMachine',
+        name: '收回机器',
+        description: '收回机器'
+    },
+    {
         value: 'address',
         name: '查看机器地址',
         description: '查看地址'

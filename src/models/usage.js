@@ -30,7 +30,7 @@ module.exports = function (sequelize, Sequelize) {
             type: Sequelize.DATE
         },
         returnNumber: {
-            type: Sequelize.DATE
+            type: Sequelize.INTEGER
         },
         returnDetail: {
             type: Sequelize.TEXT
