@@ -17,6 +17,50 @@ const handleLogin = async (req, res) => {
     }
 };
 
+//处理退出登录的请求
+const handleLoginOut = async (req, res) => {
+    let flag = true, code, temp;
+    try {
+        let userId = getUserId(req);
+        await model.login.destroy({
+            where: {
+                userId: userId
+            }
+        });
+        res.clearCookie('am_user').clearCookie('am_sig').clearCookie('am_val').send(methods.formatRespond(true, 200))
+    } catch (err) {
+        code = 10003;
+        flag = false;
+        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        res.status(400).send(temp);
+    }
+}
+
+//获取用户的名称
+const getUserName = async (req, res) => {
+    let flag = true, code, temp, resObj;
+    try {
+        let userId = getUserId(req);
+        let userInfo = await model.user.findAll({
+            where: {
+                id: userId
+            }
+        });
+        if (userInfo.length) {
+            resObj = {
+                name: userInfo[0].name,
+                account: userInfo[0].account
+            }
+        }
+        res.send(methods.formatRespond(flag, 200, '', resObj));
+    } catch (err) {
+        code = 10003;
+        flag = false;
+        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        res.status(400).send(temp);
+    }
+}
+
 //获取当前用户具备的权限
 const getUserAuthority = (req, res) => {
     try {
@@ -69,8 +113,6 @@ const checkUser = async (account, password, res) => {
 };
 
 //执行登录请求的时候对login表的处理
-
-
 const addLogin = (userId, token) => {};
 
 // 处理用户登录保持，写入login表
@@ -222,4 +264,7 @@ const getUserId = (req, res) => {
     let {am_user} = req.cookies ? handleToken(req.cookies).data : {am_user :'id_61646d696e75736572'};
     return am_user;
 };
-module.exports = {handleLogin, checkUser, getUserId, validRequest};
+module.exports = {
+    handleLogin, handleLoginOut, checkUser, getUserId,
+    validRequest, getUserName
+};

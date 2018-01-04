@@ -12,6 +12,16 @@ router.post('/login', function(req, res, next) {
   //res.send('respond with a resource');
 });
 
+//退出登录的请求
+router.get('/loginOut', (req, res) => {
+  loginMethod.handleLoginOut(req, res);
+})
+
+//查询登录的用户名以及账号
+router.get('/userName', (req, res) => {
+  loginMethod.getUserName(req, res);
+})
+
 /*Handle user add*/
 router.post('/add', (req, res, next) => {
   console.log(req.body);

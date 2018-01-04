@@ -142,6 +142,12 @@ const authorityData = [
     //     name: '申请',
     //     description: '申请耗材配件'
     // }
+    //用户管理的相关的权限
+    {
+        value: 'addUser',
+        name: '添加',
+        description: '创建用户'
+    }
 ];
 
 const finalAuthority = {
