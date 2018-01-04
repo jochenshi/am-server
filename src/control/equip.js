@@ -212,11 +212,131 @@ const handleNormalModify = (req, res) => {
 耗材类配件的相关的方法
 */
 //获取耗材类配件的方法
-const handleSupplyGet = async (req, res) => {}
+const handleSupplyGet = async (req, res) => {
+    let flag = true, code, temp, part = [];
+    try {
+        part =  await models.part.findAll({
+            include: [
+                {
+                    model: models.user,
+                    as: 'users',
+                    attributes: ['name', 'id']
+                },
+                {
+                    model: models.select_list,
+                    as: 'selectType',
+                    attributes: ['code', 'name', 'text','id']
+                },
+                {
+                    model: models.select_list,
+                    as: 'selectState',
+                    attributes: ['code', 'name', 'text','id']
+                },
+                {
+                    model: models.ascription,
+                    as: 'ascription',
+                    attributes: ['id','outInType','originObject','targetObject','relatedType','occurTime','description']
+                }
+            ]
+        });
+        //解除引用关系
+        let temps = JSON.parse(JSON.stringify(part));
+        if (temps.length) {
+            for (let i = 0; i < temps.length; i++) {
+                let temp_fit = temps[i];
+                temp_fit['key'] = temp_fit.id;
+                temp_fit['creator'] = temp_fit.users.name;
+                temp_fit['equipType'] = temp_fit.selectType.text;
+                temp_fit['equipUseState'] = temp_fit.selectState.text;
+                temp_fit['outInType'] = temp_fit.ascription.outInType;
+                temp_fit['originObject'] = temp_fit.ascription.originObject;
+                temp_fit['targetObject'] = temp_fit.ascription.targetObject;
+                temp_fit['relatedType'] = temp_fit.ascription.relatedType;
+                temp_fit['occurTime'] = temp_fit.ascription.occurTime;
+                temp_fit['ascDesc'] = temp_fit.ascription.description;
+                temp_fit['ascriptionId'] = temp_fit.ascription.id;
+                temp_fit['createTime'] = temp_fit.ascription.occurTime;
+                delete temp_fit.selects;
+                delete temp_fit.users;
+                delete temp_fit.selectState;
+                delete temp_fit.selectType;
+            }
+        }
+        console.log('....', temps);
+        res.send(methods.formatRespond(flag, 200, '', temps))
+    } catch (err) {
+        flag = false;
+        code = 10003;
+        temp = methods.formatRespond(flag, code, err.message + ';' + err.name);
+        res.status(400).send(temp);
+    }
+}
 
 //添加耗材类配件的方法
 const handleSupplyAdd = async (req, res) => {
-    
+    let flag = true, code, temp;
+    try {
+        let {origin, time, name, type, model, brand, number, description} = req.body || {};
+        if (!origin || !time || !name || !type || !model || !brand || !number) {
+            flag = false;
+            code = 12001;
+            temp = methods.formatRespond(flag, code, errorText.formatError(code));
+            res.status(400).send(temp);
+        } else {
+            let findPart = await models.part.findAll({
+                where: {
+                    name: name,
+                    type: type
+                }
+            });
+            if (findPart.length) {
+                flag = false;
+                code = 12004;
+                temp = methods.formatRespond(flag, code, errorText.formatError(code));
+                res.status(400).send(temp);
+            } else {
+                //所有参数均已获得，且同类型的不存在重复的名称，执行相关的添加的操作
+                let userId = methods.getUserId(req);
+                let createPart = await models.part.create({
+                    name: name,
+                    type: type,
+                    model: model,
+                    brand: brand,
+                    number: number,
+                    remainNumber: number,
+                    useState: 'idle',
+                    createUser: userId,
+                    description: description || null
+                });
+                let addData = Object.assign({}, req.body, {userId});
+                let asParam = {
+                    relatedId: createPart.id,
+                    relatedType: 'part',
+                    outInType: origin,
+                    occurTime: time,
+                    originObject: addData.originObject || null,
+                    targetObject: addData.targetObject || null,
+                    operateUser: userId,
+                    ascriptionDesc: addData.ascDesc || null
+                };
+                if (ascription.addAscription(asParam)) {
+                    await findCreateSupplySelect(addData);
+                    res.send(methods.formatRespond(true, 200));
+                } else {
+                    //设备归属信息添加失败，删除相应的配件的信息
+                    flag = false;
+                    code = 13200;
+                    let deleteFlag = await executeSupplyDelete(createPart.id, res);
+                    deleteFlag && res.status(400).send(methods.formatRespond(flag, code, errorText.formatError(code)));
+                }
+            }
+        }
+    } catch (err) {
+        flag = false;
+        code = 10003;
+        temp = methods.formatRespond(flag, code, err.message + ';' + err.name);
+        res.status(400).send(temp);
+    }
 }
 
 //修改耗材类配件的方法
@@ -260,7 +380,6 @@ const verifyNormal = async (req, res) => {
                         originObject: addData.originObject || '',
                         targetObject: addData.targetObject || '',
                         operateUser: userId,
-                        createTime: Date.now(),
                         ascriptionDesc: addData.originDes || ''
                     };
                     if (ascription.addAscription(param)) {
@@ -316,14 +435,15 @@ const executeNormalAdd = async (obj, res) => {
 };
 
 //判断添加配件的时候的型号，品牌是否存在，不存在则执行创建操作，存在则继续执行
-const findCreateNormalSelect = (param) => {
-    let flag = true, code, temp;
-    try {
-        selectControl.addSelectParam({code : 'S0010',value: param.model});
-        selectControl.addSelectParam({code : 'S0011',value: param.brand});
-    } catch (err) {
-        flag = false;
-    }
+const findCreateNormalSelect = async (param) => {
+    await selectControl.addSelectParam({code : 'S0010',value: param.model});
+    await selectControl.addSelectParam({code : 'S0011',value: param.brand});
+}
+
+//判断添加耗材类配件的时候的型号，品牌是否存在，不存在则执行创建操作，存在则继续执行
+const findCreateSupplySelect = async (param) => {
+    await selectControl.addSelectParam({code : 'S0017',value: param.model});
+    await selectControl.addSelectParam({code : 'S0018',value: param.brand});
 }
 
 //执行数据库的因添加相关依赖失败，而删除普通类型的配件的方法
@@ -405,7 +525,25 @@ const executeNormalModify = async (req, res) => {
     }
 }
 
+//执行数据库的因添加相关依赖失败，而删除耗材类型的配件的方法
+const executeSupplyDelete = async (id, res) => {
+    let flag = true;
+    try {
+        await models.fitting.destroy({
+            where: {
+                id: id
+            }
+        })
+    } catch (err) {
+        flag = false;
+        code = 10003;
+        temp = methods.formatRespond(flag, code, err.message + ';' + err.name);
+        res.status(400).send(temp);
+    }
+    return flag
+}
+
 module.exports = {
     handleNormalGet, handleNormalAdd, handleNormalModify,
-    getNormalInMachine
+    getNormalInMachine, handleSupplyAdd, handleSupplyGet
 };
