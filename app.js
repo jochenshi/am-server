@@ -15,6 +15,7 @@ var select = require('./routes/select_list');
 var machine = require('./routes/machine');
 var address = require('./routes/address');
 var ascription = require('./routes/ascription');
+var use_record = require('./routes/use_record');
 const equip = require('./routes/equip');
 const authority = require('./routes/authority')
 
@@ -62,6 +63,7 @@ app.use('/am/address',address);
 app.use('/am/equip', equip);
 app.use('/am/authority', authority);
 app.use('/am/ascription', ascription);
+app.use('/am/use_record', use_record);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

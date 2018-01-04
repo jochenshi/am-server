@@ -142,4 +142,31 @@ const getUsers = () => {};
 //get user detail info
 const getUserDetail = () => {};
 
-module.exports = {handleAdd, deleteUser ,modifyUser};
+const getNoSuperUser = async (res)=>{
+    let temp, hcode,data = [];
+    let sql = `
+    SELECT 
+    u.* 
+    FROM 
+    user u, 
+    userRole ur 
+    WHERE 
+    u.id=ur.userId && ur.roleCode!='R0001'
+    ;
+    `;
+    try {
+        // verify whether the user existed before but is not valid now
+        data = await model.sequelize.query(sql);
+        data = data[0];
+        res && res.send(methods.formatRespond(true, 200, '',data));
+    } catch (err) {
+        hcode = 10003;
+        temp = methods.formatRespond(false, hcode, err.message + ';' + err.name);
+        res && res.status(400).send(temp);
+    }
+    return data;
+}
+
+module.exports = {handleAdd, deleteUser ,modifyUser,
+    getNoSuperUser
+};
