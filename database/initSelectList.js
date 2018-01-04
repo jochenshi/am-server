@@ -57,6 +57,8 @@ const datas = [
     {code : 'S0014', name: '健康修复状态', value: 'notrepair', text : '不修复', delable: false},
     {code : 'S0014', name: '健康修复状态', value: 'partrepair', text : '不修复', delable: false},
     {code : 'S0014', name: '健康修复状态', value: 'autorepair', text : '自动修复', delable: false},
+    {code : 'S0016', name: '耗材类配件的类型', value: 'cable', text : '网线', delable: false},
+    {code : 'S0016', name: '耗材类配件的类型', value: 'diskTray', text : '硬盘托架', delable: false}
 ];
 
 const initSelect = () => {
@@ -165,7 +167,7 @@ const testAscription = async ()=>{
     });
     console.log(result.dataValues);
 }
-// initSelect();
+//initSelect();
 // getOne();
 // getCount();
 // testMachine();

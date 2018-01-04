@@ -39,14 +39,17 @@ const formatError = (code) => {
             txt = '配件S/N号或名称已经存在';
             break;
         case 12001:
-            txt = '参数不能为空';
+            txt = '必填参数不能为空';
             break;
         case 12002:
             txt = '未传入机器的ID';
             break;
         case 12003:
             txt = '已经存在相同名称或S/N号的配件';
-            break;    
+            break;
+        case 12004:
+            txt = '已经存在相同名称的配件';
+            break;
         /**
          * 选项的报错文本
          */
