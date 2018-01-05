@@ -1,6 +1,6 @@
 module.exports = function (sequelize, Sequelize) {
     var usage = sequelize.define('use_record', {
-        relateId: {
+        relatedId: {
             type: Sequelize.STRING,
             allowNull: false
         },

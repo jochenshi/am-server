@@ -63,7 +63,7 @@ app.use('/am/address',address);
 app.use('/am/equip', equip);
 app.use('/am/authority', authority);
 app.use('/am/ascription', ascription);
-app.use('/am/use_record', use_record);
+app.use('/am/use', use_record);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
