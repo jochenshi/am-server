@@ -13,4 +13,8 @@ router.post('/assign',function(req, res, next){
     use_record.assign(req.body,res);
 });
 
+router.put('/withdraw',function(req, res, next){
+    use_record.withdraw(req.body,res);
+});
+
 module.exports = router;

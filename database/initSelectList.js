@@ -168,10 +168,19 @@ const testAscription = async ()=>{
     });
     console.log(result.dataValues);
 }
+const testSelectNull = async ()=>{
+    let data = await models.use_record.findAll({
+        'where':{
+            returnTime: null
+        }
+    });
+    console.log(data);
+}
 //initSelect();
 // getOne();
 // getCount();
 // testMachine();
 // getAddMachineParam();
 //testAscription();
+// testSelectNull();
 module.exports.initSelect = initSelect;
