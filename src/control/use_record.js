@@ -62,6 +62,7 @@ const assign = async (param, res)=>{
             lendDetail : param.lendDetail
         });
         res.send(methods.formatRespond(true, 200));
+        addAssignParamSelect(param);
     } catch (err) {
         code = 10003;
         temp = methods.formatRespond(false, code, err.message + ';' + err.name);
@@ -77,6 +78,44 @@ const addAssignParamSelect = (param)=>{
     select.addSelectParam({code : 'S0019',value: param.project});
 }
 
+const withdraw = async (param,res)=>{
+    let temp,code;
+    try {
+        switch(param.relatedType){
+            case 'machine':
+                await model.machine.update({
+                    useState : 'idle'
+                },{
+                    'where':{ id: param.relatedId }
+                });
+                break;
+            case 'fitting':
+                await model.fitting.update({
+                    useState : 'idle'
+                },{
+                    'where':{ id: param.relatedId }
+                });
+                break;
+        }
+        model.use_record.update({
+            returnTime : new Date(),
+            returnNumber : 1,
+            returnDetail : param.returnDetail
+        },{
+            'where':{
+                relatedId: param.relatedId,
+                relatedType: param.relatedType,
+                returnTime: null
+            }
+        });
+        res.send(methods.formatRespond(true, 200));
+    } catch (err) {
+        code = 10003;
+        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        res.status(400).send(temp);
+    }
+}
+
 module.exports = {
-    getAssignParam,assign
+    getAssignParam,assign,withdraw
 }
