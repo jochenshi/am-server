@@ -3,11 +3,12 @@
 const model = require('../models');
 const methods = require('../common/methods');
 const errorText = require('../common/error');
+const {getAuthority} = require('../control/authority')
 
 // required params
-const verifyRequired = ({name, account, password, phone, email}, res) => {
+const verifyRequired = ({name, account, password, phone, email, role}, res) => {
     let flag = true;
-    if (!account || !password || !name || !phone || !email) {
+    if (!account || !password || !name || !phone || !email || !role) {
         //txt = 'name,account or password can not be empty!';
         flag = false;
         const temp = methods.formatRespond(false, 10000, errorText.formatError(10000));
@@ -15,6 +16,34 @@ const verifyRequired = ({name, account, password, phone, email}, res) => {
     }
     return flag;
 };
+
+//验证添加用户的时候是否具有该权限
+const verifyAuthority = async (req, res) => {
+    let flag = true, code, temp;
+    try {
+        let auth = await getAuthority(req);
+        if (auth.flag) {
+            let authFlag = auth.data.indexOf('addUser') > -1;
+            if (!authFlag) {
+                flag = false;
+                code = 10008;
+                temp = methods.formatRespond(flag, code, errorText.formatError(code));
+                res.status(400).send(temp);
+            }
+        } else {
+            flag = false;
+            code = 10008;
+            temp = methods.formatRespond(flag, code, errorText.formatError(code));
+            res.status(400).send(temp);
+        }
+    } catch (err) {
+        code = 10003;
+        flag = false;
+        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        res.status(400).send(temp);
+    }
+    return flag
+}
 
 //verify whether the user is already exist
 const verifyUserExist = async ({name, account}, res) => {
@@ -62,25 +91,39 @@ const verifyUserExist = async ({name, account}, res) => {
 };
 
 // the concrete function used to execute user add operation
-const executeAdd = async ({name, account, password, role, phone, email, description},res) => {
+const executeAdd = async ({name, account, password, role, phone, email, description, userId},res) => {
     console.log('go in add');
     let temp, code, flag = true;
     try {
-        await model.user.create({
-            id: 'id_' + Buffer.from(account).toString('hex'),
-            name: name,
-            account: account,
-            password: methods.passEncrypt(password),
-            role: role,
-            phone: phone,
-            email: email,
-            isValid: true,
-            createUser: 'testuser1',
-            createTime: Date.now(),
-            description: description
+        let roleInfo = await model.role.findAll({
+            where: {
+                value: role
+            }
         });
-        temp = methods.formatRespond(true, 200);
-        res.send(temp)
+        if (roleInfo.length) {
+            //let userId = methods.getUserId(req);
+            let userInfo = await model.user.create({
+                id: 'id_' + Buffer.from(account).toString('hex'),
+                name: name,
+                account: account,
+                password: methods.passEncrypt(password),
+                phone: phone,
+                email: email,
+                isValid: true,
+                createUser: userId,
+                createTime: Date.now(),
+                description: description
+            });
+            await roleInfo[0].addUser(userInfo)
+            temp = methods.formatRespond(true, 200);
+            res.send(temp)
+        } else {
+            flag = false;
+            code = 10009;
+            temp = methods.formatRespond(flag, code, errorText.formatError(code));
+            res.status(400).send(temp);
+        }
+        
     } catch (err) {
         code = 10003;
         flag = false;
@@ -111,7 +154,8 @@ const verifyId = async ({userId}, res) => {
 //add user
 const handleAdd = async (req, res) => {
     let requireFlag = verifyRequired(req.body, res);
-    if (!requireFlag) {
+    let authFlag = await verifyAuthority(req, res);
+    if (!requireFlag || !authFlag) {
         return
     }
     const existFlag = await verifyUserExist(req.body ,res);
@@ -119,7 +163,9 @@ const handleAdd = async (req, res) => {
         return
     }
     // all validation passed and execute add user operation
-    await executeAdd(req.body, res);
+    let userId = methods.getUserId(req);
+    let inData = Object.assign({}, req.body,{userId})
+    await executeAdd(inData, res);
 };
 
 //delete user, only the user who has the
@@ -167,6 +213,23 @@ const getNoSuperUser = async (res)=>{
     return data;
 }
 
-module.exports = {handleAdd, deleteUser ,modifyUser,
-    getNoSuperUser
+//获取添加用户的时候的用户角色的选项
+const getRoleOption = async (req, res) => {
+    let flag = true, code ,temp, option = {};
+    try {
+        option.role = await model.role.findAll();
+        temp = methods.formatRespond(flag, 200, '', option)
+        res.send(temp)
+    } catch (err) {
+        code = 10003;
+        flag = false;
+        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        res.status(400).send(temp);
+    }
+}
+
+
+module.exports = {
+    handleAdd, deleteUser ,modifyUser,
+    getNoSuperUser, getRoleOption
 };

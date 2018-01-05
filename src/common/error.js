@@ -34,6 +34,12 @@ const formatError = (code) => {
         case 10007:
             txt = '用户登录无效，请重新登录';
             break;
+        case 10008:
+            txt = '您不具备该权限，请联系管理员';
+            break;
+        case 10009:
+            txt = '所传参数不正确或者操作非法';
+            break;
         //配件模块的错误信息
         case 12000:
             txt = '配件S/N号或名称已经存在';
