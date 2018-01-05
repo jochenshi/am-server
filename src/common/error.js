@@ -80,6 +80,9 @@ const formatError = (code) => {
         case 13201:
             txt = '修改归属信息时出错';
             break;
+        case 13300:
+            txt = '使用数量已大于剩余数量';
+            break;
     }
     return txt
 }

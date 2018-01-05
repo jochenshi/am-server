@@ -17,4 +17,8 @@ router.put('/withdraw',function(req, res, next){
     use_record.withdraw(req.body,res);
 });
 
+router.post('/assignEquip',function(req, res, next){
+    use_record.assignEquip(req.body,res);
+});
+
 module.exports = router;
