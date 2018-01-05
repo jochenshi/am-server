@@ -52,7 +52,7 @@ const assign = async (param, res)=>{
                 break;
         }
         model.use_record.create({
-            realtedId : param.relatedId,
+            relatedId : param.relatedId,
             relatedType : param.relatedType,
             userId : param.userId,
             purpose : param.purpose,
