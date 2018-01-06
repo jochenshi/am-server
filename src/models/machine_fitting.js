@@ -7,6 +7,9 @@ module.exports = function (sequelize, Sequelize) {
         fittingId: {
             type: Sequelize.INTEGER,
             allowNull: false
+        },
+        valid: {
+            type: Sequelize.BOOLEAN
         }
     },
     {

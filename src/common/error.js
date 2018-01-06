@@ -65,6 +65,12 @@ const formatError = (code) => {
         case 13001:
             txt = '已存在相同代号或名称的选项';
             break;
+        case 13002:
+            txt = '机器或配件参数不正确';
+            break;
+        case 13004:
+            txt = '机器配件关联添加失败';
+            break;
         /**
          * 机器报错文本
          */

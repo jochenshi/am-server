@@ -7,6 +7,7 @@ const Op = Sequelize.Op;
 
 const ascription = require('./ascription');
 const selectControl = require('./select_list');
+const machineFitting = require('./machineFitting');
 
 /* 
 提供的方法的说明：
@@ -103,7 +104,7 @@ const getNormalInMachine = async (req, res) => {
         } else {
             //需要判断获取到的机器的id,根据传入的机器的Id进行相关信息的查询
             let idTag = Array.isArray(machineId);
-            let arg = type === 'all' ? {} : {where: {type: type}};
+            let arg = type === 'all' ? {} : {type: type};
             if (!idTag) {
                 let tArray = new Array();
                 tArray.push(machineId);
@@ -116,9 +117,10 @@ const getNormalInMachine = async (req, res) => {
                 include: [
                     {
                         model: models.fitting,
+                        
                         as: 'parentFitting',
                         //此处可以进行针对配件类型的筛选
-                        arg,
+                        where: arg,
                         include: [
                             {
                                 model: models.user,
@@ -344,7 +346,7 @@ const handleSupplyAdd = async (req, res) => {
 
 //关于普通类型的配件的添加的验证
 const verifyNormal = async (req, res) => {
-    let {sourceType, serialNo, name, type, model, brand, size, unit, description} = req.body || {},
+    let {sourceType, serialNo, name, type, model, brand, size, unit, description, machineId} = req.body || {},
     flag = true, code, temp;
     try {
         if (!serialNo || !name || !type || !model || !brand) {
@@ -369,7 +371,7 @@ const verifyNormal = async (req, res) => {
             } else {
                 //未检测到序列号或者名称重复的记录
                 let userId = methods.getUserId(req, res);
-                let addData = Object.assign({}, req.body, {userId});
+                let addData = Object.assign({}, req.body, {userId, machineId});
                 let equip_add = await executeNormalAdd(addData);
                 if (equip_add.flag) {
                     let add_equip = equip_add.data;
@@ -390,7 +392,7 @@ const verifyNormal = async (req, res) => {
                         //设备归属信息添加失败，删除相应的配件的信息
                         flag = false;
                         code = 13200;
-                        executeNormalDelete(add_equip.id);
+                        await executeNormalDelete(add_equip.id);
                         res.status(400).send(methods.formatRespond(flag, code, errorText.formatError(code)));
                     }
                 }
@@ -405,11 +407,15 @@ const verifyNormal = async (req, res) => {
 };
 
 //获取到正确格式的普通配件的数据的时候执行普通类型的数据的添加
-//执行添加操作的时候，需要先判断类型，型号，品牌是否存在于选项表中，否则需要先执行在选项表中添加型号，品牌的操作
+//添加操作成功之后再进行相关关联信息以及型号，品牌选项信息的增加
 //此处是已经进行过重复性验证之后
 const executeNormalAdd = async (obj, res) => {
-    let flag = true, code, temp, data = {};
+    let flag = true, code, temp, data = {}, useState = 'idle';
     try {
+        //当传入机器的ID的时候，自动将相关配件与该机器进行关联,并且此时配件的状态为固定使用中
+        if (obj.machineId) {
+            useState = 'fixedusing'
+        }
         data = await models.fitting.create({
             serialNo: obj.serialNo,
             name: obj.name,
@@ -418,11 +424,24 @@ const executeNormalAdd = async (obj, res) => {
             brand: obj.brand,
             size: obj.size || null,
             unit: obj.unit,
-            useState: 'idle',
+            useState: useState,
             createUser: obj.userId,
             createTime: Date.now(),
             description: obj.description || ''
         });
+        //当传入机器的ID的时候，自动将相关配件与该机器进行关联,并且此时配件的状态为固定使用中
+        if (obj.machineId) {
+            let inData = {
+                fittingId: data.id,
+                machineId: obj.machineId
+            }
+            let relateFlag =  await machineFitting.addRelate(inData, res);
+            if (!relateFlag) {
+                //此处是用于在机器的详情进行配件的添加，机器配件的关联关系建立失败之后删除该配件
+                await executeNormalDelete(add_equip.id);
+                flag = false;
+            }
+        }
         // temp = methods.formatRespond(true, 200);
         // res.send(temp);
     } catch (err) {
