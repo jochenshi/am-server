@@ -112,12 +112,12 @@ const getNormalInMachine = async (req, res) => {
             };
             let result = await models.machine_fitting.findAll({
                 where: {
-                    machineId: machineId
+                    machineId: machineId,
+                    valid: true
                 },
                 include: [
                     {
-                        model: models.fitting,
-                        
+                        model: models.fitting,     
                         as: 'parentFitting',
                         //此处可以进行针对配件类型的筛选
                         where: arg,
