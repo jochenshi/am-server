@@ -20,7 +20,7 @@ const formatError = (code) => {
             txt = '该用户曾经存在但现在处于失效状态';
             break;
         case 10003:
-            txt = '数据库内部错误';
+            txt = '内部错误';
             break;
         case 10004:
             txt = '目标用户信息不正确';
@@ -57,6 +57,7 @@ const formatError = (code) => {
             txt = '已经存在相同名称的配件';
             break;
         /**
+         * 其余模块的报错
          * 选项的报错文本
          */
         case 13000:
@@ -71,6 +72,12 @@ const formatError = (code) => {
         case 13004:
             txt = '机器配件关联添加失败';
             break;
+        case 13005:
+            txt = '所传参数为空或者非法';
+            break;
+        case 13006:
+            txt = '解除配件机器关联关系失败';
+            break;
         /**
          * 机器报错文本
          */
@@ -81,7 +88,7 @@ const formatError = (code) => {
             txt = '归属信息记录错误且删除机器信息失败';
             break;
         case 13102:
-            txt = '改机器的地址信息已存在';
+            txt = '该机器的地址信息已存在';
             break;
         /**
          * 归属报错文本
