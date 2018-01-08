@@ -78,6 +78,9 @@ const formatError = (code) => {
         case 13006:
             txt = '解除配件机器关联关系失败';
             break;
+        case 13007:
+            txt = '配件已经存在关联关系，建立失败';
+            break;
         /**
          * 机器报错文本
          */

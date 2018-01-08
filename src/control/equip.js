@@ -211,6 +211,35 @@ const handleNormalModify = (req, res) => {
     }
 }
 
+//修改普通配件的使用状态
+const modifyNormalUseState = (req, res) => {
+    let flag = true, code, temp;
+    try {
+        let {fittingId = []} = req.body;
+        if (Object.prototype.toString.call(fittingId) !== '[object Array]') {
+            let arr = [];
+            arr.push(fittingId);
+            fittingId = arr;
+        };
+        // await models.fitting.update(
+        //     {
+        //         useState: 'fixedusing'
+        //     },
+        //     {
+        //         where: {
+        //             id: [fittingId]
+        //         }
+        //     }
+        // );
+    } catch (err) {
+        code = 10003;
+        flag = false;
+        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        res.status(400).send(temp);
+    };
+    return flag;
+}
+
 /* 
 耗材类配件的相关的方法
 */
@@ -416,6 +445,7 @@ const executeNormalAdd = async (obj, res) => {
         if (obj.machineId) {
             useState = 'fixedusing'
         }
+        useState = 'idle';
         data = await models.fitting.create({
             serialNo: obj.serialNo,
             name: obj.name,

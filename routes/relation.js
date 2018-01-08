@@ -5,6 +5,10 @@ const relate = require('../src/control/machineFitting');
 
 router.post('/delete', (req, res) => {
     relate.handleDelete(req, res);
+});
+
+router.post('/add', (req, res) => {
+    relate.handleRelateAdd(req, res)
 })
 
 module.exports = router;
