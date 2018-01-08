@@ -46,7 +46,7 @@ const datas = [
     {code : 'S0008', name: '普通配件类型', value: 'memory', text : '内存', delable: false},
     {code : 'S0012', name: '健康出错原因', value: 'manmade', text : '人为损坏', delable: false},
     {code : 'S0012', name: '健康出错原因', value: 'noreason', text : '无故损坏', delable: false},
-    {code : 'S0012', name: '健康出错原因', value: 'accident', text : '人为损坏', delable: false},
+    {code : 'S0012', name: '健康出错原因', value: 'accident', text : '意外损坏', delable: false},
     {code : 'S0012', name: '健康出错原因', value: 'aging', text : '机器老化', delable: false},
     {code : 'S0012', name: '健康出错原因', value: 'defect', text : '机器缺陷', delable: false},
     {code : 'S0013', name: '健康状态', value: 'health', text : '健康', delable: false,type:'right'},
@@ -185,5 +185,5 @@ const testSelectNull = async ()=>{
 // testMachine();
 // getAddMachineParam();
 // testAscription();
-testSelectNull();
+// testSelectNull();
 module.exports.initSelect = initSelect;
