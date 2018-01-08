@@ -21,4 +21,12 @@ router.post('/assignEquip',function(req, res, next){
     use_record.assignEquip(req.body,res);
 });
 
+router.put('/withdrawEquip',function(req, res, next){
+    use_record.withdrawEquip(req.body,res);
+});
+
+router.get('/',function(req, res, next){
+    use_record.getUseRecord(req.query, res);
+});
+
 module.exports = router;

@@ -169,18 +169,21 @@ const testAscription = async ()=>{
     console.log(result.dataValues);
 }
 const testSelectNull = async ()=>{
-    let data = await models.use_record.findAll({
-        'where':{
-            returnTime: null
+    let fitting = await models.fitting.findAll({
+        where : {
+            type : 'disk',
+            $not : [
+                { useState : 'destory'}
+            ]
         }
     });
-    console.log(data);
+    console.log(fitting);
 }
-//initSelect();
+// initSelect();
 // getOne();
 // getCount();
 // testMachine();
 // getAddMachineParam();
-//testAscription();
-// testSelectNull();
+// testAscription();
+testSelectNull();
 module.exports.initSelect = initSelect;

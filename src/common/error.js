@@ -99,8 +99,20 @@ const formatError = (code) => {
         case 13201:
             txt = '修改归属信息时出错';
             break;
+        /**
+         * 使用记录类报错
+         */
         case 13300:
             txt = '使用数量已大于剩余数量';
+            break;
+        case 13301:
+            txt = '添加使用记录出错';
+            break;
+        case 13302:
+            txt = '收回个数不能大于使用个数';
+            break;
+        case 13303:
+            txt = '归还数量已大于物品数量';
             break;
     }
     return txt
