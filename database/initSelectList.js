@@ -169,15 +169,12 @@ const testAscription = async ()=>{
     console.log(result.dataValues);
 }
 const testSelectNull = async ()=>{
-    let fitting = await models.fitting.findAll({
+    let fitIds = await models.machine_fitting.findAll({
         where : {
-            type : 'disk',
-            $not : [
-                { useState : 'destory'}
-            ]
+            machineId : 1
         }
-    });
-    console.log(fitting);
+    })
+    console.log(fitIds[0].id);
 }
 // initSelect();
 // getOne();
@@ -185,5 +182,5 @@ const testSelectNull = async ()=>{
 // testMachine();
 // getAddMachineParam();
 // testAscription();
-// testSelectNull();
+testSelectNull();
 module.exports.initSelect = initSelect;
