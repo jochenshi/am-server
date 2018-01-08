@@ -322,12 +322,22 @@ const getMachineSelect = async (res) => {
 //获取普通配件涉及到的相关选项的可选值
 const getNormalEquipSelect = async (res) => {
     let data = {
+        originObject: [],
+        targetObject: [],
         type: [],
         model: [],
         brand: [],
         origin: []
     }, code, flag,temp;
     try {
+        data.originObject = await getSelectByParam({
+            code: 'S0002',
+            type: 'in'
+        });
+        data.targetObject = await getSelectByParam({
+            code: 'S0003',
+            type: 'in'
+        });
         data.type = await getSelectByParam({
             code: 'S0008'
         });
@@ -355,12 +365,22 @@ const getNormalEquipSelect = async (res) => {
 //获取耗材类配件涉及到的相关选项的可选值
 const getSupplyEquipSelect = async (res) => {
     let data = {
+        originObject: [],
+        targetObject: [],
         type: [],
         model: [],
         brand: [],
         origin: []
     },flag = true, code, temp;
     try {
+        data.originObject = await getSelectByParam({
+            code: 'S0002',
+            type: 'in'
+        });
+        data.targetObject = await getSelectByParam({
+            code: 'S0003',
+            type: 'in'
+        });
         data.type = await getSelectByParam({
             code: 'S0016'
         });
