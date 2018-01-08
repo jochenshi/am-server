@@ -458,12 +458,24 @@ const executeNormalAdd = async (obj, res) => {
 const findCreateNormalSelect = async (param) => {
     await selectControl.addSelectParam({code : 'S0010',value: param.model});
     await selectControl.addSelectParam({code : 'S0011',value: param.brand});
+    if (param.originObject) {
+        await selectControl.addSelectParam({code : 'S0002',value: param.originObject, type: 'in'})
+    };
+    if (param.targetObject) {
+        await selectControl.addSelectParam({code : 'S0003',value: param.targetObject, type: 'in'})
+    }
 }
 
 //判断添加耗材类配件的时候的型号，品牌是否存在，不存在则执行创建操作，存在则继续执行
 const findCreateSupplySelect = async (param) => {
     await selectControl.addSelectParam({code : 'S0017',value: param.model});
     await selectControl.addSelectParam({code : 'S0018',value: param.brand});
+    if (param.originObject) {
+        await selectControl.addSelectParam({code : 'S0002',value: param.originObject, type: 'in'})
+    };
+    if (param.targetObject) {
+        await selectControl.addSelectParam({code : 'S0003',value: param.targetObject, type: 'in'})
+    }
 }
 
 //执行数据库的因添加相关依赖失败，而删除普通类型的配件的方法

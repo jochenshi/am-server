@@ -12,7 +12,7 @@ const addRelate = async (obj, res) => {
     try {
         if (Object.prototype.toString.call(fittingId) !== '[object Array]') {
             let arr = [];
-            arr.push(data);
+            arr.push(fittingId);
             fittingId = arr;
         };
         if (!machineId || !fittingId.length) {
