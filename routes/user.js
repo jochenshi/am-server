@@ -33,5 +33,10 @@ router.put('/modify/:userId', (req, res, next) => {
   userMethod.modifyUser(req, res)
 });
 
+//查询添加用户时的角色的选项
+router.get('/role', (req, res, next) => {
+  userMethod.getRoleOption(req, res);
+})
+
 /*GET users listing.*/
 module.exports = router;

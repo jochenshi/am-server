@@ -17,7 +17,8 @@ var address = require('./routes/address');
 var ascription = require('./routes/ascription');
 var use_record = require('./routes/use_record');
 const equip = require('./routes/equip');
-const authority = require('./routes/authority')
+const authority = require('./routes/authority');
+const relation = require('./routes/relation');
 
 var app = express();
 
@@ -64,6 +65,7 @@ app.use('/am/equip', equip);
 app.use('/am/authority', authority);
 app.use('/am/ascription', ascription);
 app.use('/am/use', use_record);
+app.use('/am/relate', relation);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

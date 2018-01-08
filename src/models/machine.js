@@ -53,7 +53,9 @@ module.exports = function (sequelize, Sequelize) {
         comment: '机器信息表'
     });
     machine.associate = function (model) {
-        machine.belongsTo(model.user, {as: 'users', foreignKey: 'createUser', targetKey: 'id'})
+        machine.belongsTo(model.user, {as: 'users', foreignKey: 'createUser', targetKey: 'id'});
+        machine.hasMany(model.fitting, {})
     }
+    //需要将machine以及fitting通过自动关系建立联系
     return machine
 }
