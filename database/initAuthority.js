@@ -120,12 +120,22 @@ const authorityData = [
     {
         value: 'linkNormalEquip',
         name: '关联',
-        description: '关联普通配件'
+        description: '普通配件展示列表的关联操作'
     },
     {
         value: 'unlinkNormalEquip',
         name: '取消关联',
-        description: '取消关联普通配件'
+        description: '普通配件展示列表的取消关联操作'
+    },
+    {
+        value: 'linkManyNormal',
+        name: '批量关联',
+        description: '在机器的详情页面批量关联相应类型的配件'
+    },
+    {
+        value: 'unlinkManyNormal',
+        name: '批量取消关联',
+        description: '在机器的详情页面批量取消关联相应类型的配件'
     },
     {
         value: 'addSupplyEquip',
