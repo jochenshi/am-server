@@ -5,6 +5,9 @@ const methods = require('../common/methods');
 const errorText = require('../common/error');
 const {getAuthority} = require('../control/authority')
 
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
+
 // required params
 const verifyRequired = ({name, account, password, phone, email, role}, res) => {
     let flag = true;
@@ -18,12 +21,12 @@ const verifyRequired = ({name, account, password, phone, email, role}, res) => {
 };
 
 //验证添加用户的时候是否具有该权限
-const verifyAuthority = async (req, res) => {
+const verifyAuthority = async (authority, req, res) => {
     let flag = true, code, temp;
     try {
         let auth = await getAuthority(req);
         if (auth.flag) {
-            let authFlag = auth.data.indexOf('addUser') > -1;
+            let authFlag = auth.data.indexOf(authority) > -1;
             if (!authFlag) {
                 flag = false;
                 code = 10008;
@@ -160,7 +163,7 @@ const verifyId = async ({userId}, res) => {
 //add user
 const handleAdd = async (req, res) => {
     let requireFlag = verifyRequired(req.body, res);
-    let authFlag = await verifyAuthority(req, res);
+    let authFlag = await verifyAuthority('addUser', req, res);
     if (!requireFlag || !authFlag) {
         return
     }
@@ -189,22 +192,37 @@ const modifyUser = (req, res) => {
 const inquireUser = (req, res) => {};
 
 //get users and show user according to different page,用户列表的展示
-const getUsers = async () => {
-    let flag = true, code, temp;
+const getUsers = async (req, res) => {
+    let flag = true, code, temp, arg = {};
     try {
-        let userId = methods.getUserId(req);
-        let roleArr = getSingleUserRole(userId, res);
-        let queryUser = await model.user.findAll(
-            {
-                where: {
-                    id: userId
-                },
-                include: {
-
+        let verifyFlag = await verifyGetAuthority(req, res);
+        if (verifyFlag.flag) {
+            //验证出应该获取何种类型的用户
+            if (verifyFlag.retAuth === 'showIncludeRoot') {
+                arg = {}
+            } else {
+                arg = {
+                    code: {
+                        [Op.notIn]: ['R0001']
+                    }
                 }
             }
-        )
-
+            let queryUser = await model.user.findAll(
+                {
+                    include: {
+                        model: model.role,
+                        where: arg
+                    }
+                }
+            );
+            res.send(methods.formatRespond(flag, 200, '', queryUser))
+        } else {
+            //验证出错或者不应该返回用户
+            flag = false;
+            code = 10008;
+            temp = methods.formatRespond(flag, code, errorText.formatError(code));
+            res.status(400).send(temp);
+        }
     } catch (err) {
         code = 10003;
         flag = false;
@@ -213,24 +231,60 @@ const getUsers = async () => {
     }
 };
 
+//验证用户是否有展示用户的权限(包括展示何种用户)
+const verifyGetAuthority = async (req, res) => {
+    let flag = true, code, temp, retAuth;
+    try {
+        let auth = await getAuthority(req);
+        if (auth.flag) {
+            if (data.data.includes('showIncludeRoot')) {
+                retAuth = 'showIncludeRoot'
+            } else if (data.data.includes('showNotRoot')) {
+                retAuth = 'showNotRoot'
+            }
+            if (!retAuth) {
+                flag = false;
+                code = 10008;
+                temp = methods.formatRespond(flag, code, errorText.formatError(code));
+                res.status(400).send(temp);
+            }
+        } else {
+            flag = false;
+            code = 10008;
+            temp = methods.formatRespond(flag, code, errorText.formatError(code));
+            res.status(400).send(temp);
+        }
+    } catch (err) {
+        code = 10003;
+        flag = false;
+        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        res.status(400).send(temp);
+    }
+    return {flag, retAuth}
+}
+
+//获取单个用户的角色的数组
 const getSingleUserRole = async (userId, res) => {
     let flag = true, code, temp, userRoles = [];
     try {
         let user = await model.user.findAll(
             {
                 where: {
-                    id: 'id_61646d696e75736572'
+                    id: userId
                 }
             }
         );
         let a = await user[0].getRoles();
         a.length && a.forEach((val) => {
-            userRoles.push(val.value)
+            userRoles.push(val.code)
         });
         console.log(userRoles)
         //console.log(user.length,user[0].roles[0].userRole)
     } catch (err) {
+        code = 10003;
         flag = false;
+        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        res.status(400).send(temp);
     };
     return {userRoles, flag}
 }
@@ -285,9 +339,7 @@ const getRoleOption = async (req, res) => {
     }
 }
 
-getSingleUserRole()
-
 module.exports = {
     handleAdd, deleteUser ,modifyUser,
-    getNoSuperUser, getRoleOption
+    getNoSuperUser, getRoleOption, getUsers
 };
