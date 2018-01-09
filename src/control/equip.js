@@ -20,8 +20,29 @@ const machineFitting = require('./machineFitting');
 const handleNormalGet = async (req, res) => {
     let flag = true, code, temp, fit = [];
     try {
-        let {type = 'all', machineId} = req.query;
-        let arg = type === 'all' ? {} : {where: {type: type}};
+        let {type = 'all', machineId, useState} = req.query;
+        let arg;
+        if (type === 'all') {
+            if (useState) {
+                arg = {
+                    useState: useState
+                }
+            } else {
+                arg = {}
+            }
+        } else {
+            if (useState) {
+                arg = {
+                    useState: useState,
+                    type: type
+                }
+            } else {
+                arg = {
+                    type: type
+                }
+            }
+        }
+        //let arg = type === 'all' ? {} : {where: {type: type}};
         //先判断是否传入machineId，如果传入了则查找与该ID相关的配件的数据,machineId可以传单个也可以传多个
         if (machineId) {
             //传入了Id的情况下进行相关数据的获取
@@ -33,7 +54,7 @@ const handleNormalGet = async (req, res) => {
         } else {
             //此处是不根据传入的机器的id进行相关配件信息的获取
             fit = await models.fitting.findAll({
-                arg,
+                where: arg,
                 include: [
                     {
                         model: models.user,
@@ -209,6 +230,35 @@ const handleNormalModify = (req, res) => {
         executeNormalModify(req, res);
 
     }
+}
+
+//修改普通配件的使用状态
+const modifyNormalUseState = (req, res) => {
+    let flag = true, code, temp;
+    try {
+        let {fittingId = []} = req.body;
+        if (Object.prototype.toString.call(fittingId) !== '[object Array]') {
+            let arr = [];
+            arr.push(fittingId);
+            fittingId = arr;
+        };
+        // await models.fitting.update(
+        //     {
+        //         useState: 'fixedusing'
+        //     },
+        //     {
+        //         where: {
+        //             id: [fittingId]
+        //         }
+        //     }
+        // );
+    } catch (err) {
+        code = 10003;
+        flag = false;
+        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        res.status(400).send(temp);
+    };
+    return flag;
 }
 
 /* 
@@ -416,6 +466,7 @@ const executeNormalAdd = async (obj, res) => {
         if (obj.machineId) {
             useState = 'fixedusing'
         }
+        useState = 'idle';
         data = await models.fitting.create({
             serialNo: obj.serialNo,
             name: obj.name,
