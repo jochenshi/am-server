@@ -20,27 +20,16 @@ const machineFitting = require('./machineFitting');
 const handleNormalGet = async (req, res) => {
     let flag = true, code, temp, fit = [];
     try {
-        let {type = 'all', machineId, useState} = req.query;
-        let arg;
-        if (type === 'all') {
-            if (useState) {
-                arg = {
-                    useState: useState
-                }
-            } else {
-                arg = {}
-            }
-        } else {
-            if (useState) {
-                arg = {
-                    useState: useState,
-                    type: type
-                }
-            } else {
-                arg = {
-                    type: type
-                }
-            }
+        let {type = 'all', machineId, useState, linkState} = req.query;
+        let arg = {};
+        if (type !== 'all') {
+            arg.type = type
+        }
+        if (useState) {
+            arg.useState = useState
+        }
+        if (linkState) {
+            arg.linkState = linkState
         }
         //let arg = type === 'all' ? {} : {where: {type: type}};
         //先判断是否传入machineId，如果传入了则查找与该ID相关的配件的数据,machineId可以传单个也可以传多个
@@ -460,11 +449,12 @@ const verifyNormal = async (req, res) => {
 //添加操作成功之后再进行相关关联信息以及型号，品牌选项信息的增加
 //此处是已经进行过重复性验证之后
 const executeNormalAdd = async (obj, res) => {
-    let flag = true, code, temp, data = {}, useState = 'idle';
+    let flag = true, code, temp, data = {}, useState = 'idle',linkState = false;
     try {
         //当传入机器的ID的时候，自动将相关配件与该机器进行关联,并且此时配件的状态为固定使用中
         if (obj.machineId) {
-            useState = 'fixedusing'
+            useState = 'fixedusing',
+            linkState = true
         }
         useState = 'idle';
         data = await models.fitting.create({
@@ -476,6 +466,7 @@ const executeNormalAdd = async (obj, res) => {
             size: obj.size || null,
             unit: obj.unit,
             useState: useState,
+            linkState: linkState,
             createUser: obj.userId,
             createTime: Date.now(),
             description: obj.description || ''

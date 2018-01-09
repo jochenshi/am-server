@@ -64,7 +64,8 @@ const addRelate = async (obj, res) => {
                         )
                     })
                     await models.machine_fitting.bulkCreate(createData);
-                    flag = await modifyNormalUseState({fittingId, useState: 'fixedusing'}, res)
+                    flag = await modifyNormalLinkState({fittingId, linkState: true}, res);
+                    //flag = await modifyNormalUseState({fittingId, useState: 'fixedusing'}, res)
                 } else {
                     //根据传入的ID，查询不到相关信息
                     flag = false;
@@ -91,6 +92,7 @@ const handleDelete = async (req, res) => {
         if (Object.prototype.toString.call(data) !== '[object Array]') {
             let arr = [];
             arr.push(data);
+            data = arr;
         };
         if (!target || !data.length) {
             flag = false;
@@ -127,6 +129,9 @@ const deleteRelate = async ({target = 'fitting', data = []}, res) => {
             let result = await handleDeleteData(dataType, data);
             flag = result.flag;
             code = result.code;
+            if (flag) {
+                flag = await modifyNormalLinkState({fittingId: data}, res)
+            }
         } else {
             //传入的数据为空
             flag = false;
@@ -147,14 +152,15 @@ const deleteRelate = async ({target = 'fitting', data = []}, res) => {
     return flag;
 }
 
-//具体的修改数据的操作
+//具体的修改数据表中配件机器关联状态的操作
 const handleDeleteData = async (target, data) => {
     let flag = true, code;
     let find_list = await models.machine_fitting.findAll({
         where: {
             [target]: {
                 [Op.or]: [data]
-            }
+            },
+            valid: true
         }
     });
     if (find_list.length === data.length) {
@@ -192,6 +198,35 @@ const modifyNormalUseState = async (obj, res) => {
         await models.fitting.update(
             {
                 useState: useState
+            },
+            {
+                where: {
+                    id: [fittingId]
+                }
+            }
+        );
+    } catch (err) {
+        code = 10003;
+        flag = false;
+        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        res.status(400).send(temp);
+    };
+    return flag;
+}
+
+//修改普通配件的关联状态
+const modifyNormalLinkState = async (obj, res) => {
+    let flag = true, code, temp;
+    try {
+        let {fittingId = [], linkState = false} = obj;
+        if (Object.prototype.toString.call(fittingId) !== '[object Array]') {
+            let arr = [];
+            arr.push(fittingId);
+            fittingId = arr;
+        };
+        await models.fitting.update(
+            {
+                linkState: linkState
             },
             {
                 where: {

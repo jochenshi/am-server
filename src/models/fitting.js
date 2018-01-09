@@ -32,6 +32,9 @@ module.exports = function (sequelize, Sequelize) {
             type: Sequelize.STRING,
             allowNull: false
         },
+        linkState: {
+            type: Sequelize.BOOLEAN
+        },
         createTime: {
             type: Sequelize.DATE,
             allowNull: false
