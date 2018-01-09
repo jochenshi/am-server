@@ -167,7 +167,17 @@ const authorityData = [
         value: 'addUser',
         name: '添加',
         description: '创建用户'
-    }
+    },
+    {
+        value: 'showNotRoot',
+        name: '展示',
+        description: '展示非Root用户'
+    },
+    // {
+    //     value: 'showIncludeRoot',
+    //     name: '展示',
+    //     description: '展示包括Root用户的所有用户'
+    // }
 ];
 
 const finalAuthority = {
