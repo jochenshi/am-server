@@ -83,7 +83,7 @@ const verifyUserExist = async ({name, account}, res) => {
         }
     } catch (err) {
         flag = false;
-        code = 20000;
+        code = 10003;
         temp = methods.formatRespond(false, code, err);
         res.status(400).send(temp);
     }
@@ -133,6 +133,7 @@ const executeAdd = async ({name, account, password, role, phone, email, descript
     return flag;
 };
 
+//验证用户的Id是不是有效的存在的
 const verifyId = async ({userId}, res) => {
     let flag = true, code, temp;
     if (!userId) {
@@ -143,12 +144,17 @@ const verifyId = async ({userId}, res) => {
     }
     try {
         const id = userId.toString();
-        await model.user.findAll({
+        let users = await model.user.findAll({
             where: {
                 id: id
             }
         });
-    } catch (err) {}
+        if (!users.length) {
+            flag = false
+        }
+    } catch (err) {
+        flag = false;
+    }
 };
 
 //add user
@@ -182,12 +188,57 @@ const modifyUser = (req, res) => {
 //inquire specific user according to search info
 const inquireUser = (req, res) => {};
 
-//get users and show user according to different page
-const getUsers = () => {};
+//get users and show user according to different page,用户列表的展示
+const getUsers = async () => {
+    let flag = true, code, temp;
+    try {
+        let userId = methods.getUserId(req);
+        let roleArr = getSingleUserRole(userId, res);
+        let queryUser = await model.user.findAll(
+            {
+                where: {
+                    id: userId
+                },
+                include: {
+
+                }
+            }
+        )
+
+    } catch (err) {
+        code = 10003;
+        flag = false;
+        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        res.status(400).send(temp);
+    }
+};
+
+const getSingleUserRole = async (userId, res) => {
+    let flag = true, code, temp, userRoles = [];
+    try {
+        let user = await model.user.findAll(
+            {
+                where: {
+                    id: 'id_61646d696e75736572'
+                }
+            }
+        );
+        let a = await user[0].getRoles();
+        a.length && a.forEach((val) => {
+            userRoles.push(val.value)
+        });
+        console.log(userRoles)
+        //console.log(user.length,user[0].roles[0].userRole)
+    } catch (err) {
+        flag = false;
+    };
+    return {userRoles, flag}
+}
 
 //get user detail info
 const getUserDetail = () => {};
 
+//获取非超级管理员的用户
 const getNoSuperUser = async (res)=>{
     let temp, hcode,data = [];
     let sql = `
@@ -217,7 +268,13 @@ const getNoSuperUser = async (res)=>{
 const getRoleOption = async (req, res) => {
     let flag = true, code ,temp, option = {};
     try {
-        option.role = await model.role.findAll();
+        option.role = await model.role.findAll(
+            {
+                where: {
+                    valid: true
+                }
+            }
+        );
         temp = methods.formatRespond(flag, 200, '', option)
         res.send(temp)
     } catch (err) {
@@ -228,6 +285,7 @@ const getRoleOption = async (req, res) => {
     }
 }
 
+getSingleUserRole()
 
 module.exports = {
     handleAdd, deleteUser ,modifyUser,

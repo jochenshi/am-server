@@ -15,6 +15,9 @@ module.exports = function (sequelize, Sequelize) {
             allowNull: false,
             unique: true
         },
+        valid: {
+            type: Sequelize.BOOLEAN
+        },
         description: {
             type: Sequelize.STRING
         }
