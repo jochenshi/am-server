@@ -68,7 +68,7 @@ const assign = async (param, res)=>{
                 },{
                     'where':{ id: param.relatedId }
                 });
-                let fitIds = await model.machine_fitting.findAll({
+                /*let fitIds = await model.machine_fitting.findAll({
                     where : {
                         machineId : param.relatedId
                     }
@@ -84,7 +84,7 @@ const assign = async (param, res)=>{
                         lendNumber : 1,
                         lendDetail : '关联的机器被分配'
                     });
-                }
+                }*/
                 break;
             case 'fitting':
                 await model.fitting.update({
@@ -134,7 +134,7 @@ const withdraw = async (param,res)=>{
                 },{
                     'where':{ id: param.relatedId }
                 });
-                let fitIds = await model.machine_fitting.findAll({
+                /*let fitIds = await model.machine_fitting.findAll({
                     where : {
                         machineId : param.relatedId
                     }
@@ -151,7 +151,7 @@ const withdraw = async (param,res)=>{
                             returnTime: null
                         }
                     });
-                }
+                }*/
                 break;
             case 'fitting':
                 await model.fitting.update({
