@@ -46,6 +46,11 @@ module.exports = function (sequelize, Sequelize) {
         comment: '使用记录表'
     });
     use_record.associate = function (model) {
+        use_record.belongsTo(model.part, {
+            foreignKey: 'relatedId',
+            targetKey: 'id',
+            constraints: false
+        });
         use_record.belongsTo(model.user, {
             foreignKey: 'userId',
             targetKey: 'id',
