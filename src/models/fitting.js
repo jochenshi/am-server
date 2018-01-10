@@ -59,10 +59,9 @@ module.exports = function (sequelize, Sequelize) {
         fitting.belongsTo(model.select_list, {as: 'selectType', foreignKey: 'type', targetKey: 'value',constraints: false, scope: {code: 'S0008'}});
         fitting.belongsTo(model.select_list, {as: 'selectState', foreignKey: 'useState', targetKey: 'value',constraints: false, scope: {code: 'S0007'}});
         fitting.belongsTo(model.ascription, {as: 'ascription', foreignKey: 'id', targetKey: 'relatedId',constraints: false, scope: {relatedType: 'fitting'}});
-        fitting.belongsTo(model.use_record, {
-            as: 'records',
-            foreignKey: 'id',
-            targetKey: 'relatedId',
+        fitting.hasMany(model.use_record, {
+            foreignKey: 'relatedId',
+            sourceKey: 'id',
             constraints: false,
             scope: {
                 relatedType: 'fitting'
