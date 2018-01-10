@@ -278,8 +278,21 @@ const handleSupplyGet = async (req, res) => {
                     model: models.ascription,
                     as: 'ascription',
                     attributes: ['id','outInType','originObject','targetObject','relatedType','occurTime','description']
+                },
+                {
+                    model: models.use_record,
+                    where: {
+                        relatedType: 'part'
+                    },
+                    required: true,
+                    include: [
+                        {
+                            model: models.user
+                        }
+                    ]
                 }
-            ]
+            ],
+            distinct: true
         });
         //解除引用关系
         let temps = JSON.parse(JSON.stringify(part));
