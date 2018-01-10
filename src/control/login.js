@@ -81,7 +81,9 @@ const checkUser = async (account, password, res) => {
         let user = await model.user.findAll({
             where: {
                 account: account,
-                password: methods.passEncrypt(password)
+                password: methods.passEncrypt(password),
+                canLogin: true,
+                isValid: true
             }
         });
         if (!user.length) {
