@@ -39,6 +39,9 @@ module.exports = function (sequelize, Sequelize) {
             type: Sequelize.BOOLEAN,
             allowNull: false
         },
+        canLogin: {
+            type: Sequelize.BOOLEAN,
+        },
         createUser: {
             type: Sequelize.STRING
         },

@@ -113,6 +113,7 @@ const executeAdd = async ({name, account, password, role, phone, email, descript
                 phone: phone,
                 email: email,
                 isValid: true,
+                canLogin: false,
                 createUser: userId,
                 createTime: Date.now(),
                 description: description
