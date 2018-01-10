@@ -38,7 +38,7 @@ router.get('/role', (req, res, next) => {
   userMethod.getRoleOption(req, res);
 })
 
-router.get('/all', (Req, res) => {
+router.get('/all', (req, res) => {
   userMethod.getUsers(req, res);
 })
 
