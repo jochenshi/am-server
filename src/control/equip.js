@@ -282,23 +282,25 @@ const handleSupplyGet = async (req, res) => {
                 {
                     model: models.use_record,
                     where: {
-                        relatedType: 'part'
+                        relatedType: 'part',
+                        valid: true
                     },
-                    required: true,
+                    attributes: ['userId'],
+                    required: false,
                     include: [
                         {
-                            model: models.user
+                            model: models.user,
+                            attributes: ['name', 'isValid']
                         }
                     ]
                 }
-            ],
-            distinct: true
+            ]
         });
         //解除引用关系
         let temps = JSON.parse(JSON.stringify(part));
         if (temps.length) {
             for (let i = 0; i < temps.length; i++) {
-                let temp_fit = temps[i];
+                let temp_fit = temps[i],linker = [];
                 temp_fit['key'] = temp_fit.id;
                 temp_fit['creator'] = temp_fit.users.name;
                 temp_fit['equipType'] = temp_fit.selectType.text;
@@ -311,6 +313,9 @@ const handleSupplyGet = async (req, res) => {
                 temp_fit['ascDesc'] = temp_fit.ascription.description;
                 temp_fit['ascriptionId'] = temp_fit.ascription.id;
                 temp_fit['createTime'] = temp_fit.ascription.occurTime;
+                if (temp_fit.use_records && temp_fit.use_records.length) {
+
+                }
                 delete temp_fit.selects;
                 delete temp_fit.users;
                 delete temp_fit.selectState;
@@ -325,6 +330,16 @@ const handleSupplyGet = async (req, res) => {
         temp = methods.formatRespond(flag, code, err.message + ';' + err.name);
         res.status(400).send(temp);
     }
+}
+
+const formatLinker = (data) => {
+    let linker = [];
+    if (data && data.length) {
+        data.forEach((val) => {
+            val.user.name && linker.push(val.user.name)
+        })
+    }
+    return linker
 }
 
 //添加耗材类配件的方法

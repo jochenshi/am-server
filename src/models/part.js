@@ -48,9 +48,9 @@ module.exports = function (sequelize, Sequelize) {
         part.belongsTo(model.select_list, {as: 'selectType', foreignKey: 'type', targetKey: 'value',constraints: false, scope: {code: 'S0016'}});
         part.belongsTo(model.select_list, {as: 'selectState', foreignKey: 'useState', targetKey: 'value',constraints: false, scope: {code: 'S0007'}});
         part.belongsTo(model.ascription, {as: 'ascription', foreignKey: 'id', targetKey: 'relatedId',constraints: false, scope: {relatedType: 'part'}});
-        part.belongsTo(model.use_record, { 
-            foreignKey: 'id', 
-            targetKey: 'relatedId', 
+        part.hasMany(model.use_record, {
+            foreignKey: 'relatedId', 
+            sourceKey: 'id',
             constraints: false, 
             scope: {
                 relatedType: 'part'
