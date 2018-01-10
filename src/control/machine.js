@@ -66,7 +66,13 @@ machine.createUser ,
 machine.description , 
 user.name AS userName , 
 (SELECT s.text FROM select_list s WHERE machine.type=s.value AND s.code='S0004') AS typeText ,
-(SELECT ss.text FROM select_list ss WHERE machine.useState=ss.value AND ss.code='S0007') AS useStateText
+(SELECT ss.text FROM select_list ss WHERE machine.useState=ss.value AND ss.code='S0007') AS useStateText,
+IFNULL((
+    SELECT u.name 
+    FROM use_record AS ur, user AS u 
+    WHERE machine.id=ur.relatedId AND ur.relatedType='machine' AND ur.valid=true 
+    AND ur.userId=user.id
+    ),NULL) AS user,
 FROM machine,user 
 WHERE 
 machine.useState!='destory' AND 
