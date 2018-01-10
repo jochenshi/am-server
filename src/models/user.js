@@ -65,6 +65,12 @@ module.exports = function (sequelize, Sequelize) {
     // };
     User.associate = function (model) {
         User.belongsToMany(model.role, {through: 'userRole'});
+        User.belongsTo(model.user, {as: 're_create', foreignKey: 'createUser', targetKey: 'id', constraints: false});
+        User.hasMany(model.use_record, {
+            foreignKey: 'id',
+            targetKey: 'userId',
+            constraints: false
+        })
     }
     return User;
 }

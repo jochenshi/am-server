@@ -1,5 +1,5 @@
 module.exports = function (sequelize, Sequelize) {
-    var usage = sequelize.define('use_record', {
+    var use_record = sequelize.define('use_record', {
         relatedId: {
             type: Sequelize.STRING,
             allowNull: false
@@ -9,6 +9,9 @@ module.exports = function (sequelize, Sequelize) {
         },
         userId: {
             type: Sequelize.STRING
+        },
+        valid: {
+            type: Sequelize.BOOLEAN
         },
         purpose: {
             type: Sequelize.STRING
@@ -42,5 +45,12 @@ module.exports = function (sequelize, Sequelize) {
     {
         comment: '使用记录表'
     });
-    return usage;
+    use_record.associate = function (model) {
+        use_record.belongsTo(model.user, {
+            foreignKey: 'userId',
+            targetKey: 'id',
+            constraints: false
+        })
+    }
+    return use_record;
 }

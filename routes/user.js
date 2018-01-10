@@ -38,5 +38,9 @@ router.get('/role', (req, res, next) => {
   userMethod.getRoleOption(req, res);
 })
 
+router.get('/all', (req, res) => {
+  userMethod.getUsers(req, res);
+})
+
 /*GET users listing.*/
 module.exports = router;

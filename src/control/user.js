@@ -5,6 +5,9 @@ const methods = require('../common/methods');
 const errorText = require('../common/error');
 const {getAuthority} = require('../control/authority')
 
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
+
 // required params
 const verifyRequired = ({name, account, password, phone, email, role}, res) => {
     let flag = true;
@@ -18,12 +21,12 @@ const verifyRequired = ({name, account, password, phone, email, role}, res) => {
 };
 
 //验证添加用户的时候是否具有该权限
-const verifyAuthority = async (req, res) => {
+const verifyAuthority = async (authority, req, res) => {
     let flag = true, code, temp;
     try {
         let auth = await getAuthority(req);
         if (auth.flag) {
-            let authFlag = auth.data.indexOf('addUser') > -1;
+            let authFlag = auth.data.indexOf(authority) > -1;
             if (!authFlag) {
                 flag = false;
                 code = 10008;
@@ -83,7 +86,7 @@ const verifyUserExist = async ({name, account}, res) => {
         }
     } catch (err) {
         flag = false;
-        code = 20000;
+        code = 10003;
         temp = methods.formatRespond(false, code, err);
         res.status(400).send(temp);
     }
@@ -133,6 +136,7 @@ const executeAdd = async ({name, account, password, role, phone, email, descript
     return flag;
 };
 
+//验证用户的Id是不是有效的存在的
 const verifyId = async ({userId}, res) => {
     let flag = true, code, temp;
     if (!userId) {
@@ -143,18 +147,23 @@ const verifyId = async ({userId}, res) => {
     }
     try {
         const id = userId.toString();
-        await model.user.findAll({
+        let users = await model.user.findAll({
             where: {
                 id: id
             }
         });
-    } catch (err) {}
+        if (!users.length) {
+            flag = false
+        }
+    } catch (err) {
+        flag = false;
+    }
 };
 
 //add user
 const handleAdd = async (req, res) => {
     let requireFlag = verifyRequired(req.body, res);
-    let authFlag = await verifyAuthority(req, res);
+    let authFlag = await verifyAuthority('addUser', req, res);
     if (!requireFlag || !authFlag) {
         return
     }
@@ -182,12 +191,127 @@ const modifyUser = (req, res) => {
 //inquire specific user according to search info
 const inquireUser = (req, res) => {};
 
-//get users and show user according to different page
-const getUsers = () => {};
+//get users and show user according to different page,用户列表的展示
+const getUsers = async (req, res) => {
+    let flag = true, code, temp, arg = {}, resData = [];
+    try {
+        let verifyFlag = await verifyGetAuthority(req, res);
+        if (verifyFlag.flag) {
+            //验证出应该获取何种类型的用户
+            if (verifyFlag.retAuth === 'showIncludeRoot') {
+                arg = {}
+            } else {
+                arg = {
+                    code: {
+                        [Op.notIn]: ['R0001']
+                    }
+                }
+            }
+            let queryUser = await model.user.findAll(
+                {
+                    attributes: ['id','name','account','createTime','description', 'createUser','phone','email','isValid'],
+                    include: [
+                        {
+                            model: model.role,
+                            where: arg,
+                            attributes: ['name','valid']
+                        },
+                        {
+                            model: model.user,
+                            as: 're_create',
+                            attributes: ['name', 'isValid','account']
+                        }
+                    ]
+                }
+            );
+            let parseUser = JSON.parse(JSON.stringify(queryUser));
+            if (queryUser.length) {
+                for (let i = 0; i < parseUser.length; i++) {
+                    let tt = parseUser[i];
+                    tt.re_create ? tt.creator = tt.re_create.name : tt.creator = tt.createUser;
+                    //tt.re_create && (tt.creator = tt.re_create.name);
+                    let tRole = [];
+                    tt.roles.forEach(val => {
+                        tRole.push(val.name)
+                    })
+                    tt.role =  tRole.length ? tRole.join() : tRole;
+                    delete tt.roles;
+                    delete tt.re_create;
+                }
+            }
+            res.send(methods.formatRespond(flag, 200, '', parseUser))
+        }
+    } catch (err) {
+        code = 10003;
+        flag = false;
+        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        res.status(400).send(temp);
+    }
+};
+
+
+//验证用户是否有展示用户的权限(包括展示何种用户)
+const verifyGetAuthority = async (req, res) => {
+    let flag = true, code, temp, retAuth;
+    try {
+        let auth = await getAuthority(req);
+        if (auth.flag) {
+            if (auth.data.includes('showIncludeRoot')) {
+                retAuth = 'showIncludeRoot'
+            } else if (auth.data.includes('showNotRoot')) {
+                retAuth = 'showNotRoot'
+            }
+            if (!retAuth) {
+                flag = false;
+                code = 10008;
+                temp = methods.formatRespond(flag, code, errorText.formatError(code));
+                res.status(400).send(temp);
+            }
+        } else {
+            flag = false;
+            code = 10008;
+            temp = methods.formatRespond(flag, code, errorText.formatError(code));
+            res.status(400).send(temp);
+        }
+    } catch (err) {
+        code = 10003;
+        flag = false;
+        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        res.status(400).send(temp);
+    }
+    return {flag, retAuth}
+}
+
+//获取单个用户的角色的数组
+const getSingleUserRole = async (userId, res) => {
+    let flag = true, code, temp, userRoles = [];
+    try {
+        let user = await model.user.findAll(
+            {
+                where: {
+                    id: userId
+                }
+            }
+        );
+        let a = await user[0].getRoles();
+        a.length && a.forEach((val) => {
+            userRoles.push(val.code)
+        });
+        console.log(userRoles)
+        //console.log(user.length,user[0].roles[0].userRole)
+    } catch (err) {
+        code = 10003;
+        flag = false;
+        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        res.status(400).send(temp);
+    };
+    return {userRoles, flag}
+}
 
 //get user detail info
 const getUserDetail = () => {};
 
+//获取非超级管理员的用户
 const getNoSuperUser = async (res)=>{
     let temp, hcode,data = [];
     let sql = `
@@ -217,7 +341,13 @@ const getNoSuperUser = async (res)=>{
 const getRoleOption = async (req, res) => {
     let flag = true, code ,temp, option = {};
     try {
-        option.role = await model.role.findAll();
+        option.role = await model.role.findAll(
+            {
+                where: {
+                    valid: true
+                }
+            }
+        );
         temp = methods.formatRespond(flag, 200, '', option)
         res.send(temp)
     } catch (err) {
@@ -228,8 +358,7 @@ const getRoleOption = async (req, res) => {
     }
 }
 
-
 module.exports = {
     handleAdd, deleteUser ,modifyUser,
-    getNoSuperUser, getRoleOption
+    getNoSuperUser, getRoleOption, getUsers
 };
