@@ -43,7 +43,8 @@ const addUseRecord = async (param,res)=>{
             project : param.project,
             lendTime : new Date(),
             lendNumber : param.lendNumber,
-            lendDetail : param.lendDetail
+            lendDetail : param.lendDetail,
+            valid : param.valid
         });
         addAssignParamSelect(param);
     } catch (err) {
@@ -165,7 +166,7 @@ const withdraw = async (param,res)=>{
         await model.use_record.update({
             returnTime : new Date(),
             returnNumber : 1,
-            vaild: false,
+            valid : false,
             returnDetail : param.returnDetail
         },{
             'where':{
