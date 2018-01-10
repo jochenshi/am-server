@@ -64,6 +64,21 @@ const handleNormalGet = async (req, res) => {
                         model: models.ascription,
                         as: 'ascription',
                         attributes: ['id','outInType','originObject','targetObject','relatedType','occurTime','description']
+                    },
+                    {
+                        model: models.use_record,
+                        where: {
+                            relatedType: 'fitting',
+                            valid: true
+                        },
+                        attributes: ['userId'],
+                        required: false,
+                        include: [
+                            {
+                                model: models.user,
+                                attributes: ['name', 'isValid']
+                            }
+                        ]
                     }
                 ]
             });
@@ -84,6 +99,9 @@ const handleNormalGet = async (req, res) => {
                 temp_fit['occurTime'] = temp_fit.ascription.occurTime;
                 temp_fit['ascDesc'] = temp_fit.ascription.description;
                 temp_fit['ascriptionId'] = temp_fit.ascription.id;
+                let link = formatLinker(temp_fit.use_records)
+                //temp_fit['user'] = link.length ? link.join() : '';
+                temp_fit['user'] = link;
                 delete temp_fit.selects;
                 delete temp_fit.users;
                 delete temp_fit.selectState;
@@ -151,6 +169,21 @@ const getNormalInMachine = async (req, res) => {
                                 model: models.ascription,
                                 as: 'ascription',
                                 attributes: ['id','outInType','originObject','targetObject','relatedType','occurTime','description']
+                            },
+                            {
+                                model: models.use_record,
+                                where: {
+                                    relatedType: 'fitting',
+                                    valid: true
+                                },
+                                attributes: ['userId'],
+                                required: false,
+                                include: [
+                                    {
+                                        model: models.user,
+                                        attributes: ['name', 'isValid']
+                                    }
+                                ]
                             }
                         ]
                     }
@@ -171,6 +204,9 @@ const getNormalInMachine = async (req, res) => {
                     tt_obj['occurTime'] = tt_obj.ascription.occurTime;
                     tt_obj['ascDesc'] = tt_obj.ascription.description;
                     tt_obj['ascriptionId'] = tt_obj.ascription.id;
+                    let link = formatLinker(tt_obj.use_records)
+                    //tt_obj['user'] = link.length ? link.join() : '';
+                    tt_obj['user'] = link;
                     delete tt_obj.selectState;
                     delete tt_obj.selectType;
                     delete tt_obj.users;
@@ -300,7 +336,7 @@ const handleSupplyGet = async (req, res) => {
         let temps = JSON.parse(JSON.stringify(part));
         if (temps.length) {
             for (let i = 0; i < temps.length; i++) {
-                let temp_fit = temps[i],linker = [];
+                let temp_fit = temps[i];
                 temp_fit['key'] = temp_fit.id;
                 temp_fit['creator'] = temp_fit.users.name;
                 temp_fit['equipType'] = temp_fit.selectType.text;
@@ -313,9 +349,10 @@ const handleSupplyGet = async (req, res) => {
                 temp_fit['ascDesc'] = temp_fit.ascription.description;
                 temp_fit['ascriptionId'] = temp_fit.ascription.id;
                 temp_fit['createTime'] = temp_fit.ascription.occurTime;
-                if (temp_fit.use_records && temp_fit.use_records.length) {
-
-                }
+                let link = formatLinker(temp_fit.use_records)
+                //temp_fit['user'] = link.length ? link.join() : '';
+                temp_fit['user'] = link;
+                delete temp_fit.use_records;
                 delete temp_fit.selects;
                 delete temp_fit.users;
                 delete temp_fit.selectState;

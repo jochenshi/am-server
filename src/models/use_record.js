@@ -51,6 +51,16 @@ module.exports = function (sequelize, Sequelize) {
             targetKey: 'id',
             constraints: false
         });
+        use_record.belongsTo(model.fitting, {
+            foreignKey: 'relatedId',
+            targetKey: 'id',
+            constraints: false
+        });
+        use_record.belongsTo(model.machine, {
+            foreignKey: 'relatedId',
+            targetKey: 'id',
+            constraints: false
+        });
         use_record.belongsTo(model.user, {
             foreignKey: 'userId',
             targetKey: 'id',

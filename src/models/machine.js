@@ -54,10 +54,9 @@ module.exports = function (sequelize, Sequelize) {
     });
     machine.associate = function (model) {
         machine.belongsTo(model.user, {as: 'users', foreignKey: 'createUser', targetKey: 'id'});
-        machine.belongsTo(model.use_record, {
-            as: 'records', 
-            foreignKey: 'id', 
-            targetKey: 'relatedId', 
+        machine.hasMany(model.use_record, {
+            foreignKey: 'relatedId', 
+            sourceKey: 'id', 
             constraints: false, 
             scope: {
                 relatedType: 'machine'
