@@ -9,7 +9,9 @@ module.exports = function (sequelize, Sequelize) {
         updateTime: {
             type: Sequelize.DATE
         },
-
+        extra: {
+            type: Sequelize.STRING
+        }
     });
     return login;
 };
