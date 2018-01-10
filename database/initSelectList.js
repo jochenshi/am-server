@@ -182,5 +182,5 @@ const testSelectNull = async ()=>{
 // testMachine();
 // getAddMachineParam();
 // testAscription();
-testSelectNull();
+// testSelectNull();
 module.exports.initSelect = initSelect;

@@ -71,8 +71,9 @@ IFNULL((
     SELECT u.name 
     FROM use_record AS ur, user AS u 
     WHERE machine.id=ur.relatedId AND ur.relatedType='machine' AND ur.valid=true 
-    AND ur.userId=user.id
-    ),NULL) AS user,
+    AND ur.userId=u.id
+    ),NULL) 
+    AS user 
 FROM machine,user 
 WHERE 
 machine.useState!='destory' AND 
