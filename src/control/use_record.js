@@ -95,6 +95,7 @@ const assign = async (param, res)=>{
                 break;
         }
         param['lendNumber'] = 1;
+        param['valid'] = true;
         flag = addUseRecord(param);
         if(flag){
             res.send(methods.formatRespond(true, 200));
@@ -164,6 +165,7 @@ const withdraw = async (param,res)=>{
         await model.use_record.update({
             returnTime : new Date(),
             returnNumber : 1,
+            vaild: false,
             returnDetail : param.returnDetail
         },{
             'where':{
@@ -215,6 +217,7 @@ const assignEquip = async (param, res)=>{
                 id : param.relatedId
             }
         });
+        param['valid'] = true;
         flag = addUseRecord(param);
         if(flag){
             res.send(methods.formatRespond(true, 200));
@@ -237,7 +240,7 @@ const assignEquip = async (param, res)=>{
  * @returns {Promise.<void>}
  */
 const withdrawEquip = async(param, res)=>{
-    let temp,code,useState,record = param.record;
+    let temp,code,useState,record = param.record,validFlag;
     let returnNumber = record.returnNumber||0;
     try {
         let part = await model.part.findOne({
@@ -260,9 +263,11 @@ const withdrawEquip = async(param, res)=>{
             return;
         }else if(remainNumber==part.number){
             useState = 'idle';
+            validFlag = false;
         }
         else if(remainNumber<part.number){
             useState = 'partusing';
+            validFlag = true;
         }
         await model.part.update({
             remainNumber : remainNumber,
@@ -272,10 +277,12 @@ const withdrawEquip = async(param, res)=>{
                 id : record.relatedId
             }
         });
+
         await model.use_record.update({
             returnTime : new Date(),
             returnNumber : returnNumber+param.returnNumber,
-            returnDetail : param.returnDetail
+            returnDetail : param.returnDetail,
+            valid: validFlag
         },{
             'where':{
                 id : record.id
