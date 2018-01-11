@@ -66,6 +66,9 @@ module.exports = function (sequelize, Sequelize) {
             scope: {
                 relatedType: 'fitting'
             }
+        });
+        fitting.belongsToMany(model.operation_record, {
+            through: 'operateFitting'
         })
     }
     return fitting

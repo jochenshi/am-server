@@ -55,6 +55,9 @@ module.exports = function (sequelize, Sequelize) {
             scope: {
                 relatedType: 'part'
             }
+        });
+        part.belongsToMany(model.operation_record, {
+            through: 'operatePart'
         })
     }
     return part

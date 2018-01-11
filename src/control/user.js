@@ -11,7 +11,7 @@ const Op = Sequelize.Op;
 // required params
 const verifyRequired = ({name, account, password, phone, email, role}, res) => {
     let flag = true;
-    if (!account || !password || !name || !phone || !email || !role) {
+    if (!account || !password || !name || !role) {
         //txt = 'name,account or password can not be empty!';
         flag = false;
         const temp = methods.formatRespond(false, 10000, errorText.formatError(10000));
@@ -210,7 +210,7 @@ const getUsers = async (req, res) => {
             }
             let queryUser = await model.user.findAll(
                 {
-                    attributes: ['id','name','account','createTime','description', 'createUser','phone','email','isValid'],
+                    attributes: ['id','name','account','createTime','description', 'createUser','phone','email','isValid','canLogin'],
                     include: [
                         {
                             model: model.role,

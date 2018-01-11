@@ -3,7 +3,7 @@ const {logger_level} = require('./config')
 
 log4js.configure({
     appenders: {
-        am_erver: {
+        am_server: {
             type: 'file',
             filename: 'am-server.log'
         }

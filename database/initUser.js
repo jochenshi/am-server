@@ -29,6 +29,7 @@ const userData = [
         role: 'R0002',
         email: 'admin@unis.com',
         isValid: true,
+        canLogin: true,
         createUser: 'system',
         createTime: Date.now(),
         description: '系统默认管理员账户'
@@ -41,6 +42,7 @@ const userData = [
         role: 'R0001',
         email: 'super@unis.com',
         isValid: true,
+        canLogin: true,
         createUser: 'system',
         createTime: Date.now(),
         description: '系统默认超级管理员账户'
