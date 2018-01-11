@@ -58,12 +58,12 @@ const authorityData = [
     //机器相关权限
     {
         value: 'addMachine',
-        name: '添加',
+        name: '添加机器',
         description: '添加机器'
     },
     {
         value: 'modifyMachine',
-        name: '修改',
+        name: '修改机器',
         description: '修改机器(普通修改)'
     },
     {
@@ -94,22 +94,22 @@ const authorityData = [
     //配件的相关权限
     {
         value: 'addNormalEquip',
-        name: '添加',
+        name: '添加普通配件',
         description: '添加普通配件'
     },
     {
         value: 'modifyNormalEquip',
-        name: '修改',
+        name: '修改普通配件',
         description: '修改普通配件'
     },
     {
         value: 'assignNormalEquip',
-        name: '分配',
+        name: '分配普通配件',
         description: '分配普通配件'
     },
     {
         value: 'withdrawNormalEquip',
-        name: '收回',
+        name: '收回普通配件',
         description: '收回普通配件'
     },
     // {
@@ -119,42 +119,42 @@ const authorityData = [
     // },
     {
         value: 'linkNormalEquip',
-        name: '关联',
+        name: '关联普通配件',
         description: '普通配件展示列表的关联操作'
     },
     {
         value: 'unlinkNormalEquip',
-        name: '取消关联',
+        name: '取消关联普通配件',
         description: '普通配件展示列表的取消关联操作'
     },
     {
         value: 'linkManyNormal',
-        name: '批量关联',
+        name: '批量关联普通配件',
         description: '在机器的详情页面批量关联相应类型的配件'
     },
     {
         value: 'unlinkManyNormal',
-        name: '批量取消关联',
+        name: '批量取消关联普通配件',
         description: '在机器的详情页面批量取消关联相应类型的配件'
     },
     {
         value: 'addSupplyEquip',
-        name: '添加',
+        name: '添加耗材类配件',
         description: '添加耗材配件'
     },
     {
         value: 'modifySupplyEquip',
-        name: '修改',
+        name: '修改耗材类配件',
         description: '修改耗材配件'
     },
     {
         value: 'assignSupplyEquip',
-        name: '分配',
+        name: '分配耗材类配件',
         description: '分配耗材配件'
     },
     {
         value: 'withdrawSupplyEquip',
-        name: '收回',
+        name: '收回耗材类配件',
         description: '收回耗材配件'
     },
     // {
@@ -165,12 +165,12 @@ const authorityData = [
     //用户管理的相关的权限
     {
         value: 'addUser',
-        name: '添加',
+        name: '添加用户',
         description: '创建用户'
     },
     {
         value: 'showNotRoot',
-        name: '展示',
+        name: '展示用户',
         description: '展示非Root用户'
     },
     // {

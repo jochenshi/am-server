@@ -30,7 +30,7 @@ module.exports = function (sequelize, Sequelize) {
         email: {
             type: Sequelize.STRING,
             unique: true,
-            allowNull: false,
+            allowNull: true,
             validate: {
                 isEmail: true
             }
@@ -41,6 +41,7 @@ module.exports = function (sequelize, Sequelize) {
         },
         canLogin: {
             type: Sequelize.BOOLEAN,
+            allowNull: false
         },
         createUser: {
             type: Sequelize.STRING
@@ -73,6 +74,9 @@ module.exports = function (sequelize, Sequelize) {
             foreignKey: 'id',
             targetKey: 'userId',
             constraints: false
+        });
+        User.belongsToMany(model.operation_record, {
+            through: 'operateTarget'
         })
     }
     return User;

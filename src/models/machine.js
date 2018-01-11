@@ -61,6 +61,9 @@ module.exports = function (sequelize, Sequelize) {
             scope: {
                 relatedType: 'machine'
             }
+        });
+        machine.belongsToMany(model.operation_record, {
+            through: 'operateMachine'
         })
     }
     //需要将machine以及fitting通过自动关系建立联系

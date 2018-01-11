@@ -25,5 +25,29 @@ module.exports = function (sequelize, Sequelize) {
     {
         comment: '操作记录表'
     });
+    operate.associate = function (model) {
+        operate.belongsTo(model.authority, {
+            foreignKey: 'type',
+            targetKey: 'value',
+            constraints: false
+        });
+        operate.belongsTo(model.user, {
+            foreignKey: 'operatorId',
+            targetKey: 'id',
+            constraints: false
+        });
+        operate.belongsToMany(model.machine, {
+            through: 'operateMachine'
+        });
+        operate.belongsToMany(model.fitting, {
+            through: 'operateFitting'
+        });
+        operate.belongsToMany(model.part, {
+            through: 'operatePart'
+        });
+        operate.belongsToMany(model.user, {
+            through: 'operateTarget'
+        });
+    }
     return operate;
 }
