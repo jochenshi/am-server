@@ -8,6 +8,7 @@ const Op = Sequelize.Op;
 const ascription = require('./ascription');
 const selectControl = require('./select_list');
 const machineFitting = require('./machineFitting');
+const logger = require('../config/log');
 
 /* 
 提供的方法的说明：
@@ -109,12 +110,13 @@ const handleNormalGet = async (req, res) => {
             }
         }
         console.log('....', temps);
+        logger.info(req.headers + 'get equip end')
         res.send(methods.formatRespond(flag, 200, '', temps))
-
-    } catch (err) {
+    } catch (err) { 
         code = 10003;
         flag = false;
         temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        logger.error('get equip error' + err);
         res.status(400).send(temp);
     }
 }
@@ -244,6 +246,7 @@ const handleNormalModify = (req, res) => {
         flag = false;
         code = 12001;
         temp = methods.formatRespond(flag, code, errorText.formatError(code));
+        logger.error(req.headers + '###request body###' + req.body + '###error###' + temp + 'request end')
         res.status(400).send(temp);
     } else {
         //必选参数校验通过,执行查找然后修改
@@ -501,11 +504,13 @@ const verifyNormal = async (req, res) => {
                     }
                 }
             }
+            logger.info(req.headers + '###request body###' + req.body + 'request end')
         }
     } catch (err) {
         flag = false;
         code = 10003;
         temp = methods.formatRespond(flag, code, err.message + ';' + err.name);
+        logger.error(req.headers + '###request body###' + req.body + '###error###' + err + 'request end')
         res.status(400).send(temp);
     }
 };
@@ -619,7 +624,9 @@ const executeNormalModify = async (req, res) => {
         if (findFit.length) {
             flag = false;
             code = 12003;
-            res.status(400).send(methods.formatRespond(flag, code, errorText.formatError(code)));
+            temp = methods.formatRespond(flag, code, errorText.formatError(code));
+            res.status(400).send(temp);
+            logger.error(req.headers + '###request body###' + req.body + '###error###' + temp + 'request end');
         } else {
             let userId = methods.getUserId(req, res);
             let addData = Object.assign({}, req.body, {userId});
@@ -649,11 +656,13 @@ const executeNormalModify = async (req, res) => {
             if (flag) {
                 await findCreateNormalSelect(addData);
                 res.send(methods.formatRespond(true, 200));
+                logger.info(req.headers + '###request body###' + req.body + 'request end')
             } else {
                 flag = false;
                 code = 13201;
                 temp = methods.formatRespond(false, code, errorText.formatError(code));
                 res.status(400).send(temp);
+                logger.error(req.headers + '###request body###' + req.body + '###error###' + temp + 'request end')
             }
         }
     } catch (err) {
@@ -661,6 +670,7 @@ const executeNormalModify = async (req, res) => {
         flag = false;
         temp = methods.formatRespond(false, code, err.message + ';' + err.name);
         res.status(400).send(temp);
+        logger.error(req.headers + '###request body###' + req.body + '###error###' + err + 'request end')
     }
 }
 

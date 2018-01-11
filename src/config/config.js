@@ -16,4 +16,6 @@ const pass_encrypt = 'unis1234';
 const session_encrypt = 'unis_session_encrypt';
 const cookie_encrypt = 'unis_cookie_encrypt';
 const sig_encrypt = 'unis_sig_token';
-module.exports = { mysql_config, pass_encrypt, session_encrypt, cookie_encrypt, sig_encrypt}
+const logger_level = 'error';
+
+module.exports = { mysql_config, pass_encrypt, session_encrypt, cookie_encrypt, sig_encrypt, logger_level}

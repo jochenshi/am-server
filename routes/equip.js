@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
+const logger = require('../src/config/log');
 
-const normalAdd = require('../src/control/equip')
+const normalAdd = require('../src/control/equip');
 
 router.get('/normalEquip', (req, res) => {
     normalAdd.handleNormalGet(req, res)
