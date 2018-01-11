@@ -6,6 +6,8 @@ const methods = require('../common/methods');
 const errorText = require('../common/error');
 const user = require('./user');
 const select = require('./select_list');
+
+const operation = require('./operate_record');
 /**
  * 得到分配使用的选项参数
  */
@@ -97,7 +99,7 @@ const assign = async (param, res)=>{
         }
         param['lendNumber'] = 1;
         param['valid'] = true;
-        flag = addUseRecord(param);
+        flag = await addUseRecord(param);
         if(flag){
             res.send(methods.formatRespond(true, 200));
         }else{
@@ -219,8 +221,16 @@ const assignEquip = async (param, res)=>{
             }
         });
         param['valid'] = true;
-        flag = addUseRecord(param);
+        flag = await addUseRecord(param);
         if(flag){
+            let operateParam = {
+                type: 'assignSupplyEquip',
+                operatorId: methods.getUserId(res),
+                partId: param.relatedId,
+                userId: param.userId,
+                operateStatus: flag
+            };
+            await operation.handleOperateRecord(operateParam);
             res.send(methods.formatRespond(true, 200));
         }else{
             code = 13301;
@@ -251,24 +261,28 @@ const withdrawEquip = async(param, res)=>{
         });
         part = part ? part['dataValues']:'';
         if(!part) return;
-        let remainNumber = param.returnNumber+part.remainNumber
-        if((returnNumber+param.returnNumber)>record.lendNumber){
+        let remainNumber = param.returnNumber+part.remainNumber;
+        let realReturnNumber = returnNumber+param.returnNumber;
+        if(realReturnNumber>record.lendNumber){
             code = 13302;
             temp = methods.formatRespond(false, code,  errorText.formatError(code));
             res.status(400).send(temp);
             return;
-        }else if(remainNumber>part.number){
+        }else if(realReturnNumber==record.lendNumber){
+            validFlag = false;
+        }else if(realReturnNumber<record.lendNumber){
+            validFlag = true;
+        }
+        if(remainNumber>part.number){
             code = 13303;
             temp = methods.formatRespond(false, code,  errorText.formatError(code));
             res.status(400).send(temp);
             return;
         }else if(remainNumber==part.number){
             useState = 'idle';
-            validFlag = false;
         }
         else if(remainNumber<part.number){
             useState = 'partusing';
-            validFlag = true;
         }
         await model.part.update({
             remainNumber : remainNumber,
