@@ -4,11 +4,22 @@ const errorText = require('../common/error');
 
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
+const operation = require('./operate_record');
 
 const handleRelateAdd = async (req, res) => {
     let {machineId, fittingId = []} = req.body, flag = true;
     let ret = await addRelate({machineId, fittingId}, res);
     if (ret) {
+        let ffit = methods.changeStringToArray(fittingId);
+        let operateParam = {
+            type: 'linkNormalEquip',
+            operatorId: methods.getUserId(req),
+            fittingId: ffit,
+            machineId: machineId,
+            number: ffit.length,
+            operateStatus: flag
+        };
+        await operation.handleOperateRecord(operateParam);
         res.send(methods.formatRespond(flag, 200 , ''))
     }
 };
@@ -141,6 +152,14 @@ const deleteRelate = async ({target = 'fitting', data = []}, res) => {
             temp = methods.formatRespond(flag, code, errorText.formatError(code));
             res.status(400).send(temp);
         } else {
+            let operateParam = {
+                type: 'unlinkNormalEquip',
+                operatorId: methods.getUserId(res),
+                fittingId: data,
+                number: data.length,
+                operateStatus: flag
+            };
+            await operation.handleOperateRecord(operateParam);
             res.send(methods.formatRespond(flag, 200, ''));
         }
     } catch (err) {

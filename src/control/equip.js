@@ -9,6 +9,7 @@ const ascription = require('./ascription');
 const selectControl = require('./select_list');
 const machineFitting = require('./machineFitting');
 const logger = require('../config/log');
+const operation = require('./operate_record');
 
 /* 
 提供的方法的说明：
@@ -431,6 +432,14 @@ const handleSupplyAdd = async (req, res) => {
                 };
                 if (ascription.addAscription(asParam)) {
                     await findCreateSupplySelect(addData);
+                    let operateParam = {
+                        type: 'addSupplyEquip',
+                        operatorId: userId,
+                        partId: createPart.id,
+                        number: 1,
+                        operateStatus: flag
+                    };
+                    await operation.handleOperateRecord(operateParam);
                     res.send(methods.formatRespond(true, 200));
                 } else {
                     //设备归属信息添加失败，删除相应的配件的信息
@@ -494,6 +503,14 @@ const verifyNormal = async (req, res) => {
                     };
                     if (ascription.addAscription(param)) {
                         await findCreateNormalSelect(addData);
+                        let operateParam = {
+                            type: 'addNormalEquip',
+                            operatorId: userId,
+                            fittingId: add_equip.id,
+                            number: 1,
+                            operateStatus: flag
+                        };
+                        await operation.handleOperateRecord(operateParam);
                         res.send(methods.formatRespond(true, 200));
                     } else {
                         //设备归属信息添加失败，删除相应的配件的信息

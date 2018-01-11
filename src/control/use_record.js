@@ -62,10 +62,11 @@ const addUseRecord = async (param,res)=>{
  * @returns {Promise.<void>}
  */
 const assign = async (param, res)=>{
-    let temp,code,flag;
+    let temp,code,flag,operateType;
     try {
         switch(param.relatedType){
             case 'machine':
+                operateType = 'assignMachine';
                 await model.machine.update({
                     useState : 'using'
                 },{
@@ -90,6 +91,7 @@ const assign = async (param, res)=>{
                 }*/
                 break;
             case 'fitting':
+                operateType = 'assignNormalEquip';
                 await model.fitting.update({
                     useState : 'using'
                 },{
@@ -101,6 +103,19 @@ const assign = async (param, res)=>{
         param['valid'] = true;
         flag = await addUseRecord(param);
         if(flag){
+            let operateParam = {
+                type: operateType,
+                operatorId: methods.getUserId(res),
+                userId: param.userId,
+                number: param.lendNumber,
+                operateStatus: flag
+            };
+            if (param.relatedType === 'machine') {
+                operateParam.machineId = param.relatedId
+            } else if (param.relatedType === 'fitting') {
+                operateParam.fittingId = param.relatedId
+            }
+            await operation.handleOperateRecord(operateParam);
             res.send(methods.formatRespond(true, 200));
         }else{
             code = 13301;
@@ -129,10 +144,11 @@ const addAssignParamSelect = (param)=>{
  * @returns {Promise.<void>}
  */
 const withdraw = async (param,res)=>{
-    let temp,code;
+    let temp,code,operateType,flag = true;
     try {
         switch(param.relatedType){
             case 'machine':
+                operateType = 'assignMachine';
                 await model.machine.update({
                     useState : 'idle'
                 },{
@@ -158,6 +174,7 @@ const withdraw = async (param,res)=>{
                 }*/
                 break;
             case 'fitting':
+                operateType = 'assignNormalEquip';
                 await model.fitting.update({
                     useState : 'idle'
                 },{
@@ -177,8 +194,22 @@ const withdraw = async (param,res)=>{
                 returnTime: null
             }
         });
+        let operateParam = {
+            type: operateType,
+            operatorId: methods.getUserId(res),
+            userId: param.userId,
+            number: 1,
+            operateStatus: flag
+        };
+        if (param.relatedType === 'machine') {
+            operateParam.machineId = param.relatedId
+        } else if (param.relatedType === 'fitting') {
+            operateParam.fittingId = param.relatedId
+        }
+        await operation.handleOperateRecord(operateParam);
         res.send(methods.formatRespond(true, 200));
     } catch (err) {
+        flag = false;
         code = 10003;
         temp = methods.formatRespond(false, code, err.message + ';' + err.name);
         res.status(400).send(temp);
@@ -228,6 +259,7 @@ const assignEquip = async (param, res)=>{
                 operatorId: methods.getUserId(res),
                 partId: param.relatedId,
                 userId: param.userId,
+                number: param.lendNumber,
                 operateStatus: flag
             };
             await operation.handleOperateRecord(operateParam);
@@ -295,7 +327,7 @@ const withdrawEquip = async(param, res)=>{
 
         await model.use_record.update({
             returnTime : new Date(),
-            returnNumber : returnNumber+param.returnNumber,
+            returnNumber : returnNumber + param.returnNumber,
             returnDetail : param.returnDetail,
             valid: validFlag
         },{
@@ -303,6 +335,15 @@ const withdrawEquip = async(param, res)=>{
                 id : record.id
             }
         });
+        let operateParam = {
+            type: 'withdrawSupplyEquip',
+            operatorId: methods.getUserId(res),
+            partId: record.relatedId,
+            userId: record.userId,
+            number: param.returnNumber,
+            operateStatus: true
+        };
+        await operation.handleOperateRecord(operateParam);
         res.send(methods.formatRespond(true, 200));
     } catch (err) {
         code = 10003;

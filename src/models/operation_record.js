@@ -22,10 +22,16 @@ module.exports = function (sequelize, Sequelize) {
             type: Sequelize.BOOLEAN,
             allowNull: false
         },
+        number: {
+            type: Sequelize.FLOAT
+        },
         occurTime: {
             type: Sequelize.DATE
         },
         comment: {
+            type: Sequelize.STRING
+        },
+        description: {
             type: Sequelize.STRING
         }
     },

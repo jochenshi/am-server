@@ -19,9 +19,10 @@ const handleOperateRecord = async (obj, res) => {
         } else {
             flag = false;
             code = judged.code;
+            temp = methods.formatRespond(flag, code, errorText.formatError(code));
+            logger.error('###add operate record error:###' + JSON.stringify(temp) + '###message end###');
         }
-        temp = methods.formatRespond(flag, code, errorText.formatError(code));
-        logger.error('###add operate record error:###' + JSON.stringify(temp) + '###message end###');
+        
         //res.status(400).send(temp);
     } catch (err) {
         code = 10003;
@@ -36,7 +37,7 @@ const handleOperateRecord = async (obj, res) => {
 const verifyDada = (obj) => {
     let flag = true, code, data = {};
     //operatorId生成这条操作记录的人，userId当前记录涉及到的对象
-    let {type, userId = [], operatorId, machineId = [], fittingId = [], partId = [], comment, operateStatus = true} = obj;
+    let {type, userId = [], operatorId, machineId = [], fittingId = [], number, partId = [], comment, operateStatus = true} = obj;
     if (!type || !operatorId) {
         flag = false;
         code = 13012;
@@ -47,10 +48,11 @@ const verifyDada = (obj) => {
         partId = methods.changeStringToArray(partId);
         data = {
             type,
-            machineId: machineId.length ? machineId.toString() : null,
-            fittingId: fittingId.length ? fittingId.toString() : null,
-            partId: partId.length ? partId.toString() : null,
-            userId: fittingId.length ? fittingId.toString() : null,
+            machineId: machineId.length ? JSON.stringify(machineId) : null,
+            fittingId: fittingId.length ? JSON.stringify(fittingId) : null,
+            partId: partId.length ? JSON.stringify(partId) : null,
+            userId: userId.length ? JSON.stringify(userId) : null,
+            number: number ? number : null,
             operatorId: operatorId,
             occurTime: Date.now(),
             operateStatus: operateStatus,
@@ -72,7 +74,7 @@ const addRecord = async (obj, res) => {
     if (obj.machineId) {
         let machine = await model.machine.findAll({
             where: {
-                id: obj.machineId
+                id: JSON.parse(obj.machineId)
             }
         });
         if (machine.length) {
@@ -86,11 +88,11 @@ const addRecord = async (obj, res) => {
     if (flag && obj.fittingId){
         let fitting = await model.fitting.findAll({
             where: {
-                id: obj.fittingId
+                id: JSON.parse(obj.fittingId)
             }
         });
-        if (fittingId.length) {
-            await record.addFittings(fitting)
+        if (fitting.length) {
+           await record.addFittings(fitting)
         } else {
             flag = false;
             code = 13009;
@@ -100,7 +102,7 @@ const addRecord = async (obj, res) => {
     if (flag && obj.partId) {
         let part = await model.part.findAll({
             where: {
-                id: obj.partId
+                id: JSON.parse(obj.partId)
             }
         });
         if (part.length) {
@@ -114,7 +116,7 @@ const addRecord = async (obj, res) => {
     if (flag && obj.userId) {
         let user = await model.user.findAll({
             where: {
-                id: obj.userId
+                id: JSON.parse(obj.userId)
             }
         });
         if (user.length) {

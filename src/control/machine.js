@@ -7,6 +7,7 @@ const errorText = require('../common/error');
 const ascription = require('./ascription');
 const selectControl = require('./select_list');
 const login = require('./login');
+const operation = require('./operate_record');
 
 const MACHINE_HEALTHSTATE_SQL = `SELECT 
 health.healthState,machine.name 
@@ -278,6 +279,14 @@ const addMachine = async (param,res) => {
         param['relatedType'] = 'machine';
         param['operateUser'] = createrUser;
         if(ascription.addAscription(param)){
+            let operateParam = {
+                type: 'addMachine',
+                operatorId: createrUser,
+                machineId: machineData.id,
+                number: 1,
+                operateStatus: true
+            };
+            await operation.handleOperateRecord(operateParam);
             res && res.send(methods.formatRespond(true, 200,'',machineData));
             await addMachineSelect(param);
         }else{
