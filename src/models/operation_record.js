@@ -9,11 +9,18 @@ module.exports = function (sequelize, Sequelize) {
         fittingId: {
             type: Sequelize.STRING
         },
+        partId: {
+            type: Sequelize.STRING
+        },
         userId: {
             type: Sequelize.STRING
         },
         operatorId: {
             type: Sequelize.STRING
+        },
+        operateStatus: {
+            type: Sequelize.BOOLEAN,
+            allowNull: false
         },
         occurTime: {
             type: Sequelize.DATE

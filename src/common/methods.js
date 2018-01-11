@@ -89,8 +89,19 @@ const getUserId = (req, res) => {
     return am_user;
 };
 
+const changeStringToArray = (data) => {
+    let arr = [];
+    if (Object.prototype.toString.call(data) !== '[object Array]') {
+        arr.push(data);
+    } else {
+        arr = data;
+    }
+    return arr;
+}
+
 module.exports = { 
     formatRespond, validLogin, interRespond,
     passEncrypt, passDecrypt, sessionEncrypt, 
-    sessionDecrypt,encryptFun, decryptFun, getUserId
+    sessionDecrypt,encryptFun, decryptFun, getUserId,
+    changeStringToArray
 };

@@ -379,7 +379,7 @@ const formatLinker = (data) => {
             val.user.name && linker.push(val.user.name)
         })
     }
-    return linker
+    return Array.from(new Set(linker))
 }
 
 //添加耗材类配件的方法
