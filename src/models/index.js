@@ -1,3 +1,4 @@
+var fs = require('fs');
 var path = require('path');
 var Sequelize = require('sequelize');
 var sql_config = require(path.join(__dirname, '../config/config.js'));
