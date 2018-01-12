@@ -179,7 +179,14 @@ const validLoginToken = async (req, res, cookie) => {
             if (login_record.length) {
                 data_token = login_record[0];
                 let result = await compareToken(data_token, req.cookies.am_sig);
-                let {flag, code} = result;
+                flag = result.flag;
+                code = result.code;
+                if (!flag) {
+                    temp = methods.formatRespond(flag, code, errorText.formatError(code));
+                    res.status(400).send(temp);
+                    return
+                }
+                //let {flag, code} = result;
             } else {
                 flag = false;
                 code = 10007;
@@ -205,7 +212,7 @@ const validLoginToken = async (req, res, cookie) => {
 };
 
 //比较接收到的token信息以及查询到的token的信息
-const compareToken = async (sqlData, reqToken) => {
+const compareToken = async (sqlData, reqToken, res) => {
     let flag = true, code;
     try {
         //两个token是一样的
@@ -263,7 +270,7 @@ const validRequest = async (req, res) => {
 
 //根据请求的相关信息，获取当前用户ID的操作
 const getUserId = (req, res) => {
-    let {am_user} = req.cookies ? handleToken(req.cookies).data : {am_user :'id_61646d696e75736572'};
+    let {am_user} = handleToken(req.cookies).data;
     return am_user;
 };
 module.exports = {
