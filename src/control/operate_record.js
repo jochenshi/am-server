@@ -6,6 +6,7 @@ const errorText = require('../common/error');
 const logger = require('../config/log')
 
 //对用户在系统进行的操作进行记录,obj中的参数包含: type,userId,operatorId,machineId,fittingId,partId,comment
+//添加操作记录的入口方法
 const handleOperateRecord = async (obj, res) => {
     let flag = true, code, temp;
     try {
@@ -34,6 +35,38 @@ const handleOperateRecord = async (obj, res) => {
     return flag
 }
 
+//获取展示用户操作记录的入口方法
+const handleOperateGet = async (req, res) => {
+    let flag = true, code, temp;
+    try {
+        let records = await model.operation_record.findAll({
+            include: [
+                {
+                    model: model.machine
+                },
+                {
+                    model: model.fitting
+                },
+                {
+                    model: model.part
+                },
+                {
+                    model: model.user
+                },
+                {
+                    model: model.authority
+                }
+            ]
+        })
+    } catch (err) {
+        code = 10003;
+        flag = false;
+        temp = methods.formatRespond(false, code, err.message + ';' + err.name);
+        logger.error('###get operate record error:###' + err.message + ';' + err.name + '###message end###');
+    }
+}
+
+//验证传进的数据以及将数据的格式进行转换
 const verifyDada = (obj) => {
     let flag = true, code, data = {};
     //operatorId生成这条操作记录的人，userId当前记录涉及到的对象
@@ -62,6 +95,7 @@ const verifyDada = (obj) => {
     return {flag, data, code}
 }
 
+//添加操作记录
 const addRecord = async (obj, res) => {
     let flag = true, code, temp;
     let record = await model.operation_record.create(obj);
