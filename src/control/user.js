@@ -4,6 +4,7 @@ const model = require('../models');
 const methods = require('../common/methods');
 const errorText = require('../common/error');
 const {getAuthority} = require('../control/authority')
+const operation = require('./operate_record')
 
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
@@ -120,6 +121,13 @@ const executeAdd = async ({name, account, password, role, phone, email, descript
             });
             await roleInfo[0].addUser(userInfo)
             temp = methods.formatRespond(true, 200);
+            let operateParam = {
+                type: 'addUser',
+                userId: userInfo.id,
+                operatorId: userId,
+                operateStatus: flag
+            };
+            await operation.handleOperateRecord(operateParam);
             res.send(temp)
         } else {
             flag = false;
@@ -229,6 +237,7 @@ const getUsers = async (req, res) => {
             if (queryUser.length) {
                 for (let i = 0; i < parseUser.length; i++) {
                     let tt = parseUser[i];
+                    tt.key = tt.id;
                     tt.re_create ? tt.creator = tt.re_create.name : tt.creator = tt.createUser;
                     //tt.re_create && (tt.creator = tt.re_create.name);
                     let tRole = [];

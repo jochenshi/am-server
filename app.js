@@ -19,6 +19,7 @@ var use_record = require('./routes/use_record');
 const equip = require('./routes/equip');
 const authority = require('./routes/authority');
 const relation = require('./routes/relation');
+const operation = require('./routes/operation')
 
 var app = express();
 
@@ -66,6 +67,7 @@ app.use('/am/authority', authority);
 app.use('/am/ascription', ascription);
 app.use('/am/use', use_record);
 app.use('/am/relate', relation);
+app.use('/am/operation', operation)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -40,24 +40,45 @@ const handleOperateGet = async (req, res) => {
     let flag = true, code, temp;
     try {
         let records = await model.operation_record.findAll({
+            attributes: ['id','type','number','userId','operatorId','operateStatus','occurTime','description','comment'],
+            order: [
+                ['occurTime', 'DESC']
+            ],
             include: [
                 {
-                    model: model.machine
+                    model: model.user,
+                    as: 'operateUser',
+                    attributes: ['name', 'account','id']
                 },
                 {
-                    model: model.fitting
+                    model: model.machine,
+                    attributes: ['id', 'name']
                 },
                 {
-                    model: model.part
+                    model: model.fitting,
+                    attributes: ['id', 'name']
                 },
                 {
-                    model: model.user
+                    model: model.part,
+                    attributes: ['id', 'name']
                 },
                 {
-                    model: model.authority
+                    model: model.user,
+                    attributes: ['id', 'name']
+                },
+                {
+                    model: model.authority,
+                    attributes: ['name','value','description']
                 }
             ]
-        })
+        });
+        let parsedData = JSON.parse(JSON.stringify(records));
+        for (let i = 0; i < parsedData.length; i++) {
+         let tt = parsedData[i];
+         tt.key = tt.id;
+        }
+        temp = methods.formatRespond(flag, 200, '', parsedData)
+        res.send(temp);
     } catch (err) {
         code = 10003;
         flag = false;
@@ -169,5 +190,5 @@ const judgeRelate = async (tableName, idArr) => {
 }
 
 module.exports = {
-    handleOperateRecord
+    handleOperateRecord, handleOperateGet
 }
