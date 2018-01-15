@@ -45,6 +45,7 @@ module.exports = function (sequelize, Sequelize) {
             constraints: false
         });
         operate.belongsTo(model.user, {
+            as: 'operateUser',
             foreignKey: 'operatorId',
             targetKey: 'id',
             constraints: false

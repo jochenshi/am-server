@@ -99,6 +99,24 @@ const changeStringToArray = (data) => {
     return arr;
 }
 
+//当数组中包含多个同类型的obj时，将该数组进行转换，返回一个新数组，新数组中依旧为多个对象
+//但是包含的值指定的key值
+const formatWithKey = (arr, keys = []) => {
+    let returnArr = [];
+    keys = changeStringToArray(keys);
+    try {
+        if (arr.length) {
+            arr.forEach((val) => {
+                
+            })
+        }
+    } catch (err) {
+        returnArr = [];
+        console.error(err)
+    }
+    return returnArr;
+}
+
 module.exports = { 
     formatRespond, validLogin, interRespond,
     passEncrypt, passDecrypt, sessionEncrypt, 
