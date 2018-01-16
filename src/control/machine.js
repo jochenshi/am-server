@@ -185,14 +185,16 @@ const verifyMachineExist = async(param,res)=>{
             $or: [
                 {
                     rdNumber: param.rdNumber
-                },
+                }
                 /*{
                     fixedNumber: param.fixedNumber
                 },*/
-                {
-                    serialNo: param.serialNo
-                }
             ]
+        }
+        if (param.serialNo) {
+            data['$or'].push({
+                serialNo: param.serialNo
+            })
         }
         if(param.id){
             data['$not'] = [{ id : param.id}]

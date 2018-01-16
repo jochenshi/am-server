@@ -242,7 +242,7 @@ const handleNormalModify = (req, res) => {
     let flag = true, code, temp;
     let {id} = req.params;
     let {serialNo, name, type, model, brand, size, unit, useState, description} = req.body;
-    if (!id ||!serialNo || !name || !type || !model || !brand) {
+    if (!id || !name || !type || !model || !brand) {
         //修改传过来的参数必填校验不通过
         flag = false;
         code = 12001;
@@ -465,18 +465,19 @@ const verifyNormal = async (req, res) => {
     let {sourceType, serialNo, name, type, model, brand, size, unit, description, machineId} = req.body || {},
     flag = true, code, temp;
     try {
-        if (!serialNo || !name || !type || !model || !brand) {
+        if (!name || !type || !model || !brand) {
             flag = false;
             code = 12001;
             temp = methods.formatRespond(flag, code, errorText.formatError(code));
             res.status(400).send(temp);
         } else {
+            let whereArg = [{name}];
+            if (serialNo) {
+                whereArg.push({serialNo})
+            }
             let findFit = await models.fitting.findAll({
                 where: {
-                    [Op.or]: [
-                        {serialNo},
-                        {name}
-                    ]
+                    [Op.or]: whereArg
                 }
             });
             if (findFit.length) {
@@ -545,7 +546,7 @@ const executeNormalAdd = async (obj, res) => {
         }
         useState = 'idle';
         data = await models.fitting.create({
-            serialNo: obj.serialNo,
+            serialNo: obj.serialNo || null,
             name: obj.name,
             type: obj.type,
             model: obj.model,
@@ -627,12 +628,13 @@ const executeNormalModify = async (req, res) => {
     try {
         let {id} = req.params;
         let {serialNo, name, type, model, brand, size, unit, useState, description, originDes, ascriptionId} = req.body;
+        let whereArg = [{name}];
+        if (serialNo) {
+            whereArg.push({serialNo})
+        }
         let findFit = await models.fitting.findAll({
             where: {
-                [Op.or]: [
-                    {serialNo},
-                    {name}
-                ],
+                [Op.or]: whereArg,
                 [Op.not]: [
                     {id}
                 ]
@@ -648,7 +650,7 @@ const executeNormalModify = async (req, res) => {
             let userId = methods.getUserId(req, res);
             let addData = Object.assign({}, req.body, {userId});
             await models.fitting.update({
-                serialNo: serialNo,
+                serialNo: serialNo || null,
                 name: name,
                 type: type,
                 model: model,
