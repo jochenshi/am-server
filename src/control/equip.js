@@ -241,7 +241,7 @@ const handleNormalModify = (req, res) => {
     console.log(req.body);
     let flag = true, code, temp;
     let {id} = req.params;
-    let {serialNo, name, type, model, brand, size, unit, useState, description} = req.body;
+    let {serialNo, name, type, model, brand, format, unit, useState, description} = req.body;
     if (!id || !name || !type || !model || !brand) {
         //修改传过来的参数必填校验不通过
         flag = false;
@@ -387,7 +387,7 @@ const formatLinker = (data) => {
 const handleSupplyAdd = async (req, res) => {
     let flag = true, code, temp;
     try {
-        let {origin, time, name, type, model, brand, number, description} = req.body || {};
+        let {origin, time, name, type, model,format, brand, number, description} = req.body || {};
         if (!origin || !time || !name || !type || !model || !brand || !number) {
             flag = false;
             code = 12001;
@@ -413,6 +413,7 @@ const handleSupplyAdd = async (req, res) => {
                     type: type,
                     model: model,
                     brand: brand,
+                    format: format,
                     number: number,
                     remainNumber: number,
                     useState: 'idle',
@@ -462,7 +463,7 @@ const handleSupplyAdd = async (req, res) => {
 
 //关于普通类型的配件的添加的验证
 const verifyNormal = async (req, res) => {
-    let {sourceType, serialNo, name, type, model, brand, size, unit, description, machineId} = req.body || {},
+    let {sourceType, serialNo, name, type, model, brand, format, unit, description, machineId} = req.body || {},
     flag = true, code, temp;
     try {
         if (!name || !type || !model || !brand) {
@@ -551,7 +552,7 @@ const executeNormalAdd = async (obj, res) => {
             type: obj.type,
             model: obj.model,
             brand: obj.brand,
-            size: obj.size || null,
+            format: obj.format || null,
             unit: obj.unit,
             useState: useState,
             linkState: linkState,
@@ -627,7 +628,7 @@ const executeNormalModify = async (req, res) => {
     let flag = true,code,temp;
     try {
         let {id} = req.params;
-        let {serialNo, name, type, model, brand, size, unit, useState, description, originDes, ascriptionId} = req.body;
+        let {serialNo, name, type, model, brand, format, useState, description, originDes, ascriptionId} = req.body;
         let whereArg = [{name}];
         if (serialNo) {
             whereArg.push({serialNo})
@@ -655,7 +656,7 @@ const executeNormalModify = async (req, res) => {
                 type: type,
                 model: model,
                 brand: brand,
-                size: size || null,
+                format: format || null,
                 unit: unit,
                 description: description || ''
             },{
@@ -710,6 +711,14 @@ const executeSupplyDelete = async (id, res) => {
     }
     return flag
 }
+
+block: {
+    const num = Math.random();
+    console.log(num);
+    if (num <= 0.5) break block;
+    console.log('Number is greater than 0.5')
+}
+console.log('Done!')
 
 module.exports = {
     handleNormalGet, handleNormalAdd, handleNormalModify,

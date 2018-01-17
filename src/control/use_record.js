@@ -41,7 +41,7 @@ const addUseRecord = async (param,res)=>{
             relatedId : param.relatedId,
             relatedType : param.relatedType,
             userId : param.userId,
-            purpose : param.purpose,
+            purpose : param.purpose || null,
             project : param.project,
             lendTime : new Date(),
             lendNumber : param.lendNumber,

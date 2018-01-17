@@ -91,6 +91,21 @@ const authorityData = [
         name: '修改IP/IPMI',
         description: '修改机器IP/IPMI，用户名，密码'
     },
+    {
+        value: 'addMachineExtra',
+        name: '添加机器附加设备',
+        description: '添加与机器的附加设备有关的信息'
+    },
+    {
+        value: 'modifyMachineExtra',
+        name: '修改机器附加设备',
+        description: '修改与机器的附加设备有关的信息'
+    },
+    {
+        value: 'deleteMachineExtra',
+        name: '删除机器附加设备',
+        description: '删除与机器的附加设备有关的信息'
+    },
     //配件的相关权限
     {
         value: 'addNormalEquip',
