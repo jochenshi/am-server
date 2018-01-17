@@ -22,10 +22,7 @@ module.exports = function (sequelize, Sequelize) {
         brand: {
             type: Sequelize.STRING
         },
-        size: {
-            type: Sequelize.FLOAT
-        },
-        unit: {
+        format: {
             type: Sequelize.STRING
         },
         useState: {

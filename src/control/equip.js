@@ -241,8 +241,8 @@ const handleNormalModify = (req, res) => {
     console.log(req.body);
     let flag = true, code, temp;
     let {id} = req.params;
-    let {serialNo, name, type, model, brand, size, unit, useState, description} = req.body;
-    if (!id ||!serialNo || !name || !type || !model || !brand) {
+    let {serialNo, name, type, model, brand, format, unit, useState, description} = req.body;
+    if (!id || !name || !type || !model || !brand) {
         //修改传过来的参数必填校验不通过
         flag = false;
         code = 12001;
@@ -387,7 +387,7 @@ const formatLinker = (data) => {
 const handleSupplyAdd = async (req, res) => {
     let flag = true, code, temp;
     try {
-        let {origin, time, name, type, model, brand, number, description} = req.body || {};
+        let {origin, time, name, type, model,format, brand, number, description} = req.body || {};
         if (!origin || !time || !name || !type || !model || !brand || !number) {
             flag = false;
             code = 12001;
@@ -413,6 +413,7 @@ const handleSupplyAdd = async (req, res) => {
                     type: type,
                     model: model,
                     brand: brand,
+                    format: format,
                     number: number,
                     remainNumber: number,
                     useState: 'idle',
@@ -462,21 +463,22 @@ const handleSupplyAdd = async (req, res) => {
 
 //关于普通类型的配件的添加的验证
 const verifyNormal = async (req, res) => {
-    let {sourceType, serialNo, name, type, model, brand, size, unit, description, machineId} = req.body || {},
+    let {sourceType, serialNo, name, type, model, brand, format, unit, description, machineId} = req.body || {},
     flag = true, code, temp;
     try {
-        if (!serialNo || !name || !type || !model || !brand) {
+        if (!name || !type || !model || !brand) {
             flag = false;
             code = 12001;
             temp = methods.formatRespond(flag, code, errorText.formatError(code));
             res.status(400).send(temp);
         } else {
+            let whereArg = [{name}];
+            if (serialNo) {
+                whereArg.push({serialNo})
+            }
             let findFit = await models.fitting.findAll({
                 where: {
-                    [Op.or]: [
-                        {serialNo},
-                        {name}
-                    ]
+                    [Op.or]: whereArg
                 }
             });
             if (findFit.length) {
@@ -545,12 +547,12 @@ const executeNormalAdd = async (obj, res) => {
         }
         useState = 'idle';
         data = await models.fitting.create({
-            serialNo: obj.serialNo,
+            serialNo: obj.serialNo || null,
             name: obj.name,
             type: obj.type,
             model: obj.model,
             brand: obj.brand,
-            size: obj.size || null,
+            format: obj.format || null,
             unit: obj.unit,
             useState: useState,
             linkState: linkState,
@@ -626,13 +628,14 @@ const executeNormalModify = async (req, res) => {
     let flag = true,code,temp;
     try {
         let {id} = req.params;
-        let {serialNo, name, type, model, brand, size, unit, useState, description, originDes, ascriptionId} = req.body;
+        let {serialNo, name, type, model, brand, format, useState, description, originDes, ascriptionId} = req.body;
+        let whereArg = [{name}];
+        if (serialNo) {
+            whereArg.push({serialNo})
+        }
         let findFit = await models.fitting.findAll({
             where: {
-                [Op.or]: [
-                    {serialNo},
-                    {name}
-                ],
+                [Op.or]: whereArg,
                 [Op.not]: [
                     {id}
                 ]
@@ -648,12 +651,12 @@ const executeNormalModify = async (req, res) => {
             let userId = methods.getUserId(req, res);
             let addData = Object.assign({}, req.body, {userId});
             await models.fitting.update({
-                serialNo: serialNo,
+                serialNo: serialNo || null,
                 name: name,
                 type: type,
                 model: model,
                 brand: brand,
-                size: size || null,
+                format: format || null,
                 unit: unit,
                 description: description || ''
             },{
@@ -708,6 +711,14 @@ const executeSupplyDelete = async (id, res) => {
     }
     return flag
 }
+
+block: {
+    const num = Math.random();
+    console.log(num);
+    if (num <= 0.5) break block;
+    console.log('Number is greater than 0.5')
+}
+console.log('Done!')
 
 module.exports = {
     handleNormalGet, handleNormalAdd, handleNormalModify,

@@ -19,6 +19,9 @@ module.exports = function (sequelize, Sequelize) {
         brand: {
             type: Sequelize.STRING
         },
+        format: {
+            type: Sequelize.STRING
+        },
         number: {
             type: Sequelize.INTEGER,
             allowNull: false
