@@ -712,14 +712,6 @@ const executeSupplyDelete = async (id, res) => {
     return flag
 }
 
-block: {
-    const num = Math.random();
-    console.log(num);
-    if (num <= 0.5) break block;
-    console.log('Number is greater than 0.5')
-}
-console.log('Done!')
-
 module.exports = {
     handleNormalGet, handleNormalAdd, handleNormalModify,
     getNormalInMachine, handleSupplyAdd, handleSupplyGet

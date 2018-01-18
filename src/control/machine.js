@@ -389,5 +389,6 @@ const deleteMachine = async (id) => {
 }
 
 module.exports = {
-    getMachineData, getAddMachineParam, addMachine, getMachineDataById, modifyMachine
+    getMachineData, getAddMachineParam, addMachine, 
+    getMachineDataById, modifyMachine
 }

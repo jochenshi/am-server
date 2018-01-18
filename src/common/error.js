@@ -108,6 +108,15 @@ const formatError = (code) => {
         case 13102:
             txt = '该机器的地址信息已存在';
             break;
+        case 13103:
+            txt = '该机器下已存在相同内容的附加信息';
+            break;
+        case 13104:
+            txt = '所传参数非法或者不全';
+            break;
+        case 13105:
+            txt = '修改附加信息失败';
+            break;
         /**
          * 归属报错文本
          */
