@@ -64,6 +64,14 @@ module.exports = function (sequelize, Sequelize) {
         });
         machine.belongsToMany(model.operation_record, {
             through: 'operateMachine'
+        });
+        machine.hasMany(model.extra, {
+            foreignKey: 'relatedId',
+            sourceKey: 'id',
+            constraints: false,
+            scope: {
+                relatedType: 'machine'
+            }
         })
     }
     //需要将machine以及fitting通过自动关系建立联系

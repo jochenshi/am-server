@@ -23,9 +23,14 @@ router.put('/:id',function(req, res, next) {
     machine.modifyMachine(req.params.id,req.body, res);
 })
 
+router.get('/extra/:id', function (req, res, next) {
+
+})
+
 /**
  * 添加
  */
+//添加机器
 router.post('/', function(req, res, next) {
     machine.addMachine(req.body,res);
 });
