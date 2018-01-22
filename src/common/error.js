@@ -42,7 +42,7 @@ const formatError = (code) => {
             break;
         //配件模块的错误信息
         case 12000:
-            txt = '配件S/N号或名称已经存在';
+            txt = '配件S/N号已经存在';
             break;
         case 12001:
             txt = '必填参数不能为空';
@@ -51,7 +51,7 @@ const formatError = (code) => {
             txt = '未传入机器的ID';
             break;
         case 12003:
-            txt = '已经存在相同名称或S/N号的配件';
+            txt = '已经存在相同S/N号的配件';
             break;
         case 12004:
             txt = '已经存在相同名称的配件';

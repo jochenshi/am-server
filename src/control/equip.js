@@ -394,12 +394,13 @@ const handleSupplyAdd = async (req, res) => {
             temp = methods.formatRespond(flag, code, errorText.formatError(code));
             res.status(400).send(temp);
         } else {
-            let findPart = await models.part.findAll({
-                where: {
-                    name: name,
-                    type: type
-                }
-            });
+            // let findPart = await models.part.findAll({
+            //     where: {
+            //         name: name,
+            //         type: type
+            //     }
+            // });
+            let findPart = [];
             if (findPart.length) {
                 flag = false;
                 code = 12004;
@@ -472,7 +473,7 @@ const verifyNormal = async (req, res) => {
             temp = methods.formatRespond(flag, code, errorText.formatError(code));
             res.status(400).send(temp);
         } else {
-            let whereArg = [{name}];
+            let whereArg = [];
             if (serialNo) {
                 whereArg.push({serialNo})
             }
