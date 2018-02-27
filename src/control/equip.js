@@ -241,7 +241,7 @@ const handleNormalModify = (req, res) => {
     console.log(req.body);
     let flag = true, code, temp;
     let {id} = req.params;
-    let {serialNo, name, type, model, brand, format, unit, useState, description} = req.body;
+    let {serialNo, name, type, model, brand, format, useState, description} = req.body;
     if (!id || !name || !type || !model || !brand) {
         //修改传过来的参数必填校验不通过
         flag = false;
@@ -630,7 +630,7 @@ const executeNormalModify = async (req, res) => {
     try {
         let {id} = req.params;
         let {serialNo, name, type, model, brand, format, useState, description, originDes, ascriptionId} = req.body;
-        let whereArg = [{name}];
+        let whereArg = [];
         if (serialNo) {
             whereArg.push({serialNo})
         }
@@ -658,7 +658,6 @@ const executeNormalModify = async (req, res) => {
                 model: model,
                 brand: brand,
                 format: format || null,
-                unit: unit,
                 description: description || ''
             },{
                 where: {
